@@ -8,62 +8,48 @@
 import SwiftUI
 
 struct DictionaryView: View {
-    let topics = DataService.topics
-    @State private var expandedTopicID: UUID? = nil
-    @State private var progress = ProgressManager.loadProgress()
+    let categories = DataService.topicsByCategory
+    @ObservedObject private var progressStore = ProgressStore.shared
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(topics) { topic in
-                    Section {
-                        Button {
-                            // toggle expansion
-                            if expandedTopicID == topic.id {
-                                expandedTopicID = nil
-                            } else {
-                                expandedTopicID = topic.id
-                            }
-                        } label: {
-                            HStack {
-                                Text(topic.name)
-                                    .font(.headline)
-                                Spacer()
-                                Image(systemName: expandedTopicID == topic.id ? "chevron.up" : "chevron.down")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        .buttonStyle(.plain)
-                        
-                        if expandedTopicID == topic.id {
-                            let words = DataService.loadWords(for: topic)
-                            ForEach(words) { word in
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(word.hanzi)
-                                        .font(.title3)
-                                    Text("\(word.pinyin) – \(word.english)")
-                                        .foregroundColor(.secondary)
-                                        .font(.subheadline)
-                                    // placeholder progress for now
-                                    let pct = Int((progress[word.hanzi] ?? 0) * 100)
-                                    if pct == 100 {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .foregroundColor(.green)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    ForEach(categories, id: \.category) { category, topics in
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text(category)
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                                .padding(.horizontal, 12)
+                            
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 12) {
+                                    ForEach(topics) { topic in
+                                        NavigationLink(value: topic) {
+                                            VStack {
+                                                Spacer()
+                                                Text(topic.name)
+                                                    .font(.headline)
+                                                    .multilineTextAlignment(.center)
+                                                    .padding(.horizontal, 8)
+                                                Spacer()
+                                            }
+                                            .frame(width: 140, height: 140)
+                                            .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+                                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(.separator)))
+                                        }
                                     }
-                                    Text("Progress: \(pct)%")
-                                        .font(.caption)
-                                        .foregroundColor(pct == 100 ? .green : .blue)
-
                                 }
-                                .padding(.vertical, 4)
+                                .padding(.horizontal, 12)
                             }
                         }
                     }
                 }
+                .padding(.vertical, 12)
             }
             .navigationTitle("Dictionary")
-            .onAppear {
-                progress = ProgressManager.loadProgress()
+            .navigationDestination(for: Topic.self) { topic in
+                DeckView(topic: topic)
             }
         }
     }

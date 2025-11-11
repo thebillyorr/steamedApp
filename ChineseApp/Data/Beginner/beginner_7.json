@@ -1,0 +1,25 @@
+[
+  { "hanzi": "的", "pinyin": "de", "english": ["'s", "of"], "level": 1, "difficulty": 1, "characters": ["的"] },
+  { "hanzi": "了", "pinyin": "le", "english": ["(particle) completed/changed state"], "level": 1, "difficulty": 1, "characters": ["了"] },
+  { "hanzi": "吗", "pinyin": "ma", "english": ["(question particle)"], "level": 1, "difficulty": 1, "characters": ["吗"] },
+  { "hanzi": "不", "pinyin": "bù", "english": ["not", "no"], "level": 1, "difficulty": 1, "characters": ["不"] },
+  { "hanzi": "很", "pinyin": "hěn", "english": ["very"], "level": 1, "difficulty": 1, "characters": ["很"] },
+  { "hanzi": "和", "pinyin": "hé", "english": ["and", "with"], "level": 1, "difficulty": 1, "characters": ["和"] },
+  { "hanzi": "也", "pinyin": "yě", "english": ["also", "too"], "level": 1, "difficulty": 1, "characters": ["也"] },
+  { "hanzi": "还", "pinyin": "hái", "english": ["still", "also"], "level": 1, "difficulty": 1, "characters": ["还"] },
+  { "hanzi": "都", "pinyin": "dōu", "english": ["all", "both"], "level": 1, "difficulty": 1, "characters": ["都"] },
+  { "hanzi": "对", "pinyin": "duì", "english": ["correct", "to", "towards"], "level": 1, "difficulty": 1, "characters": ["对"] },
+  { "hanzi": "用", "pinyin": "yòng", "english": ["use", "by means of"], "level": 1, "difficulty": 1, "characters": ["用"] },
+
+  { "hanzi": "给", "pinyin": "gěi", "english": ["give", "for"], "level": 1, "difficulty": 2, "characters": ["给"] },
+  { "hanzi": "从", "pinyin": "cóng", "english": ["from"], "level": 1, "difficulty": 2, "characters": ["从"] },
+  { "hanzi": "到", "pinyin": "dào", "english": ["to", "arrive"], "level": 1, "difficulty": 2, "characters": ["到"] },
+  { "hanzi": "比", "pinyin": "bǐ", "english": ["compare", "than"], "level": 1, "difficulty": 2, "characters": ["比"] },
+  { "hanzi": "让", "pinyin": "ràng", "english": ["let", "allow", "make"], "level": 1, "difficulty": 2, "characters": ["让"] },
+  { "hanzi": "着", "pinyin": "zhe", "english": ["(particle) ongoing state"], "level": 1, "difficulty": 2, "characters": ["着"] },
+  { "hanzi": "过", "pinyin": "guò", "english": ["(particle) experience", "to pass"], "level": 1, "difficulty": 2, "characters": ["过"] },
+
+  { "hanzi": "跟", "pinyin": "gēn", "english": ["with", "and"], "level": 1, "difficulty": 3, "characters": ["跟"] },
+  { "hanzi": "向", "pinyin": "xiàng", "english": ["toward", "to"], "level": 1, "difficulty": 3, "characters": ["向"] },
+  { "hanzi": "把", "pinyin": "bǎ", "english": ["(disposal marker)", "to hold"], "level": 1, "difficulty": 3, "characters": ["把"] }
+]

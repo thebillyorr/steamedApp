@@ -1,0 +1,94 @@
+{
+  "stages": [
+    {
+      "stageNumber": 0,
+      "masteryMin": 0.0,
+      "masteryMax": 0.1,
+      "questionTypes": [
+        { "type": "flashcard", "weight": 1.0 }
+      ]
+    },
+    {
+      "stageNumber": 1,
+      "masteryMin": 0.1,
+      "masteryMax": 0.2,
+      "questionTypes": [
+        { "type": "flashcard", "weight": 1.0 }
+      ]
+    },
+    {
+      "stageNumber": 2,
+      "masteryMin": 0.2,
+      "masteryMax": 0.3,
+      "questionTypes": [
+        { "type": "flashcard", "weight": 0.5 },
+        { "type": "multipleChoice", "weight": 0.5 }
+      ]
+    },
+    {
+      "stageNumber": 3,
+      "masteryMin": 0.3,
+      "masteryMax": 0.4,
+      "questionTypes": [
+        { "type": "flashcard", "weight": 0.25 },
+        { "type": "multipleChoice", "weight": 0.75 }
+      ]
+    },
+    {
+      "stageNumber": 4,
+      "masteryMin": 0.4,
+      "masteryMax": 0.5,
+      "questionTypes": [
+        { "type": "multipleChoice", "weight": 1.0 }
+      ]
+    },
+    {
+      "stageNumber": 5,
+      "masteryMin": 0.5,
+      "masteryMax": 0.6,
+      "questionTypes": [
+        { "type": "multipleChoice", "weight": 0.8 },
+        { "type": "fillInBlank", "weight": 0.2 }
+      ]
+    },
+    {
+      "stageNumber": 6,
+      "masteryMin": 0.6,
+      "masteryMax": 0.7,
+      "questionTypes": [
+        { "type": "multipleChoice", "weight": 0.5 },
+        { "type": "fillInBlank", "weight": 0.5 }
+      ]
+    },
+    {
+      "stageNumber": 7,
+      "masteryMin": 0.7,
+      "masteryMax": 0.8,
+      "questionTypes": [
+        { "type": "multipleChoice", "weight": 0.25 },
+        { "type": "fillInBlank", "weight": 0.5 },
+        { "type": "trueOrFalse", "weight": 0.25 }
+      ]
+    },
+    {
+      "stageNumber": 8,
+      "masteryMin": 0.8,
+      "masteryMax": 0.9,
+      "questionTypes": [
+        { "type": "fillInBlank", "weight": 0.5 },
+        { "type": "trueOrFalse", "weight": 0.25 },
+        { "type": "speaking", "weight": 0.25 }
+      ]
+    },
+    {
+      "stageNumber": 9,
+      "masteryMin": 0.9,
+      "masteryMax": 1.0,
+      "questionTypes": [
+        { "type": "fillInBlank", "weight": 0.33 },
+        { "type": "trueOrFalse", "weight": 0.33 },
+        { "type": "speaking", "weight": 0.34 }
+      ]
+    }
+  ]
+}

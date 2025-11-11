@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PracticeRootView: View {
-    let topics = DataService.topics
+    let topics = DataService.allTopics
     @State private var selectedTopic: Topic?
 
     var body: some View {
@@ -26,7 +26,8 @@ struct PracticeRootView: View {
                 }
             }
             .navigationTitle("Practice")
-            .navigationDestination(item: $selectedTopic) { topic in
+            // present practice sessions full-screen so the tab bar is hidden while practicing
+            .fullScreenCover(item: $selectedTopic) { topic in
                 PracticeSessionView(topic: topic)
             }
         }
