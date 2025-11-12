@@ -5,7 +5,8 @@
       "masteryMin": 0.0,
       "masteryMax": 0.1,
       "questionTypes": [
-        { "type": "flashcard", "weight": 1.0 }
+        { "type": "flashcard", "weight": 0.9 },
+        { "type": "multipleChoice", "weight": 0.1 }
       ]
     },
     {
@@ -13,7 +14,8 @@
       "masteryMin": 0.1,
       "masteryMax": 0.2,
       "questionTypes": [
-        { "type": "flashcard", "weight": 1.0 }
+        { "type": "flashcard", "weight": 0.8 },
+        { "type": "multipleChoice", "weight": 0.2 }
       ]
     },
     {
@@ -48,7 +50,7 @@
       "masteryMax": 0.6,
       "questionTypes": [
         { "type": "multipleChoice", "weight": 0.8 },
-        { "type": "fillInBlank", "weight": 0.2 }
+        { "type": "construction", "weight": 0.2 }
       ]
     },
     {
@@ -56,8 +58,9 @@
       "masteryMin": 0.6,
       "masteryMax": 0.7,
       "questionTypes": [
-        { "type": "multipleChoice", "weight": 0.5 },
-        { "type": "fillInBlank", "weight": 0.5 }
+        { "type": "multipleChoice", "weight": 0.4 },
+        { "type": "construction", "weight": 0.3 },
+        { "type": "pinyin", "weight": 0.3 }
       ]
     },
     {
@@ -65,9 +68,9 @@
       "masteryMin": 0.7,
       "masteryMax": 0.8,
       "questionTypes": [
-        { "type": "multipleChoice", "weight": 0.25 },
-        { "type": "fillInBlank", "weight": 0.5 },
-        { "type": "trueOrFalse", "weight": 0.25 }
+        { "type": "construction", "weight": 0.4 },
+        { "type": "pinyin", "weight": 0.3 },
+        { "type": "trueOrFalse", "weight": 0.3 }
       ]
     },
     {
@@ -75,9 +78,9 @@
       "masteryMin": 0.8,
       "masteryMax": 0.9,
       "questionTypes": [
-        { "type": "fillInBlank", "weight": 0.5 },
-        { "type": "trueOrFalse", "weight": 0.25 },
-        { "type": "speaking", "weight": 0.25 }
+        { "type": "construction", "weight": 0.4 },
+        { "type": "pinyin", "weight": 0.4 },
+        { "type": "speaking", "weight": 0.2 }
       ]
     },
     {
@@ -85,8 +88,8 @@
       "masteryMin": 0.9,
       "masteryMax": 1.0,
       "questionTypes": [
-        { "type": "fillInBlank", "weight": 0.33 },
-        { "type": "trueOrFalse", "weight": 0.33 },
+        { "type": "construction", "weight": 0.33 },
+        { "type": "pinyin", "weight": 0.33 },
         { "type": "speaking", "weight": 0.34 }
       ]
     }

@@ -9,6 +9,7 @@ import Foundation
 
 class DataService {
     // organize topics by category for horizontal scrolling
+    // seen and mastered flags are stored in ProgressManager via UserDefaults, not on Word struct
     static let topicsByCategory: [(category: String, topics: [Topic])] = [
         (
             category: "Beginner",
@@ -87,8 +88,8 @@ class DataService {
         guard let url = Bundle.main.url(forResource: "mastery_journey", withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let journey = try? JSONDecoder().decode(MasteryJourney.self, from: data) else {
-            print("❌ Failed to load mastery_journey.json - using fallback")
-            return MasteryJourney.fallback()
+            print("❌ CRITICAL: Failed to load mastery_journey.json")
+            fatalError("mastery_journey.json is missing from bundle")
         }
         
         cachedJourney = journey
@@ -99,8 +100,8 @@ class DataService {
     /// First 5 words always unlocked, then 1 new word per session completed
     /// Configurable via constant
     static func getUnlockedWordCount(for topicFilename: String, totalWords: Int) -> Int {
-        let baseUnlockedWords = 5  // First 5 words always available
-        let wordsReleasedPerSession = 1  // Can be changed to 2, 3, etc.
+        let baseUnlockedWords = 8  // First 5 words always available
+        let wordsReleasedPerSession = 2  // Can be changed to 2, 3, etc.
         
         let sessionCount = ProgressManager.getSessionCount(for: topicFilename)
         let unlockedCount = baseUnlockedWords + (sessionCount * wordsReleasedPerSession)

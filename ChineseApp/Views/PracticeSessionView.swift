@@ -11,8 +11,16 @@ struct PracticeSessionView: View {
     let topic: Topic
     @State private var words: [Word] = []
     @State private var currentIndex: Int = 0
-    @State private var seenCounts: [String: Int] = [:] // hanzi -> times seen this session
-    @State private var showAnswer = false
+    @State private var quizOptions: [String] = []
+    @State private var quizCorrectChoice: String = ""
+    @State private var constructionOptions: [String] = []
+    @State private var pinyinOptions: [String] = []
+    @State private var pinyinCorrectChoice: String = ""
+    
+    // Quiz state for current question
+    @State private var selectedAnswer: String?
+    @State private var isAnswered = false
+    @State private var feedbackState: QuizFeedbackState = .neutral
 
     // session items: word index + question type determined by journey
     private struct SessionItem: Identifiable {
@@ -35,10 +43,6 @@ struct PracticeSessionView: View {
     private var currentQuestionType: QuestionType {
         guard !sessionItems.isEmpty, currentIndex < sessionItems.count else { return .flashcard }
         return sessionItems[currentIndex].questionType
-    }
-    
-    private var isQuiz: Bool {
-        return currentQuestionType == .multipleChoice
     }
 
     var body: some View {
@@ -128,13 +132,74 @@ struct PracticeSessionView: View {
                         }
 
                         if !sessionItems.isEmpty {
-                            if isQuiz {
-                                quizView
-                            } else {
-                                flashcardView
+                            let currentWord = words[sessionItems[currentIndex].wordIndex]
+                            
+                            switch currentQuestionType {
+                            case .flashcard:
+                                let wordProgress = ProgressStore.shared.getProgress(for: currentWord.hanzi)
+                                FlashcardQuestionView(
+                                    word: currentWord,
+                                    isNewWord: wordProgress == 0.0
+                                )
+                                
+                            case .multipleChoice:
+                                MultipleChoiceQuestionView(
+                                    word: currentWord,
+                                    options: quizOptions,
+                                    correctChoice: quizCorrectChoice,
+                                    onAnswered: { correct in
+                                        advanceWord(correct: correct)
+                                        // Reset quiz state for next question
+                                        selectedAnswer = nil
+                                        isAnswered = false
+                                        feedbackState = .neutral
+                                    },
+                                    selectedAnswer: selectedAnswer,
+                                    isAnswered: isAnswered,
+                                    feedbackState: feedbackState,
+                                    onOptionSelected: { option, correct in
+                                        selectedAnswer = option
+                                        isAnswered = true
+                                        feedbackState = correct ? .correct : .incorrect
+                                    }
+                                )
+                                
+                            case .construction:
+                                ConstructionQuestionView(
+                                    word: currentWord,
+                                    availableCharacters: constructionOptions,
+                                    onSubmit: { correct in
+                                        advanceWord(correct: correct)
+                                    }
+                                )
+                                
+                            case .pinyin:
+                                PinyinQuestionView(
+                                    word: currentWord,
+                                    options: pinyinOptions,
+                                    correctChoice: pinyinCorrectChoice,
+                                    onAnswered: { correct in
+                                        advanceWord(correct: correct)
+                                        // Reset quiz state for next question
+                                        selectedAnswer = nil
+                                        isAnswered = false
+                                        feedbackState = .neutral
+                                    },
+                                    selectedAnswer: selectedAnswer,
+                                    isAnswered: isAnswered,
+                                    feedbackState: feedbackState,
+                                    onOptionSelected: { option, correct in
+                                        selectedAnswer = option
+                                        isAnswered = true
+                                        feedbackState = correct ? .correct : .incorrect
+                                    }
+                                )
+                                
+                            default:
+                                Text("Question type not implemented")
                             }
 
-                            if !isQuiz {
+                            if currentQuestionType == .flashcard {
                                 HStack(spacing: 16) {
                                     Button("Need to review") {
                                         advanceWord(correct: false)
@@ -158,7 +223,6 @@ struct PracticeSessionView: View {
                     words = DataService.loadWords(for: topic)
                     journey = DataService.loadMasteryJourney()
                     currentIndex = 0
-                    seenCounts.removeAll()
                     sessionItems.removeAll()
                     
                     guard !words.isEmpty else { return }
@@ -172,17 +236,43 @@ struct PracticeSessionView: View {
                         return
                     }
 
-                    // Randomly select words from unlocked pool (with repetition cap)
+                    // Separate unlocked words into mastered and unmastered pools
+                    let unmasteredIndices = unlockedIndices.filter { ProgressStore.shared.getProgress(for: words[$0].hanzi) < 1.0 }
+                    let masteredIndices = unlockedIndices.filter { ProgressStore.shared.getProgress(for: words[$0].hanzi) >= 1.0 }
+                    
+                    // Randomly select words from unlocked pool using 95/5 split (95% unmastered, 5% maintenance)
                     var selectedIndices: [Int] = []
                     var repetitionCount: [Int: Int] = [:]
                     
                     while selectedIndices.count < fixedSessionLength {
-                        // Pick a random unlocked word
-                        let randomIndex = unlockedIndices.randomElement()!
+                        let useMaintenanceWord = Double.random(in: 0..<1.0) < 0.05 && !masteredIndices.isEmpty
+                        let pool = useMaintenanceWord ? masteredIndices : unmasteredIndices
+                        
+                        guard !pool.isEmpty else {
+                            // If one pool is empty, fall back to the other
+                            let fallbackPool = useMaintenanceWord ? unmasteredIndices : masteredIndices
+                            guard !fallbackPool.isEmpty else { break }  // Can't continue if both empty
+                            
+                            let randomIndex = fallbackPool.randomElement()!
+                            let repsForThisWord = repetitionCount[randomIndex, default: 0]
+                            let isLastWord = !selectedIndices.isEmpty && selectedIndices.last == randomIndex
+                            
+                            if repsForThisWord < maxRepetitionsPerWord && !isLastWord {
+                                selectedIndices.append(randomIndex)
+                                repetitionCount[randomIndex, default: 0] += 1
+                            }
+                            continue
+                        }
+                        
+                        let randomIndex = pool.randomElement()!
                         let repsForThisWord = repetitionCount[randomIndex, default: 0]
                         
-                        // Check if we can add this word (hasn't hit max repetitions)
-                        if repsForThisWord < maxRepetitionsPerWord {
+                        // Check if we can add this word:
+                        // 1. Hasn't hit max repetitions
+                        // 2. Not the same as the last selected word (prevent back-to-back)
+                        let isLastWord = !selectedIndices.isEmpty && selectedIndices.last == randomIndex
+                        
+                        if repsForThisWord < maxRepetitionsPerWord && !isLastWord {
                             selectedIndices.append(randomIndex)
                             repetitionCount[randomIndex, default: 0] += 1
                         }
@@ -194,6 +284,21 @@ struct PracticeSessionView: View {
                         let questionType = DataService.getQuestionType(for: word.hanzi, journey: journey)
                         let item = SessionItem(wordIndex: wordIndex, questionType: questionType)
                         sessionItems.append(item)
+                    }
+                    
+                    // Generate initial quiz options if first question is a quiz
+                    if !sessionItems.isEmpty {
+                        if sessionItems[0].questionType == .multipleChoice {
+                            let (options, correctChoice) = makeOptions(correct: words[sessionItems[0].wordIndex])
+                            quizOptions = options
+                            quizCorrectChoice = correctChoice
+                        } else if sessionItems[0].questionType == .construction {
+                            constructionOptions = makeConstructionOptions(correct: words[sessionItems[0].wordIndex])
+                        } else if sessionItems[0].questionType == .pinyin {
+                            let (options, correctChoice) = makePinyinOptions(correct: words[sessionItems[0].wordIndex])
+                            pinyinOptions = options
+                            pinyinCorrectChoice = correctChoice
+                        }
                     }
                 }
                 // navigationBar modifiers are left in place if view is used inside a NavigationStack
@@ -211,82 +316,106 @@ struct PracticeSessionView: View {
     }
 
 
-    private var flashcardView: some View {
-        let item = sessionItems[currentIndex]
-        let word = words[item.wordIndex]
-
-        return ZStack {
-            // Card background
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(.regularMaterial)
-                .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 6)
-
-            // Content
-            VStack(spacing: 8) {
-                Text(word.hanzi)
-                    .font(.system(size: 40, weight: .semibold, design: .default))
-                    .minimumScaleFactor(0.5)
-                    .lineLimit(1)
-
-                if showAnswer {
-                    VStack(spacing: 6) {
-                        Text(word.pinyin)
-                            .foregroundColor(.secondary)
-                            .font(.headline)
-                        Text(word.english.joined(separator: ", "))
-                            .font(.title3)
-                    }
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
-                }
-            }
-            .padding(24)
-        }
-        .contentShape(RoundedRectangle(cornerRadius: 16))
-        .onTapGesture {
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
-                showAnswer.toggle()
-            }
-        }
-        .frame(width: 320, height: 520)
-        .frame(maxWidth: .infinity)
-    }
-
     // simplest quiz: show hanzi, pick english
-    private var quizView: some View {
-        let item = sessionItems[currentIndex]
-        let word = words[item.wordIndex]
-        let (options, correctChoice) = makeOptions(correct: word)
-
-        return VStack(spacing: 12) {
-            Text(word.hanzi)
-                .font(.system(size: 48))
-            Text("Choose the meaning:")
-            ForEach(options, id: \.self) { option in
-                Button(option) {
-                    let correct = (option == correctChoice)
-                    advanceWord(correct: correct)
-                }
-                .buttonStyle(.bordered)
-            }
-        }
-    }
-
     private func makeOptions(correct: Word) -> (options: [String], correctChoice: String) {
         // choose one of the correct word's meanings at random
         let correctChoice = correct.english.randomElement() ?? ""
 
         // take up to 3 other random meanings from different words as distractors
+        // only select from words in the current topic, and exclude meanings that match the correct answer
         var others: [String] = []
-        let shuffled = words.filter { $0.hanzi != correct.hanzi }.shuffled()
-        for w in shuffled.prefix(6) { // sample a few and pick random meanings to reduce duplicates
-            if let m = w.english.randomElement() {
+        let candidateWords = words
+            .filter { $0.hanzi != correct.hanzi } // exclude the correct word itself
+            .shuffled()
+        
+        for w in candidateWords {
+            // filter out meanings that match the correct answer to avoid duplicates
+            let validMeanings = w.english.filter { $0.lowercased() != correctChoice.lowercased() }
+            
+            if let m = validMeanings.randomElement() {
                 others.append(m)
             }
             if others.count >= 3 { break }
         }
 
-        var opts = ([correctChoice] + others).shuffled()
+        let opts = ([correctChoice] + others).shuffled()
         return (opts, correctChoice)
+    }
+
+    // Create 6 character options for construction question
+    private func makeConstructionOptions(correct: Word) -> [String] {
+        // Extract individual characters from the correct word
+        let correctCharacters = Array(correct.hanzi).map { String($0) }
+        
+        // Collect all characters from other words as potential distractors
+        var distractorCharacters: [String] = []
+        let otherWords = words.filter { $0.hanzi != correct.hanzi }
+        
+        for word in otherWords {
+            let chars = Array(word.hanzi).map { String($0) }
+            distractorCharacters.append(contentsOf: chars)
+        }
+        
+        // Shuffle and remove duplicates
+        distractorCharacters = Array(Set(distractorCharacters)).shuffled()
+        
+        // Build options: include all correct characters, then fill with distractors
+        var options = correctCharacters
+        let neededCount = 6 - options.count
+        
+        if neededCount > 0 {
+            // Add random distractors, excluding any that match correct characters
+            let validDistracters = distractorCharacters.filter { !options.contains($0) }
+            let selectedDistracters = Array(validDistracters.prefix(neededCount))
+            options.append(contentsOf: selectedDistracters)
+        }
+        
+        // If still not enough (all words are single character?), just shuffle what we have
+        while options.count < 6 {
+            if let extra = distractorCharacters.randomElement() {
+                if !options.contains(extra) {
+                    options.append(extra)
+                }
+            } else {
+                break
+            }
+        }
+        
+        return options.shuffled()
+    }
+
+    // Create pinyin options with mandatory wrong-tone distractor
+    private func makePinyinOptions(correct: Word) -> (options: [String], correctChoice: String) {
+        let correctChoice = correct.pinyin
+        
+        var options: [String] = [correctChoice]
+        
+        // Try to add a wrong-tone variant as a mandatory distractor (100% for now)
+        if let wrongToneVariant = PinyinToneHelper.getDifferentToneVariant(from: correctChoice) {
+            options.append(wrongToneVariant)
+        }
+        
+        // Add other pinyin from different words as distractors
+        let otherWords = words.filter { $0.hanzi != correct.hanzi }
+        for word in otherWords.shuffled() {
+            // Don't add duplicate meanings
+            if !options.contains(word.pinyin) {
+                options.append(word.pinyin)
+            }
+            if options.count >= 4 { break }
+        }
+        
+        // If we still need more options, fill with more tone variants
+        while options.count < 4 {
+            let allVariants = PinyinToneHelper.generateAllToneVariants(from: correctChoice)
+            if let variant = allVariants.first(where: { !options.contains($0) }) {
+                options.append(variant)
+            } else {
+                break
+            }
+        }
+        
+        return (options.shuffled(), correctChoice)
     }
 
     // compute delta (0.0 - 1.0) awarded for a correct response based on word level and question type
@@ -311,8 +440,6 @@ struct PracticeSessionView: View {
     }
 
     private func advanceWord(correct: Bool) {
-        showAnswer = false
-
         // determine current word from session item
         guard !sessionItems.isEmpty, currentIndex < sessionItems.count else { return }
         let item = sessionItems[currentIndex]
@@ -330,21 +457,12 @@ struct PracticeSessionView: View {
 
         ProgressStore.shared.addProgress(for: word.hanzi, delta: appliedDelta)
         let progress = ProgressStore.shared.getProgress(for: word.hanzi)
+        
         if progress >= 1.0 {
             if !sessionMastered.contains(word.hanzi) {
                 sessionMastered.append(word.hanzi)
             }
-        } else {
-            // if progress dropped below mastery during this session, remove from sessionMastered
-            if let idx = sessionMastered.firstIndex(of: word.hanzi) {
-                sessionMastered.remove(at: idx)
-            }
         }
-
-        // update seen count for this word
-        var count = seenCounts[word.hanzi, default: 0]
-        count += 1
-        seenCounts[word.hanzi] = count
 
         // advance to next session item
         currentIndex += 1
@@ -354,10 +472,21 @@ struct PracticeSessionView: View {
             showSummary = true
             return
         }
+        
+        // Generate new question's options IMMEDIATELY if next question is a quiz, construction, or pinyin
+        // This ensures options are ready BEFORE the view re-renders
+        if !sessionItems.isEmpty && currentIndex < sessionItems.count {
+            if sessionItems[currentIndex].questionType == .multipleChoice {
+                let (options, correctChoice) = makeOptions(correct: words[sessionItems[currentIndex].wordIndex])
+                quizOptions = options
+                quizCorrectChoice = correctChoice
+            } else if sessionItems[currentIndex].questionType == .construction {
+                constructionOptions = makeConstructionOptions(correct: words[sessionItems[currentIndex].wordIndex])
+            } else if sessionItems[currentIndex].questionType == .pinyin {
+                let (options, correctChoice) = makePinyinOptions(correct: words[sessionItems[currentIndex].wordIndex])
+                pinyinOptions = options
+                pinyinCorrectChoice = correctChoice
+            }
+        }
     }
-}
-
-
-#Preview {
-    PracticeSessionView(topic: Topic(name: "HSK 1 Part 1", filename: "hsk1_part1"))
 }

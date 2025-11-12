@@ -15,22 +15,6 @@ struct MasteryJourney: Codable {
     func getStage(for mastery: Double) -> MasteryStage? {
         return stages.first { $0.masteryRange.contains(mastery) }
     }
-    
-    /// Fallback journey in case JSON loading fails
-    static func fallback() -> MasteryJourney {
-        return MasteryJourney(stages: [
-            MasteryStage(stageNumber: 0, masteryMin: 0.0, masteryMax: 0.1, questionTypes: [QuestionTypeOption(type: .flashcard, weight: 1.0)]),
-            MasteryStage(stageNumber: 1, masteryMin: 0.1, masteryMax: 0.2, questionTypes: [QuestionTypeOption(type: .flashcard, weight: 1.0)]),
-            MasteryStage(stageNumber: 2, masteryMin: 0.2, masteryMax: 0.3, questionTypes: [QuestionTypeOption(type: .flashcard, weight: 0.5), QuestionTypeOption(type: .multipleChoice, weight: 0.5)]),
-            MasteryStage(stageNumber: 3, masteryMin: 0.3, masteryMax: 0.4, questionTypes: [QuestionTypeOption(type: .flashcard, weight: 0.25), QuestionTypeOption(type: .multipleChoice, weight: 0.75)]),
-            MasteryStage(stageNumber: 4, masteryMin: 0.4, masteryMax: 0.5, questionTypes: [QuestionTypeOption(type: .multipleChoice, weight: 1.0)]),
-            MasteryStage(stageNumber: 5, masteryMin: 0.5, masteryMax: 0.6, questionTypes: [QuestionTypeOption(type: .multipleChoice, weight: 0.8), QuestionTypeOption(type: .multipleChoice, weight: 0.2)]),
-            MasteryStage(stageNumber: 6, masteryMin: 0.6, masteryMax: 0.7, questionTypes: [QuestionTypeOption(type: .multipleChoice, weight: 0.5), QuestionTypeOption(type: .multipleChoice, weight: 0.5)]),
-            MasteryStage(stageNumber: 7, masteryMin: 0.7, masteryMax: 0.8, questionTypes: [QuestionTypeOption(type: .multipleChoice, weight: 0.25), QuestionTypeOption(type: .multipleChoice, weight: 0.5), QuestionTypeOption(type: .multipleChoice, weight: 0.25)]),
-            MasteryStage(stageNumber: 8, masteryMin: 0.8, masteryMax: 0.9, questionTypes: [QuestionTypeOption(type: .multipleChoice, weight: 0.5), QuestionTypeOption(type: .multipleChoice, weight: 0.25), QuestionTypeOption(type: .multipleChoice, weight: 0.25)]),
-            MasteryStage(stageNumber: 9, masteryMin: 0.9, masteryMax: 1.0, questionTypes: [QuestionTypeOption(type: .multipleChoice, weight: 0.33), QuestionTypeOption(type: .multipleChoice, weight: 0.33), QuestionTypeOption(type: .multipleChoice, weight: 0.34)])
-        ])
-    }
 }
 
 /// Represents a single mastery stage (e.g., 0-10%, 10-20%, etc.)
@@ -56,6 +40,8 @@ struct QuestionTypeOption: Codable {
 enum QuestionType: String, Codable {
     case flashcard
     case multipleChoice
+    case construction
+    case pinyin
     case fillInBlank      // Not implemented yet - will use quiz
     case trueOrFalse      // Not implemented yet - will use quiz
     case speaking         // Not implemented yet - will use quiz
@@ -63,7 +49,7 @@ enum QuestionType: String, Codable {
     /// For unimplemented types, fall back to the closest implemented type
     var implementedType: QuestionType {
         switch self {
-        case .flashcard, .multipleChoice:
+        case .flashcard, .multipleChoice, .construction, .pinyin:
             return self
         case .fillInBlank, .trueOrFalse, .speaking:
             // Fallback to quiz (multipleChoice) for now
