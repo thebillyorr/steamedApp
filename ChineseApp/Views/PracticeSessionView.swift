@@ -14,6 +14,7 @@ struct PracticeSessionView: View {
     @State private var quizOptions: [String] = []
     @State private var quizCorrectChoice: String = ""
     @State private var constructionOptions: [String] = []
+    @State private var constructionSelectedCharacters: [String] = []
     @State private var pinyinOptions: [String] = []
     @State private var pinyinCorrectChoice: String = ""
     
@@ -31,13 +32,14 @@ struct PracticeSessionView: View {
     @State private var sessionItems: [SessionItem] = []
     @State private var showSummary = false
     @State private var sessionMastered: [String] = []
+    @State private var sessionStartingProgress: [String: Double] = [:]  // Track progress at session start
     @State private var showExitConfirm = false
     @State private var journey: MasteryJourney = DataService.loadMasteryJourney()
     @Environment(\.dismiss) private var dismiss
 
     // fixed session length
     private let fixedSessionLength: Int = 15
-    private let maxRepetitionsPerWord: Int = 3
+    private let maxRepetitionsPerWord: Int = 6
 
     // computed current question type (safe if sessionItems empty)
     private var currentQuestionType: QuestionType {
@@ -170,6 +172,26 @@ struct PracticeSessionView: View {
                                     availableCharacters: constructionOptions,
                                     onSubmit: { correct in
                                         advanceWord(correct: correct)
+                                        // Reset construction state for next question
+                                        constructionSelectedCharacters = []
+                                        isAnswered = false
+                                        feedbackState = .neutral
+                                    },
+                                    selectedCharacters: constructionSelectedCharacters,
+                                    isAnswered: isAnswered,
+                                    feedbackState: feedbackState,
+                                    onCharacterToggled: { char in
+                                        if constructionSelectedCharacters.contains(char) {
+                                            constructionSelectedCharacters.removeAll { $0 == char }
+                                        } else {
+                                            constructionSelectedCharacters.append(char)
+                                        }
+                                    },
+                                    onSubmitted: {
+                                        isAnswered = true
+                                        let constructedWord = constructionSelectedCharacters.joined()
+                                        let correct = (constructedWord == currentWord.hanzi)
+                                        feedbackState = correct ? .correct : .incorrect
                                     }
                                 )
                                 
@@ -226,6 +248,12 @@ struct PracticeSessionView: View {
                     sessionItems.removeAll()
                     
                     guard !words.isEmpty else { return }
+                    
+                    // Capture starting progress for all words
+                    sessionStartingProgress = [:]
+                    for word in words {
+                        sessionStartingProgress[word.hanzi] = ProgressStore.shared.getProgress(for: word.hanzi)
+                    }
 
                     // Get unlocked word indices based on session count
                     let unlockedIndices = DataService.getUnlockedWordIndices(for: topic.filename, totalWords: words.count)
@@ -326,6 +354,12 @@ struct PracticeSessionView: View {
         var others: [String] = []
         let candidateWords = words
             .filter { $0.hanzi != correct.hanzi } // exclude the correct word itself
+            .filter { word in
+                // FILTER: Exclude words that have ANY overlap in English meanings
+                let correctSet = Set(correct.english.map { $0.lowercased() })
+                let wordSet = Set(word.english.map { $0.lowercased() })
+                return correctSet.intersection(wordSet).isEmpty // Only keep words with NO overlap
+            }
             .shuffled()
         
         for w in candidateWords {
@@ -455,10 +489,13 @@ struct PracticeSessionView: View {
             appliedDelta = item.questionType == .multipleChoice ? (-fullDelta / 2.0) : (-fullDelta / 4.0)
         }
 
-        ProgressStore.shared.addProgress(for: word.hanzi, delta: appliedDelta)
+        ProgressStore.shared.addProgress(for: word.hanzi, delta: appliedDelta, in: topic.filename)
         let progress = ProgressStore.shared.getProgress(for: word.hanzi)
+        let startingProgress = sessionStartingProgress[word.hanzi] ?? 0.0
         
-        if progress >= 1.0 {
+        // Only add to sessionMastered if it JUST became mastered during this session
+        // (was < 1.0 at session start, now >= 1.0)
+        if progress >= 1.0 && startingProgress < 1.0 {
             if !sessionMastered.contains(word.hanzi) {
                 sessionMastered.append(word.hanzi)
             }
@@ -472,6 +509,12 @@ struct PracticeSessionView: View {
             showSummary = true
             return
         }
+        
+        // Reset all question state for next question
+        selectedAnswer = nil
+        constructionSelectedCharacters = []
+        isAnswered = false
+        feedbackState = .neutral
         
         // Generate new question's options IMMEDIATELY if next question is a quiz, construction, or pinyin
         // This ensures options are ready BEFORE the view re-renders

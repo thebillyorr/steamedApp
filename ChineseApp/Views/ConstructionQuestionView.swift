@@ -12,15 +12,18 @@ struct ConstructionQuestionView: View {
     let availableCharacters: [String]
     let onSubmit: (Bool) -> Void
     
-    @State private var selectedCharacters: [String] = []
-    @State private var feedbackState: QuizFeedbackState = .neutral
-    @State private var isAnswered = false
+    // State from parent
+    let selectedCharacters: [String]
+    let isAnswered: Bool
+    let feedbackState: QuizFeedbackState
+    let onCharacterToggled: (String) -> Void
+    let onSubmitted: () -> Void
     
-    var constructedWord: String {
+    private var constructedWord: String {
         selectedCharacters.joined()
     }
     
-    var isCorrect: Bool {
+    private var isCorrect: Bool {
         constructedWord == word.hanzi
     }
     
@@ -56,7 +59,7 @@ struct ConstructionQuestionView: View {
                             ForEach(Array(selectedCharacters.enumerated()), id: \.offset) { index, char in
                                 Button(action: {
                                     if !isAnswered {
-                                        selectedCharacters.remove(at: index)
+                                        onCharacterToggled(char)
                                     }
                                 }) {
                                     Text(char)
@@ -86,7 +89,7 @@ struct ConstructionQuestionView: View {
                                 let isSelected = selectedCharacters.contains(availableCharacters[index])
                                 Button(action: {
                                     if !isAnswered {
-                                        toggleCharacter(availableCharacters[index])
+                                        onCharacterToggled(availableCharacters[index])
                                     }
                                 }) {
                                     Text(availableCharacters[index])
@@ -134,7 +137,7 @@ struct ConstructionQuestionView: View {
                 .transition(.scale.combined(with: .opacity))
             } else {
                 // Submit button - only show before answering
-                Button(action: submit) {
+                Button(action: onSubmitted) {
                     Text("Submit")
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
@@ -150,19 +153,6 @@ struct ConstructionQuestionView: View {
         }
         .padding(.horizontal)
     }
-    
-    private func toggleCharacter(_ char: String) {
-        if selectedCharacters.contains(char) {
-            selectedCharacters.removeAll { $0 == char }
-        } else {
-            selectedCharacters.append(char)
-        }
-    }
-    
-    private func submit() {
-        isAnswered = true
-        feedbackState = isCorrect ? .correct : .incorrect
-    }
 }
 
 #Preview {
@@ -175,6 +165,11 @@ struct ConstructionQuestionView: View {
             difficulty: 1
         ),
         availableCharacters: ["你", "好", "我", "他", "是", "的"],
-        onSubmit: { _ in }
+        onSubmit: { _ in },
+        selectedCharacters: [],
+        isAnswered: false,
+        feedbackState: .neutral,
+        onCharacterToggled: { _ in },
+        onSubmitted: { }
     )
 }

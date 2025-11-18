@@ -17,8 +17,8 @@ final class ProgressStore: ObservableObject {
         progress = ProgressManager.loadProgress()
     }
 
-    func addProgress(for hanzi: String, delta: Double) {
-        ProgressManager.addProgress(for: hanzi, delta: delta)
+    func addProgress(for hanzi: String, delta: Double, in deckFilename: String? = nil) {
+        ProgressManager.addProgress(for: hanzi, delta: delta, in: deckFilename)
         // reload published value
         progress = ProgressManager.loadProgress()
     }

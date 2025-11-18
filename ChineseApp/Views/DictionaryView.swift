@@ -10,6 +10,7 @@ import SwiftUI
 struct DictionaryView: View {
     let categories = DataService.topicsByCategory
     @ObservedObject private var progressStore = ProgressStore.shared
+    @ObservedObject private var deckMasteryManager = DeckMasteryManager.shared
     
     var body: some View {
         NavigationStack {
@@ -26,17 +27,13 @@ struct DictionaryView: View {
                                 HStack(spacing: 12) {
                                     ForEach(topics) { topic in
                                         NavigationLink(value: topic) {
-                                            VStack {
-                                                Spacer()
-                                                Text(topic.name)
-                                                    .font(.headline)
-                                                    .multilineTextAlignment(.center)
-                                                    .padding(.horizontal, 8)
-                                                Spacer()
-                                            }
-                                            .frame(width: 140, height: 140)
-                                            .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
-                                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(.separator)))
+                                            let topicMastery = calculateTopicMastery(for: topic)
+                                            let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename)
+                                            DeckMasteryTile(
+                                                topic: topic,
+                                                masteryProgress: topicMastery,
+                                                isDeckMastered: isDeckMastered
+                                            )
                                         }
                                     }
                                 }
@@ -52,6 +49,17 @@ struct DictionaryView: View {
                 DeckView(topic: topic)
             }
         }
+    }
+    
+    private func calculateTopicMastery(for topic: Topic) -> Double {
+        let words = DataService.loadWords(for: topic)
+        guard !words.isEmpty else { return 0.0 }
+        
+        let totalMastery = words.reduce(0.0) { sum, word in
+            sum + progressStore.getProgress(for: word.hanzi)
+        }
+        
+        return totalMastery / Double(words.count)
     }
 }
 
