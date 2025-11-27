@@ -12,7 +12,7 @@ struct UserProfile: Codable {
     var fullName: String
     var profileColor: String  // HEX color for profile picture background
     
-    init(username: String = "Learner", fullName: String = "Language Student", profileColor: String = "#FF6B6B") {
+    init(username: String = "Learner", fullName: String = "Language Student", profileColor: String = "#4A90E2") {
         self.username = username
         self.fullName = fullName
         self.profileColor = profileColor

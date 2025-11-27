@@ -9,24 +9,28 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var showTestMenu = false
+    @State private var selectedTab: Int = 0
     
     var body: some View {
         ZStack {
-            TabView {
+            TabView(selection: $selectedTab) {
                 PracticeRootView()
                     .tabItem {
                         Label("Practice", systemImage: "rectangle.stack.badge.play")
                     }
+                    .tag(0)
                 
                 DictionaryView()
                     .tabItem {
                         Label("Dictionary", systemImage: "book")
                     }
+                    .tag(1)
                 
                 ProfileView()
                     .tabItem {
                         Label("Profile", systemImage: "person.circle")
                     }
+                    .tag(2)
             }
             
             // Test menu button (top right)
@@ -49,6 +53,9 @@ struct ContentView: View {
             // Test menu sheet
             .sheet(isPresented: $showTestMenu) {
                 TestMenuView()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToPracticeTab"))) { _ in
+                selectedTab = 0
             }
         }
     }

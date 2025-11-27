@@ -14,7 +14,7 @@ struct PracticeSessionView: View {
     @State private var quizOptions: [String] = []
     @State private var quizCorrectChoice: String = ""
     @State private var constructionOptions: [String] = []
-    @State private var constructionSelectedCharacters: [String] = []
+    @State private var constructionSelectedIndices: [Int] = []
     @State private var pinyinOptions: [String] = []
     @State private var pinyinCorrectChoice: String = ""
     
@@ -51,49 +51,185 @@ struct PracticeSessionView: View {
         VStack {
             if showSummary {
                 // --- Summary screen ---
-                VStack(spacing: 20) {
-                    Text("🎉 Session Complete 🎉")
-                        .font(.title2)
-                        .padding(.top, 40)
-                    // fixed-length session (15 questions)
-
-                    if sessionMastered.isEmpty {
-                        Text("No words were mastered during this session.")
-                            .foregroundColor(.secondary)
-                            .padding(.bottom, 12)
-                    } else {
-                        Text("Words mastered:")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            ForEach(sessionMastered, id: \.self) { hanzi in
-                                if let w = words.first(where: { $0.hanzi == hanzi }) {
-                                    HStack {
-                                        Text(w.hanzi)
-                                            .font(.title3)
-                                        VStack(alignment: .leading) {
-                                            Text(w.pinyin)
-                                                .foregroundColor(.secondary)
-                                                .font(.subheadline)
-                                            Text(w.english.joined(separator: ", "))
-                                                .foregroundColor(.secondary)
-                                                .font(.subheadline)
-                                        }
+                VStack(spacing: 0) {
+                    ScrollView {
+                        VStack(spacing: 24) {
+                            // Header
+                            VStack(spacing: 12) {
+                                Text("🎉")
+                                    .font(.system(size: 56))
+                                Text("Session Complete!")
+                                    .font(.system(size: 32, weight: .bold))
+                                    .foregroundColor(.primary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 32)
+                            
+                            // Stats Grid (2x2)
+                            VStack(spacing: 12) {
+                                HStack(spacing: 12) {
+                                    // Questions Answered
+                                    VStack(spacing: 8) {
+                                        Image(systemName: "questionmark.circle.fill")
+                                            .font(.system(size: 28))
+                                            .foregroundColor(.blue)
+                                        Text("\(fixedSessionLength)")
+                                            .font(.system(size: 24, weight: .bold))
+                                            .foregroundColor(.primary)
+                                        Text("Questions")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
                                     }
-                                } else {
-                                    Text(hanzi)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(16)
+                                    .background(Color(.systemBackground))
+                                    .cornerRadius(12)
+                                    
+                                    // Words Mastered
+                                    VStack(spacing: 8) {
+                                        Image(systemName: "star.fill")
+                                            .font(.system(size: 28))
+                                            .foregroundColor(.green)
+                                        Text("\(sessionMastered.count)")
+                                            .font(.system(size: 24, weight: .bold))
+                                            .foregroundColor(.primary)
+                                        Text("Mastered")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(16)
+                                    .background(Color(.systemBackground))
+                                    .cornerRadius(12)
+                                }
+                                
+                                HStack(spacing: 12) {
+                                    // Accuracy (placeholder)
+                                    VStack(spacing: 8) {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .font(.system(size: 28))
+                                            .foregroundColor(.green)
+                                        Text("—")
+                                            .font(.system(size: 24, weight: .bold))
+                                            .foregroundColor(.primary)
+                                        Text("Accuracy")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(16)
+                                    .background(Color(.systemBackground))
+                                    .cornerRadius(12)
+                                    
+                                    // Current Streak (placeholder)
+                                    VStack(spacing: 8) {
+                                        Image(systemName: "flame.fill")
+                                            .font(.system(size: 28))
+                                            .foregroundColor(.orange)
+                                        Text("—")
+                                            .font(.system(size: 24, weight: .bold))
+                                            .foregroundColor(.primary)
+                                        Text("Streak")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(16)
+                                    .background(Color(.systemBackground))
+                                    .cornerRadius(12)
                                 }
                             }
+                            .padding(.horizontal, 20)
+                            
+                            // Mastered Words Section
+                            if !sessionMastered.isEmpty {
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text("Words Mastered")
+                                        .font(.headline)
+                                        .padding(.horizontal, 20)
+                                    
+                                    VStack(spacing: 8) {
+                                        ForEach(sessionMastered, id: \.self) { hanzi in
+                                            if let w = words.first(where: { $0.hanzi == hanzi }) {
+                                                HStack(spacing: 12) {
+                                                    // Chinese character (large) - scale box based on character count
+                                                    Text(w.hanzi)
+                                                        .font(.system(size: 28, weight: .semibold))
+                                                        .frame(width: CGFloat(44 * w.hanzi.count), height: 44)
+                                                        .background(Color.green.opacity(0.1))
+                                                        .cornerRadius(8)
+                                                    
+                                                    // Word details
+                                                    VStack(alignment: .leading, spacing: 4) {
+                                                        Text(w.pinyin)
+                                                            .font(.subheadline)
+                                                            .fontWeight(.semibold)
+                                                            .foregroundColor(.primary)
+                                                        Text(w.english.joined(separator: ", "))
+                                                            .font(.caption)
+                                                            .foregroundColor(.secondary)
+                                                            .lineLimit(1)
+                                                    }
+                                                    
+                                                    Spacer()
+                                                    
+                                                    // Checkmark
+                                                    Image(systemName: "checkmark.circle.fill")
+                                                        .font(.system(size: 24))
+                                                        .foregroundColor(.green)
+                                                }
+                                                .padding(12)
+                                                .background(Color(.systemBackground))
+                                                .cornerRadius(10)
+                                            }
+                                        }
+                                    }
+                                    .padding(.horizontal, 20)
+                                }
+                            } else {
+                                VStack(spacing: 8) {
+                                    Image(systemName: "checkmark.circle")
+                                        .font(.system(size: 40))
+                                        .foregroundColor(.secondary)
+                                    Text("Keep practicing!")
+                                        .font(.headline)
+                                        .foregroundColor(.secondary)
+                                    Text("No words mastered this session, but you're building progress.")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(24)
+                                .background(Color(.systemBackground))
+                                .cornerRadius(12)
+                                .padding(.horizontal, 20)
+                            }
+                            
+                            Spacer()
+                                .frame(height: 12)
                         }
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 24)
                     }
-
-                    Button("Done") {
-                        // dismiss back to PracticeRootView
-                        dismiss()
+                    
+                    // Done Button (sticky at bottom)
+                    VStack {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Text("Back to Practice")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(12)
+                        }
+                        .padding(20)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .background(Color(.systemGroupedBackground))
+                    .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: -2)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(.systemGroupedBackground))
@@ -141,7 +277,13 @@ struct PracticeSessionView: View {
                                 let wordProgress = ProgressStore.shared.getProgress(for: currentWord.hanzi)
                                 FlashcardQuestionView(
                                     word: currentWord,
-                                    isNewWord: wordProgress == 0.0
+                                    isNewWord: wordProgress == 0.0,
+                                    onGotIt: {
+                                        advanceWord(correct: true)
+                                    },
+                                    onNeedToReview: {
+                                        advanceWord(correct: false)
+                                    }
                                 )
                                 
                             case .multipleChoice:
@@ -173,23 +315,23 @@ struct PracticeSessionView: View {
                                     onSubmit: { correct in
                                         advanceWord(correct: correct)
                                         // Reset construction state for next question
-                                        constructionSelectedCharacters = []
+                                        constructionSelectedIndices = []
                                         isAnswered = false
                                         feedbackState = .neutral
                                     },
-                                    selectedCharacters: constructionSelectedCharacters,
+                                    selectedCharactersIndices: constructionSelectedIndices,
                                     isAnswered: isAnswered,
                                     feedbackState: feedbackState,
-                                    onCharacterToggled: { char in
-                                        if constructionSelectedCharacters.contains(char) {
-                                            constructionSelectedCharacters.removeAll { $0 == char }
+                                    onCharacterToggled: { index in
+                                        if constructionSelectedIndices.contains(index) {
+                                            constructionSelectedIndices.removeAll { $0 == index }
                                         } else {
-                                            constructionSelectedCharacters.append(char)
+                                            constructionSelectedIndices.append(index)
                                         }
                                     },
                                     onSubmitted: {
                                         isAnswered = true
-                                        let constructedWord = constructionSelectedCharacters.joined()
+                                        let constructedWord = constructionSelectedIndices.map { constructionOptions[$0] }.joined()
                                         let correct = (constructedWord == currentWord.hanzi)
                                         feedbackState = correct ? .correct : .incorrect
                                     }
@@ -219,23 +361,6 @@ struct PracticeSessionView: View {
                                 
                             default:
                                 Text("Question type not implemented")
-                            }
-
-                            if currentQuestionType == .flashcard {
-                                HStack(spacing: 16) {
-                                    Button("Need to review") {
-                                        advanceWord(correct: false)
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .padding(.horizontal, 6)
-
-                                    Button("Got it") {
-                                        advanceWord(correct: true)
-                                    }
-                                    .buttonStyle(.borderedProminent)
-                                }
-                                .transition(.opacity)
-                                .padding(.top, 6)
                             }
                         }
                     }
@@ -512,7 +637,7 @@ struct PracticeSessionView: View {
         
         // Reset all question state for next question
         selectedAnswer = nil
-        constructionSelectedCharacters = []
+        constructionSelectedIndices = []
         isAnswered = false
         feedbackState = .neutral
         

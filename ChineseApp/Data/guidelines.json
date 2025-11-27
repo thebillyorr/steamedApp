@@ -1,0 +1,9 @@
+/*
+ 
+ 1. Make sure all the words in English array are capitalized.
+ 2. Similar words should have at least one overlap in the English array.
+    This ensure that the definitions for one similar word won't appear when testing for the other similar word.
+ 3. Level and Characters are currently unused.
+ 4. Difficult is a scale between 1-5. 1 being the easiest. The difficulty determines how much mastery is required for that word
+*/
+

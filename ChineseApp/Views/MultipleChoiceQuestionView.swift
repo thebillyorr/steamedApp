@@ -62,7 +62,6 @@ struct MultipleChoiceQuestionView: View {
                         onAnswered(correct)
                     }
                 }
-                .padding(.top, 8)
                 .transition(.scale.combined(with: .opacity))
             }
 

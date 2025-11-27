@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct ChineseAppApp: App {
+    @StateObject private var themeManager = ThemeManager.shared
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(themeManager.colorScheme)
         }
     }
 }

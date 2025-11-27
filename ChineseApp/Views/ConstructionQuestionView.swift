@@ -13,14 +13,14 @@ struct ConstructionQuestionView: View {
     let onSubmit: (Bool) -> Void
     
     // State from parent
-    let selectedCharacters: [String]
+    let selectedCharactersIndices: [Int]  // Changed to indices
     let isAnswered: Bool
     let feedbackState: QuizFeedbackState
-    let onCharacterToggled: (String) -> Void
+    let onCharacterToggled: (Int) -> Void  // Changed to accept index
     let onSubmitted: () -> Void
     
     private var constructedWord: String {
-        selectedCharacters.joined()
+        selectedCharactersIndices.map { availableCharacters[$0] }.joined()
     }
     
     private var isCorrect: Bool {
@@ -49,20 +49,20 @@ struct ConstructionQuestionView: View {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(Color(.secondarySystemBackground))
                     
-                    if selectedCharacters.isEmpty {
+                    if selectedCharactersIndices.isEmpty {
                         Text("Tap characters below to construct")
                             .font(.callout)
                             .foregroundColor(.secondary)
                     } else {
                         HStack(spacing: 8) {
                             Spacer()
-                            ForEach(Array(selectedCharacters.enumerated()), id: \.offset) { index, char in
+                            ForEach(Array(selectedCharactersIndices.enumerated()), id: \.offset) { position, charIndex in
                                 Button(action: {
                                     if !isAnswered {
-                                        onCharacterToggled(char)
+                                        onCharacterToggled(charIndex)
                                     }
                                 }) {
-                                    Text(char)
+                                    Text(availableCharacters[charIndex])
                                         .font(.system(size: 20, weight: .semibold))
                                         .frame(width: 36, height: 36)
                                         .background(Color(.secondarySystemBackground))
@@ -86,10 +86,10 @@ struct ConstructionQuestionView: View {
                         ForEach(0..<3, id: \.self) { col in
                             let index = row * 3 + col
                             if index < availableCharacters.count {
-                                let isSelected = selectedCharacters.contains(availableCharacters[index])
+                                let isSelected = selectedCharactersIndices.contains(index)
                                 Button(action: {
                                     if !isAnswered {
-                                        onCharacterToggled(availableCharacters[index])
+                                        onCharacterToggled(index)
                                     }
                                 }) {
                                     Text(availableCharacters[index])
@@ -119,7 +119,21 @@ struct ConstructionQuestionView: View {
                 }
             }
             
-            Spacer()
+            // Submit button - always visible but grayed out until construction is complete
+            if !isAnswered {
+                Button(action: onSubmitted) {
+                    Text("Submit")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(
+                            selectedCharactersIndices.isEmpty ? Color.gray : Color.blue
+                        )
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .fontWeight(.semibold)
+                }
+                .disabled(selectedCharactersIndices.isEmpty)
+            }
             
             // Feedback section
             if isAnswered {
@@ -133,23 +147,10 @@ struct ConstructionQuestionView: View {
                         onSubmit(isCorrect)
                     }
                 }
-                .padding(.top, 8)
                 .transition(.scale.combined(with: .opacity))
-            } else {
-                // Submit button - only show before answering
-                Button(action: onSubmitted) {
-                    Text("Submit")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(
-                            selectedCharacters.isEmpty ? Color.gray : Color.blue
-                        )
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        .fontWeight(.semibold)
-                }
-                .disabled(selectedCharacters.isEmpty)
             }
+
+            Spacer()
         }
         .padding(.horizontal)
     }
@@ -166,7 +167,7 @@ struct ConstructionQuestionView: View {
         ),
         availableCharacters: ["你", "好", "我", "他", "是", "的"],
         onSubmit: { _ in },
-        selectedCharacters: [],
+        selectedCharactersIndices: [],
         isAnswered: false,
         feedbackState: .neutral,
         onCharacterToggled: { _ in },

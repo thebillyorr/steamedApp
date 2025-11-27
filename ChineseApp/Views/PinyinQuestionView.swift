@@ -47,8 +47,6 @@ struct PinyinQuestionView: View {
                 }
             }
             
-            Spacer()
-            
             // Feedback section
             if isAnswered {
                 VStack(spacing: 12) {
@@ -61,9 +59,10 @@ struct PinyinQuestionView: View {
                         onAnswered(feedbackState == .correct)
                     }
                 }
-                .padding(.top, 8)
                 .transition(.scale.combined(with: .opacity))
             }
+
+            Spacer()
         }
         .padding(.horizontal)
     }

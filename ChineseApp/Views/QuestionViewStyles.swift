@@ -74,7 +74,7 @@ struct AnswerOptionButton: View {
         Button(action: action) {
             HStack {
                 Text(text)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 
                 if showCheckmark {
                     Image(systemName: "checkmark.circle.fill")
@@ -110,25 +110,24 @@ struct QuestionFeedbackBox: View {
     let correctAnswer: String?
     
     var body: some View {
-        VStack(spacing: 12) {
-            // Show correct answer if wrong
-            if state == .incorrect, let answer = correctAnswer {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "info.circle.fill")
-                            .foregroundColor(.blue)
-                        Text("Correct answer:")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                    }
-                    Text(answer)
-                        .font(.body)
-                        .padding(.leading, 24)
+        // Only show if incorrect with an answer to display
+        if state == .incorrect, let answer = correctAnswer {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundColor(.blue)
+                    Text("Correct answer:")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
                 }
-                .padding(12)
-                .background(Color.blue.opacity(0.1))
-                .cornerRadius(8)
+                Text(answer)
+                    .font(.body)
+                    .padding(.leading, 24)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(12)
+            .background(Color.blue.opacity(0.1))
+            .cornerRadius(8)
         }
     }
 }

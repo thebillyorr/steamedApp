@@ -17,8 +17,12 @@ struct EditProfileView: View {
         NavigationView {
             Form {
                 Section(header: Text("Profile Information")) {
-                    TextField("Username", text: $username)
-                        .textContentType(.username)
+                    HStack {
+                        Text("@")
+                            .foregroundColor(.secondary)
+                        TextField("username", text: $username)
+                            .textContentType(.username)
+                    }
                     
                     TextField("Full Name", text: $fullName)
                         .textContentType(.name)

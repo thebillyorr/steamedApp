@@ -15,110 +15,97 @@ struct DeckMasteryTile: View {
     @State private var isPulsing = false
     
     var body: some View {
-        ZStack {
-            // Background
-            RoundedRectangle(cornerRadius: 12)
-                .fill(backgroundColor)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(borderColor, lineWidth: borderWidth)
-                )
-                .shadow(
-                    color: isDeckMastered ? Color.yellow.opacity(0.3) : (masteryProgress >= 1.0 ? Color.blue.opacity(0.2) : Color.clear),
-                    radius: isDeckMastered ? 8 : (masteryProgress >= 1.0 ? 4 : 0)
-                )
-            
-            VStack(spacing: 12) {
-                Spacer()
+        VStack(spacing: 14) {
+            // Mastery ring (centered)
+            ZStack {
+                // Background circle
+                Circle()
+                    .stroke(Color(.systemGray5), lineWidth: 4)
                 
-                // Mastery Indicator
-                ZStack {
-                    // Background circle
-                    Circle()
-                        .stroke(Color(.systemGray4), lineWidth: 4)
-                        .frame(width: 60, height: 60)
-                    
-                    // Progress ring (only shown if not fully mastered by exam)
-                    if !isDeckMastered {
-                        Circle()
-                            .trim(from: 0, to: masteryProgress)
-                            .stroke(
-                                masteryProgress >= 1.0 ? Color.blue : Color.accentColor,
-                                style: StrokeStyle(lineWidth: 4, lineCap: .round)
-                            )
-                            .frame(width: 60, height: 60)
-                            .rotationEffect(.degrees(-90))
-                            .animation(.easeInOut(duration: 0.5), value: masteryProgress)
-                    }
-                    
-                    // Center icon based on state
+                // Progress ring
+                Circle()
+                    .trim(from: 0, to: masteryProgress)
+                    .stroke(
+                        isDeckMastered ? Color.green : Color.blue,
+                        style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                    )
+                    .rotationEffect(.degrees(-90))
+                    .animation(.easeInOut(duration: 0.5), value: masteryProgress)
+                
+                // Center icon based on state
+                VStack(spacing: 3) {
                     if isDeckMastered {
-                        // STATE 2: Exam passed - filled gold star
+                        // STATE 3: Exam passed - green star
                         Image(systemName: "star.fill")
-                            .font(.system(size: 28))
-                            .foregroundColor(.yellow)
-                            .scaleEffect(1.15)
-                            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isDeckMastered)
-                    } else if masteryProgress >= 1.0 {
-                        // STATE 1: 100% word mastery - pulsing unlock icon
-                        Image(systemName: "lock.open.fill")
                             .font(.system(size: 24))
-                            .foregroundColor(.blue)
-                            .scaleEffect(isPulsing ? 1.15 : 1.0)
+                            .foregroundColor(.green)
+                    } else if masteryProgress >= 1.0 {
+                        // STATE 2: 100% word mastery - ready for exam
+                        Image(systemName: "lock.open.fill")
+                            .font(.system(size: 18))
+                            .foregroundColor(.green)
+                            .scaleEffect(isPulsing ? 1.1 : 1.0)
                             .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isPulsing)
                             .onAppear {
                                 isPulsing = true
                             }
+                        Text("Ready")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundColor(.green)
                     } else {
-                        // Progress percentage
+                        // STATE 1: In progress
                         Text(String(format: "%.0f%%", masteryProgress * 100))
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(.secondary)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.primary)
                     }
                 }
-                
-                Spacer()
-                
-                // Topic name
-                Text(topic.name)
-                    .font(.headline)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .padding(.horizontal, 8)
-                    .padding(.bottom, 8)
             }
+            .frame(width: 60, height: 60)
+            
+            // Topic name
+            Text(topic.name)
+                .font(.system(size: 14, weight: .semibold))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .foregroundColor(.primary)
         }
         .frame(width: 140, height: 140)
+        .padding(12)
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(14)
+        .shadow(
+            color: isDeckMastered ? Color.green.opacity(0.15) : (masteryProgress >= 1.0 ? Color.green.opacity(0.1) : Color.clear),
+            radius: 4,
+            x: 0,
+            y: 2
+        )
     }
-    
-    // MARK: - Computed Colors
-    
-    private var backgroundColor: Color {
-        if isDeckMastered {
-            return Color.yellow.opacity(0.15)
-        } else if masteryProgress >= 1.0 {
-            return Color.blue.opacity(0.08)
-        }
-        return Color(.secondarySystemBackground)
+}
+
+#Preview {
+    HStack(spacing: 16) {
+        // State 1: In progress (25%)
+        DeckMasteryTile(
+            topic: Topic(name: "Beginner 1", filename: "beginner_1"),
+            masteryProgress: 0.25,
+            isDeckMastered: false
+        )
+        
+        // State 2: Ready for exam (100% words, not exam passed)
+        DeckMasteryTile(
+            topic: Topic(name: "Beginner 2", filename: "beginner_2"),
+            masteryProgress: 1.0,
+            isDeckMastered: false
+        )
+        
+        // State 3: Exam passed (mastered)
+        DeckMasteryTile(
+            topic: Topic(name: "Beginner 3", filename: "beginner_3"),
+            masteryProgress: 1.0,
+            isDeckMastered: true
+        )
     }
-    
-    private var borderColor: Color {
-        if isDeckMastered {
-            return Color.yellow
-        } else if masteryProgress >= 1.0 {
-            return Color.blue.opacity(0.5)
-        }
-        return Color(.separator)
-    }
-    
-    private var borderWidth: CGFloat {
-        if isDeckMastered {
-            return 2.5
-        } else if masteryProgress >= 1.0 {
-            return 1.5
-        }
-        return 1
-    }
+    .padding()
 }
 
 #Preview {

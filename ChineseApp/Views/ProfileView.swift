@@ -11,6 +11,8 @@ struct ProfileView: View {
     @ObservedObject private var profileManager = UserProfileManager.shared
     @ObservedObject private var progressStore = ProgressStore.shared
     @ObservedObject private var badgeManager = TopicBadgeManager.shared
+    @ObservedObject private var deckMasteryManager = DeckMasteryManager.shared
+    @ObservedObject private var themeManager = ThemeManager.shared
     @State private var showSettings = false
     @State private var showEditProfile = false
     
@@ -29,19 +31,14 @@ struct ProfileView: View {
                     VStack(spacing: 24) {
                         // MARK: - Header with Settings
                         HStack {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Profile")
-                                    .font(.title3)
-                                    .foregroundColor(.secondary)
-                                Text("Chinese Learner")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                            }
+                            Text("Profile")
+                                .font(.title)
+                                .fontWeight(.semibold)
                             Spacer()
                             Button(action: { showSettings = true }) {
-                                Image(systemName: "gear")
+                                Image(systemName: "line.3.horizontal")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.primary)
                                     .frame(width: 44, height: 44)
                                     .background(Color(.systemGray6))
                                     .clipShape(Circle())
@@ -51,84 +48,82 @@ struct ProfileView: View {
                         .padding(.top, 20)
                         
                         // MARK: - Profile Card
-                        VStack(spacing: 16) {
-                            // Profile Picture Circle
-                            ZStack {
-                                Circle()
-                                    .fill(colorFromHex(profileManager.userProfile.profileColor))
-                                    .frame(width: 120, height: 120)
-                                    .shadow(radius: 8)
+                        ZStack(alignment: .topTrailing) {
+                            VStack(spacing: 16) {
+                                // Profile Picture Circle
+                                ZStack {
+                                    Circle()
+                                        .fill(colorFromHex(profileManager.userProfile.profileColor))
+                                        .frame(width: 120, height: 120)
+                                        .shadow(radius: 8)
+                                    
+                                    Text(profileManager.userProfile.initials)
+                                        .font(.system(size: 48, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                                .padding(.top, 12)
                                 
-                                Text(profileManager.userProfile.initials)
-                                    .font(.system(size: 48, weight: .bold))
-                                    .foregroundColor(.white)
+                                // Username and Name
+                                VStack(spacing: 4) {
+                                    Text(profileManager.userProfile.fullName)
+                                        .font(.headline)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.primary)
+                                    
+                                    Text("@\(profileManager.userProfile.username)")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.bottom, 12)
+                            }
+                            .frame(maxWidth: .infinity)
+                            
+                            // Edit Profile Pencil Icon
+                            Button(action: { showEditProfile = true }) {
+                                Image(systemName: "pencil")
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .foregroundColor(.primary)
                             }
                             .padding(.top, 12)
-                            
-                            // Username and Name
-                            VStack(spacing: 4) {
-                                Text("@\(profileManager.userProfile.username)")
-                                    .font(.headline)
-                                    .foregroundColor(.primary)
-                                
-                                Text(profileManager.userProfile.fullName)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            // Edit Profile Button
-                            Button(action: { showEditProfile = true }) {
-                                HStack {
-                                    Image(systemName: "pencil")
-                                    Text("Edit Profile")
-                                }
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.blue)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 10)
-                                .background(Color.blue.opacity(0.1))
-                                .cornerRadius(8)
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.bottom, 12)
+                            .padding(.trailing, 12)
                         }
-                        .frame(maxWidth: .infinity)
                         .background(Color(.systemBackground))
                         .cornerRadius(16)
                         .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
                         .padding(.horizontal, 16)
                         
-                        // MARK: - Stats Section
+                        // MARK: - Badges & Achievements
                         VStack(spacing: 12) {
-                            Text("Your Progress")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, 20)
+                            let earnedBadges = badgeManager.getAllEarnedBadges()
                             
-                            HStack(spacing: 12) {
-                                StatCard(
-                                    title: "Words Practiced",
-                                    value: getTotalWordsPracticed(),
-                                    icon: "book.fill",
-                                    color: .blue
-                                )
-                                
-                                StatCard(
-                                    title: "Mastered",
-                                    value: getTotalWordsMastered(),
-                                    icon: "star.fill",
-                                    color: .green
-                                )
-                                
-                                StatCard(
-                                    title: "Sessions",
-                                    value: getTotalSessions(),
-                                    icon: "play.circle.fill",
-                                    color: .orange
-                                )
+                            if earnedBadges.isEmpty {
+                                VStack(spacing: 12) {
+                                    Text("No badges yet 🏅")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                    Text("Complete entire topics to earn badges")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(24)
+                                .background(Color(.systemBackground))
+                                .cornerRadius(12)
+                                .padding(.horizontal, 16)
+                            } else {
+                                // Display earned badges in a grid
+                                VStack(spacing: 16) {
+                                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                                        ForEach(earnedBadges, id: \.category) { badge in
+                                            BadgeCoinView(badge: badge)
+                                        }
+                                    }
+                                    .padding(20)
+                                    .background(Color(.systemBackground))
+                                    .cornerRadius(12)
+                                    .padding(.horizontal, 16)
+                                }
                             }
-                            .padding(.horizontal, 16)
                         }
                         
                         // MARK: - Mastery Overview
@@ -181,43 +176,64 @@ struct ProfileView: View {
                             .padding(.horizontal, 16)
                         }
                         
-                        // MARK: - Badges & Achievements
+                        // MARK: - Stats Section
                         VStack(spacing: 12) {
-                            Text("Badges & Achievements")
+                            Text("Your Progress")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.horizontal, 20)
                             
-                            let earnedBadges = badgeManager.getAllEarnedBadges()
-                            
-                            if earnedBadges.isEmpty {
-                                VStack(spacing: 12) {
-                                    Text("No badges yet 🏅")
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                    Text("Complete entire topics to earn badges")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(24)
-                                .background(Color(.systemBackground))
-                                .cornerRadius(12)
-                                .padding(.horizontal, 16)
-                            } else {
-                                // Display earned badges in a grid
-                                VStack(spacing: 16) {
-                                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                                        ForEach(earnedBadges, id: \.category) { badge in
-                                            BadgeCoinView(badge: badge)
-                                        }
-                                    }
-                                    .padding(20)
-                                    .background(Color(.systemBackground))
-                                    .cornerRadius(12)
-                                    .padding(.horizontal, 16)
-                                }
+                            // Top row: Words Practiced, Mastered, Sessions
+                            HStack(spacing: 12) {
+                                StatCard(
+                                    title: "Words Practiced",
+                                    value: getTotalWordsPracticed(),
+                                    icon: "book.fill",
+                                    color: .gray
+                                )
+                                
+                                StatCard(
+                                    title: "Mastered",
+                                    value: getTotalWordsMastered(),
+                                    icon: "star.fill",
+                                    color: .gray
+                                )
+                                
+                                StatCard(
+                                    title: "Sessions",
+                                    value: getTotalSessions(),
+                                    icon: "play.circle.fill",
+                                    color: .gray
+                                )
                             }
+                            .padding(.horizontal, 16)
+                            
+                            // Bottom row: Decks Mastered, Best Streak (placeholder), Accuracy (placeholder)
+                            HStack(spacing: 12) {
+                                StatCard(
+                                    title: "Decks Mastered",
+                                    value: getDecksmastered(),
+                                    icon: "checkmark.seal.fill",
+                                    color: .gray
+                                )
+                                
+                                StatCard(
+                                    title: "Best Streak",
+                                    value: 0,
+                                    icon: "flame.fill",
+                                    color: .gray,
+                                    isPlaceholder: true
+                                )
+                                
+                                StatCard(
+                                    title: "Accuracy",
+                                    value: 0,
+                                    icon: "target",
+                                    color: .gray,
+                                    isPlaceholder: true
+                                )
+                            }
+                            .padding(.horizontal, 16)
                         }
                         
                         // MARK: - Friends Section Placeholder
@@ -274,6 +290,11 @@ struct ProfileView: View {
         return sessionCounts.values.reduce(0, +)
     }
     
+    private func getDecksmastered() -> Int {
+        let allTopics = DataService.allTopics
+        return allTopics.filter { deckMasteryManager.isDeckMastered(filename: $0.filename) }.count
+    }
+    
     private func calculateMasteryPercentage() -> Double {
         let progress = progressStore.progress
         guard !progress.isEmpty else { return 0 }
@@ -306,43 +327,40 @@ struct StatCard: View {
     let value: Int
     let icon: String
     let color: Color
+    var isPlaceholder: Bool = false
     
     var body: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 8) {
-                Image(systemName: icon)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(color)
-                
-                Spacer()
-            }
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundColor(color)
+                .opacity(isPlaceholder ? 0.4 : 1.0)
             
-            VStack(alignment: .leading, spacing: 4) {
+            if isPlaceholder {
+                Text("—")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundColor(.secondary)
+                    .opacity(0.5)
+            } else {
                 Text(String(value))
-                    .font(.title2)
+                    .font(.title3)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
-                
-                Text(title)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
             
-            Spacer()
+            Text(title)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .opacity(isPlaceholder ? 0.5 : 1.0)
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 140)
-        .padding(16)
-        .background(
-            LinearGradient(
-                gradient: Gradient(colors: [color.opacity(0.1), color.opacity(0.05)]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .borderLine(color: color.opacity(0.3), width: 1)
+        .frame(height: 100)
+        .padding(12)
+        .background(Color(.systemGray6).opacity(0.5))
         .cornerRadius(12)
+        .opacity(isPlaceholder ? 0.6 : 1.0)
     }
 }
 
@@ -353,60 +371,56 @@ struct BadgeCoinView: View {
     var body: some View {
         VStack(spacing: 8) {
             ZStack {
-                // Outer glow
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color(hex: badge.badgeColor).opacity(0.2),
-                                Color(hex: badge.badgeColor).opacity(0.05)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                // Main coin face
+                ZStack {
+                    // Front metallic face with iridescent gradient
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(stops: [
+                                    .init(color: Color(red: 0.95, green: 0.95, blue: 0.97), location: 0.0),
+                                    .init(color: Color(red: 0.92, green: 0.88, blue: 0.98), location: 0.25),
+                                    .init(color: Color(red: 0.88, green: 0.93, blue: 0.98), location: 0.5),
+                                    .init(color: Color(red: 0.95, green: 0.93, blue: 0.85), location: 0.75),
+                                    .init(color: Color(red: 0.93, green: 0.93, blue: 0.95), location: 1.0)
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
                         )
-                    )
-                    .frame(width: 100, height: 100)
-                
-                // Badge coin
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color(hex: badge.badgeColor),
-                                Color(hex: badge.badgeColor).opacity(0.9)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                        .frame(width: 80, height: 80)
+                    
+                    // Subtle glossy overlay
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color.white.opacity(0.15),
+                                    Color.clear
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .center
+                            )
                         )
-                    )
-                    .frame(width: 90, height: 90)
-                    .shadow(radius: 6)
-                
-                // Inner circle (3D effect)
-                Circle()
-                    .stroke(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.white.opacity(0.3),
-                                Color.black.opacity(0.1)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1
-                    )
-                    .frame(width: 90, height: 90)
-                
-                // Roman numeral
-                Text(badge.romanNumeral)
-                    .font(.system(size: 44, weight: .bold))
-                    .foregroundColor(.white)
+                        .frame(width: 70, height: 70)
+                        .offset(y: -3)
+                    
+                    // Roman numeral
+                    Text(badge.romanNumeral)
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(Color(red: 0.4, green: 0.4, blue: 0.42))
+                        .shadow(color: Color.black.opacity(0.15), radius: 1, x: 0, y: 0.5)
+                }
+                .frame(width: 80, height: 80)
+                .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 1)
             }
+            .frame(width: 88, height: 88)
             
             Text(badge.category)
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
+                .lineLimit(1)
         }
     }
 }
