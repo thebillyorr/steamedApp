@@ -121,4 +121,24 @@ public final class ProgressManager {
         saveProgress(current)
         print("✅ Reset word: \(hanzi)")
     }
+    
+    /// Reset all words in a deck to 0.0 (for testing)
+    public static func resetDeck(filename: String) {
+        guard let topic = DataService.allTopics.first(where: { $0.filename == filename }) else {
+            print("❌ Deck not found: \(filename)")
+            return
+        }
+        
+        let words = DataService.loadWords(for: topic)
+        var current = loadProgress()
+        for word in words {
+            current.removeValue(forKey: word.hanzi)
+        }
+        saveProgress(current)
+        
+        // Also reset the deck mastery flag
+        DeckMasteryManager.shared.resetDeck(filename: filename)
+        
+        print("✅ Reset deck: \(filename)")
+    }
 }

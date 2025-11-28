@@ -152,10 +152,10 @@ struct PracticeSessionView: View {
                                         ForEach(sessionMastered, id: \.self) { hanzi in
                                             if let w = words.first(where: { $0.hanzi == hanzi }) {
                                                 HStack(spacing: 12) {
-                                                    // Chinese character (large) - scale box based on character count
+                                                    // Chinese character (large) - scale box based on character count with padding
                                                     Text(w.hanzi)
                                                         .font(.system(size: 28, weight: .semibold))
-                                                        .frame(width: CGFloat(44 * w.hanzi.count), height: 44)
+                                                        .frame(width: CGFloat(44 + (w.hanzi.count - 1) * 32), height: 44)
                                                         .background(Color.green.opacity(0.1))
                                                         .cornerRadius(8)
                                                     
@@ -610,8 +610,8 @@ struct PracticeSessionView: View {
         if correct {
             appliedDelta = fullDelta
         } else {
-            // wrong answers reduce mastery: quiz -> -1/2, flashcard -> -1/4
-            appliedDelta = item.questionType == .multipleChoice ? (-fullDelta / 2.0) : (-fullDelta / 4.0)
+            // wrong answers: no penalty (zero progress)
+            appliedDelta = 0.0
         }
 
         ProgressStore.shared.addProgress(for: word.hanzi, delta: appliedDelta, in: topic.filename)
@@ -631,6 +631,24 @@ struct PracticeSessionView: View {
         if currentIndex >= sessionItems.count {
             // Record session completion for word release gate
             ProgressManager.recordSessionCompletion(for: topic.filename)
+            
+            // Check if all words in deck are now mastered (100%)
+            let allWordsMastered = words.allSatisfy { word in
+                ProgressStore.shared.getProgress(for: word.hanzi) >= 1.0
+            }
+            
+            if allWordsMastered {
+                // Automatically mark deck as mastered
+                DeckMasteryManager.shared.masterDeck(filename: topic.filename)
+                
+                // Check if topic is now complete for badge
+                if let category = DataService.topicsByCategory.first(where: { categoryTopics in
+                    categoryTopics.topics.contains { $0.filename == topic.filename }
+                })?.category {
+                    TopicBadgeManager.shared.checkAndAwardTopicBadge(category: category)
+                }
+            }
+            
             showSummary = true
             return
         }

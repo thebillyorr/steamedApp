@@ -28,7 +28,7 @@ struct DictionaryView: View {
                                     ForEach(topics) { topic in
                                         NavigationLink(value: topic) {
                                             let topicMastery = calculateTopicMastery(for: topic)
-                                            let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename)
+                                            let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename) || isAllWordsMastered(for: topic)
                                             DeckMasteryTile(
                                                 topic: topic,
                                                 masteryProgress: topicMastery,
@@ -60,6 +60,12 @@ struct DictionaryView: View {
         }
         
         return totalMastery / Double(words.count)
+    }
+    
+    private func isAllWordsMastered(for topic: Topic) -> Bool {
+        let words = DataService.loadWords(for: topic)
+        guard !words.isEmpty else { return false }
+        return words.allSatisfy { progressStore.getProgress(for: $0.hanzi) >= 1.0 }
     }
 }
 

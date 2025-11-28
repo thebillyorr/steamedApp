@@ -92,8 +92,21 @@ struct TestMenuView: View {
     
     private func runTests() {
         // ===== EDIT YOUR TEST COMMANDS HERE =====
-        ProgressManager.setDeckMastered(filename: "intermediate_2")
-        //ProgressManager.setWordMastered("前")
+        //ProgressManager.setDeckMastered(filename: "intermediate_2")
+        // ProgressManager.resetDeck(filename: "beginner_8")
+        ProgressManager.resetWord("可以")
+        // ProgressManager.setWordMastered("是否")
+        // ProgressManager.setWordMastered("可以")
+        // ProgressManager.setWordMastered("要")
+        // ProgressManager.setWordMastered("应该")
+        // ProgressManager.setWordMastered("什么")
+        // ProgressManager.setWordMastered("怎么")
+        // ProgressManager.setWordMastered("为什么")
+        // ProgressManager.setWordMastered("怎么样")
+        // ProgressManager.setWordMastered("可能")
+        // ProgressManager.setWordMastered("得")
+        // ProgressManager.setWordMastered("就要")
+        // ProgressManager.setWordMastered("必须")
         //DeckMasteryManager.shared.resetDeck(filename: "beginner_8")
         print("✅ Test completed!")
         // ===== END TEST COMMANDS =====

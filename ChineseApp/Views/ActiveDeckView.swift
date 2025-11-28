@@ -41,7 +41,7 @@ struct ActiveDeckView: View {
                     
                     // Mastery ring (centered)
                     let masteryValue = calculateDeckMastery()
-                    let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename)
+                    let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename) || isAllWordsMastered()
                     
                     ZStack {
                         // Background circle
@@ -186,6 +186,12 @@ struct ActiveDeckView: View {
         DataService.loadWords(for: topic).filter { 
             progressStore.getProgress(for: $0.hanzi) == 0
         }.count
+    }
+    
+    private func isAllWordsMastered() -> Bool {
+        let words = DataService.loadWords(for: topic)
+        guard !words.isEmpty else { return false }
+        return words.allSatisfy { progressStore.getProgress(for: $0.hanzi) >= 1.0 }
     }
 }
 

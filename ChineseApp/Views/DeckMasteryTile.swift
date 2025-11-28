@@ -10,9 +10,7 @@ import SwiftUI
 struct DeckMasteryTile: View {
     let topic: Topic
     let masteryProgress: Double  // 0.0 to 1.0
-    let isDeckMastered: Bool     // Has user passed the final exam?
-    
-    @State private var isPulsing = false
+    let isDeckMastered: Bool     // All words in deck mastered?
     
     var body: some View {
         VStack(spacing: 14) {
@@ -35,26 +33,13 @@ struct DeckMasteryTile: View {
                 // Center icon based on state
                 VStack(spacing: 3) {
                     if isDeckMastered {
-                        // STATE 3: Exam passed - green star
+                        // All words mastered - green star
                         Image(systemName: "star.fill")
                             .font(.system(size: 24))
                             .foregroundColor(.green)
-                    } else if masteryProgress >= 1.0 {
-                        // STATE 2: 100% word mastery - ready for exam
-                        Image(systemName: "lock.open.fill")
-                            .font(.system(size: 18))
-                            .foregroundColor(.green)
-                            .scaleEffect(isPulsing ? 1.1 : 1.0)
-                            .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isPulsing)
-                            .onAppear {
-                                isPulsing = true
-                            }
-                        Text("Ready")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundColor(.green)
                     } else {
-                        // STATE 1: In progress
-                        Text(String(format: "%.0f%%", masteryProgress * 100))
+                        // In progress - show percentage
+                        Text("\(Int(masteryProgress * 100))%")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundColor(.primary)
                     }

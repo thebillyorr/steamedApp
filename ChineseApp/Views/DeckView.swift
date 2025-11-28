@@ -3,8 +3,6 @@ import SwiftUI
 struct DeckView: View {
     let topic: Topic
     @ObservedObject private var progressStore = ProgressStore.shared
-    @ObservedObject private var deckMasteryManager = DeckMasteryManager.shared
-    @State private var showFinalExam = false
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -58,60 +56,7 @@ struct DeckView: View {
 
                         Divider()
                     }
-                    
-                    // Final Exam Button
-                    VStack(spacing: 12) {
-                        if deckMasteryManager.isDeckMastered(filename: topic.filename) {
-                            // Deck is mastered - show locked state
-                            HStack {
-                                Image(systemName: "lock.fill")
-                                    .foregroundColor(.green)
-                                Text("Mastery Locked")
-                                    .fontWeight(.semibold)
-                                Spacer()
-                                Image(systemName: "star.fill")
-                                    .foregroundColor(.yellow)
-                            }
-                            .foregroundColor(.green)
-                            .frame(maxWidth: .infinity)
-                            .padding(14)
-                            .background(Color.green.opacity(0.1))
-                            .cornerRadius(10)
-                        } else {
-                            // Not mastered yet - show exam button
-                            let allWordsMastered = isAllWordsMastered(topic: topic)
-                            
-                            Button(action: { showFinalExam = true }) {
-                                HStack {
-                                    Image(systemName: "star.fill")
-                                    Text("Final Exam")
-                                }
-                                .font(.headline)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(allWordsMastered ? Color.blue : Color.gray)
-                                .cornerRadius(10)
-                            }
-                            .disabled(!allWordsMastered)
-                            .opacity(allWordsMastered ? 1.0 : 0.6)
-                            
-                            if !allWordsMastered {
-                                Text("Master all words to unlock final exam")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                            }
-                        }
-                    }
-                    .padding(16)
                 }
-            }
-            
-            // Navigation sheet
-            .sheet(isPresented: $showFinalExam) {
-                FinalExamView(topic: topic)
             }
         }
         .navigationTitle(topic.name)
