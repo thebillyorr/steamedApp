@@ -1,15 +1,5 @@
-[
-  { "hanzi": "能", "pinyin": "néng", "english": ["can", "be able to"], "level": 1, "difficulty": 1, "characters": ["能"] },
-  { "hanzi": "可以", "pinyin": "kě yǐ", "english": ["can", "may", "be allowed to"], "level": 1, "difficulty": 1, "characters": ["可", "以"] },
-  { "hanzi": "要", "pinyin": "yào", "english": ["want", "will", "need"], "level": 1, "difficulty": 1, "characters": ["要"] },
-  { "hanzi": "应该", "pinyin": "yīng gāi", "english": ["should", "ought to"], "level": 1, "difficulty": 1, "characters": ["应", "该"] },
-  { "hanzi": "什么", "pinyin": "shén me", "english": ["what"], "level": 1, "difficulty": 1, "characters": ["什", "么"] },
-  { "hanzi": "怎么", "pinyin": "zěn me", "english": ["how"], "level": 1, "difficulty": 1, "characters": ["怎", "么"] },
-  { "hanzi": "为什么", "pinyin": "wèi shén me", "english": ["why"], "level": 1, "difficulty": 1, "characters": ["为", "什", "么"] },
-  { "hanzi": "怎么样", "pinyin": "zěn me yàng", "english": ["how about", "how is/are"], "level": 1, "difficulty": 1, "characters": ["怎", "么", "样"] },
-  { "hanzi": "可能", "pinyin": "kě néng", "english": ["maybe", "possible"], "level": 1, "difficulty": 2, "characters": ["可", "能"] },
-  { "hanzi": "得", "pinyin": "de", "english": ["(structural particle)", "get/obtain"], "level": 1, "difficulty": 2, "characters": ["得"] },
-  { "hanzi": "就要", "pinyin": "jiù yào", "english": ["about to", "will soon"], "level": 1, "difficulty": 3, "characters": ["就", "要"] },
-  { "hanzi": "必须", "pinyin": "bì xū", "english": ["must", "have to"], "level": 1, "difficulty": 3, "characters": ["必", "须"] },
-  { "hanzi": "是否", "pinyin": "shì fǒu", "english": ["whether", "if"], "level": 1, "difficulty": 4, "characters": ["否", "是"] }
-]
+{
+  "deckName": "Beginner 8",
+  "topic": "Beginner",
+  "wordIDs": ["w00165", "w00166", "w00167", "w00168", "w00169", "w00170", "w00171", "w00172", "w00173", "w00174", "w00175", "w00176", "w00177", "w00178", "w00179", "w00180", "w00181", "w00182", "w00183", "w00184", "w00185", "w00186", "w00187"]
+}

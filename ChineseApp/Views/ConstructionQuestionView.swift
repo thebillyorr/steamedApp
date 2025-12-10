@@ -162,7 +162,6 @@ struct ConstructionQuestionView: View {
             hanzi: "你",
             pinyin: "nǐ",
             english: ["you"],
-            level: 1,
             difficulty: 1
         ),
         availableCharacters: ["你", "好", "我", "他", "是", "的"],

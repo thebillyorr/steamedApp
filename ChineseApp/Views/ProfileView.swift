@@ -12,12 +12,14 @@ struct ProfileView: View {
     @ObservedObject private var progressStore = ProgressStore.shared
     @ObservedObject private var badgeManager = TopicBadgeManager.shared
     @ObservedObject private var deckMasteryManager = DeckMasteryManager.shared
+    @ObservedObject private var storyProgress = StoryProgressManager.shared
     @ObservedObject private var themeManager = ThemeManager.shared
     @State private var showSettings = false
     @State private var showEditProfile = false
+    @State private var currentStreak = 0
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 // Background gradient
                 LinearGradient(
@@ -31,9 +33,6 @@ struct ProfileView: View {
                     VStack(spacing: 24) {
                         // MARK: - Header with Settings
                         HStack {
-                            Text("Profile")
-                                .font(.title)
-                                .fontWeight(.semibold)
                             Spacer()
                             Button(action: { showSettings = true }) {
                                 Image(systemName: "line.3.horizontal")
@@ -47,6 +46,8 @@ struct ProfileView: View {
                         .padding(.horizontal, 20)
                         .padding(.top, 20)
                         
+                        .navigationTitle("Profile")
+                        .navigationBarTitleDisplayMode(.large)
                         // MARK: - Profile Card
                         ZStack(alignment: .topTrailing) {
                             VStack(spacing: 16) {
@@ -208,7 +209,7 @@ struct ProfileView: View {
                             }
                             .padding(.horizontal, 16)
                             
-                            // Bottom row: Decks Mastered, Best Streak (placeholder), Accuracy (placeholder)
+                            // Bottom row: Decks Mastered, Best Streak
                             HStack(spacing: 12) {
                                 StatCard(
                                     title: "Decks Mastered",
@@ -216,21 +217,19 @@ struct ProfileView: View {
                                     icon: "checkmark.seal.fill",
                                     color: .gray
                                 )
-                                
+
                                 StatCard(
                                     title: "Best Streak",
-                                    value: 0,
+                                    value: currentStreak,
                                     icon: "flame.fill",
-                                    color: .gray,
-                                    isPlaceholder: true
+                                    color: .gray
                                 )
-                                
+
                                 StatCard(
-                                    title: "Accuracy",
-                                    value: 0,
-                                    icon: "target",
-                                    color: .gray,
-                                    isPlaceholder: true
+                                    title: "Stories",
+                                    value: storyProgress.totalCompleted(),
+                                    icon: "book.closed.fill",
+                                    color: .gray
                                 )
                             }
                             .padding(.horizontal, 16)
@@ -270,6 +269,9 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showEditProfile) {
                 EditProfileView()
+            }
+            .onAppear {
+                currentStreak = ProgressManager.getStreakCount()
             }
         }
         .navigationViewStyle(.stack)

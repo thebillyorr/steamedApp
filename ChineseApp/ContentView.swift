@@ -26,11 +26,17 @@ struct ContentView: View {
                     }
                     .tag(1)
                 
+                ReadingView()
+                    .tabItem {
+                        Label("Library", systemImage: "book.pages")
+                    }
+                    .tag(2)
+                
                 ProfileView()
                     .tabItem {
                         Label("Profile", systemImage: "person.circle")
                     }
-                    .tag(2)
+                    .tag(3)
             }
             
             // Test menu button (top right)

@@ -74,7 +74,6 @@ struct PinyinQuestionView: View {
             hanzi: "你",
             pinyin: "nǐ",
             english: ["you"],
-            level: 1,
             difficulty: 1
         ),
         options: ["nī", "ní", "nǐ", "nì"],

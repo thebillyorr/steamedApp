@@ -28,7 +28,13 @@ class DataService {
             category: "Intermediate",
             topics: [
                 Topic(name: "Intermediate 1", filename: "intermediate_1"),
-                Topic(name: "Intermediate 2", filename: "intermediate_2")
+                Topic(name: "Intermediate 2", filename: "intermediate_2"),
+                Topic(name: "Intermediate 3", filename: "intermediate_3"),
+                Topic(name: "Intermediate 4", filename: "intermediate_4"),
+                Topic(name: "Intermediate 5", filename: "intermediate_5"),
+                Topic(name: "Intermediate 6", filename: "intermediate_6"),
+                Topic(name: "Intermediate 7", filename: "intermediate_7"),
+                Topic(name: "Intermediate 8", filename: "intermediate_8")
             ]
         )
     ]
@@ -38,41 +44,64 @@ class DataService {
         return topicsByCategory.flatMap { $0.topics }
     }
     
-    static func loadWords(for topic: Topic) -> [Word] {
-        // load character DB first (if available)
-        let charMap = loadCharacters()
+    // MARK: - Dictionary Loading
+    
+    static private var cachedDictionary: [String: Word]?
+    
+    /// Load the master dictionary (hashmap of word ID -> Word object)
+    static func loadDictionary() -> [String: Word] {
+        if let cached = cachedDictionary {
+            return cached
+        }
         
+        guard let url = Bundle.main.url(forResource: "dictionary", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let dict = try? JSONDecoder().decode([String: Word].self, from: data) else {
+            print("❌ Failed to load dictionary.json")
+            return [:]
+        }
+        
+        cachedDictionary = dict
+        return dict
+    }
+    
+    /// Get the dictionary (public accessor for services like StoryService)
+    static func getDictionary() -> [String: Word] {
+        return loadDictionary()
+    }
+    
+    // MARK: - Deck Loading
+    
+    /// Represents the deck structure with word IDs
+    private struct DeckFile: Codable {
+        let deckName: String
+        let topic: String
+        let wordIDs: [String]
+    }
+    
+    static func loadWords(for topic: Topic) -> [Word] {
+        // Load the deck file (contains word IDs)
         guard let url = Bundle.main.url(forResource: topic.filename, withExtension: "json"),
               let data = try? Data(contentsOf: url),
-              var words = try? JSONDecoder().decode([Word].self, from: data) else {
+              let deckFile = try? JSONDecoder().decode(DeckFile.self, from: data) else {
             print("❌ Failed to load \(topic.filename).json")
             return []
         }
         
-        // resolve characterIDs to Character objects when possible
-        for i in words.indices {
-            if let ids = words[i].characterIDs {
-                words[i].characters = ids.compactMap { charMap[$0] }
-            } else if words[i].characters == nil {
-                // fallback: split hanzi into characters and resolve
-                let chars = words[i].hanzi.map { String($0) }
-                words[i].characters = chars.compactMap { charMap[$0] }
-                if !words[i].characters!.isEmpty {
-                    words[i].characterIDs = words[i].characters!.map { $0.hanzi }
-                }
+        // Load the dictionary
+        let dictionary = loadDictionary()
+        
+        // Resolve word IDs to full Word objects
+        var words: [Word] = []
+        for wordID in deckFile.wordIDs {
+            if let word = dictionary[wordID] {
+                words.append(word)
+            } else {
+                print("⚠️ Word ID not found in dictionary: \(wordID)")
             }
         }
         
         return words
-    }
-    
-    static func loadCharacters() -> [String: Character] {
-        guard let url = Bundle.main.url(forResource: "characters", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let list = try? JSONDecoder().decode([Character].self, from: data) else {
-            return [:]
-        }
-        return Dictionary(uniqueKeysWithValues: list.map { ($0.hanzi, $0) })
     }
     
     // MARK: - Mastery Journey System

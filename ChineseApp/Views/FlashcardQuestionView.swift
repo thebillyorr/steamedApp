@@ -181,7 +181,6 @@ struct FlashcardQuestionView: View {
             hanzi: "你",
             pinyin: "nǐ",
             english: ["you"],
-            level: 1,
             difficulty: 1
         ),
         isNewWord: true,

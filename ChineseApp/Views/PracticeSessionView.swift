@@ -35,6 +35,7 @@ struct PracticeSessionView: View {
     @State private var sessionStartingProgress: [String: Double] = [:]  // Track progress at session start
     @State private var showExitConfirm = false
     @State private var journey: MasteryJourney = DataService.loadMasteryJourney()
+    @State private var currentStreak: Int = 0
     @Environment(\.dismiss) private var dismiss
 
     // fixed session length
@@ -104,29 +105,12 @@ struct PracticeSessionView: View {
                                 }
                                 
                                 HStack(spacing: 12) {
-                                    // Accuracy (placeholder)
-                                    VStack(spacing: 8) {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .font(.system(size: 28))
-                                            .foregroundColor(.green)
-                                        Text("—")
-                                            .font(.system(size: 24, weight: .bold))
-                                            .foregroundColor(.primary)
-                                        Text("Accuracy")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding(16)
-                                    .background(Color(.systemBackground))
-                                    .cornerRadius(12)
-                                    
-                                    // Current Streak (placeholder)
+                                    // Current Streak
                                     VStack(spacing: 8) {
                                         Image(systemName: "flame.fill")
                                             .font(.system(size: 28))
                                             .foregroundColor(.orange)
-                                        Text("—")
+                                        Text("\(currentStreak)")
                                             .font(.system(size: 24, weight: .bold))
                                             .foregroundColor(.primary)
                                         Text("Streak")
@@ -585,7 +569,7 @@ struct PracticeSessionView: View {
         let quiz1 = 30.0
         let quiz5 = 15.0
 
-        let level = Double(max(1, min(5, word.level)))
+        let level = Double(max(1, min(5, word.difficulty)))
         let isQuiz = (questionType == .multipleChoice)
         if isQuiz {
             let step = (quiz1 - quiz5) / 4.0
@@ -632,6 +616,9 @@ struct PracticeSessionView: View {
             // Record session completion for word release gate
             ProgressManager.recordSessionCompletion(for: topic.filename)
             
+            // Record daily practice for streak tracking
+            ProgressManager.recordDailyPractice()
+            
             // Check if all words in deck are now mastered (100%)
             let allWordsMastered = words.allSatisfy { word in
                 ProgressStore.shared.getProgress(for: word.hanzi) >= 1.0
@@ -649,6 +636,8 @@ struct PracticeSessionView: View {
                 }
             }
             
+            // Load current streak for summary display
+            currentStreak = ProgressManager.getStreakCount()
             showSummary = true
             return
         }

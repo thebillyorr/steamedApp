@@ -1,25 +1,28 @@
-[
-  { "hanzi": "我", "pinyin": "wǒ", "english": ["I", "Me"], "level": 1, "difficulty": 1, "characters": ["我"] },
-  { "hanzi": "你", "pinyin": "nǐ", "english": ["You"], "level": 1, "difficulty": 1, "characters": ["你"] },
-  { "hanzi": "他", "pinyin": "tā", "english": ["He", "Him"], "level": 1, "difficulty": 1, "characters": ["他"] },
-  { "hanzi": "她", "pinyin": "tā", "english": ["She", "Her"], "level": 1, "difficulty": 1, "characters": ["她"] },
-  { "hanzi": "我们", "pinyin": "wǒmen", "english": ["We", "Us"], "level": 1, "difficulty": 1, "characters": ["我", "们"] },
-  { "hanzi": "你们", "pinyin": "nǐmen", "english": ["You (plural)"], "level": 1, "difficulty": 1, "characters": ["你", "们"] },
-  { "hanzi": "他们", "pinyin": "tāmen", "english": ["They", "Them"], "level": 1, "difficulty": 1, "characters": ["他", "们"] },
-  { "hanzi": "谁", "pinyin": "shéi", "english": ["Who"], "level": 1, "difficulty": 1, "characters": ["谁"] },
-  { "hanzi": "老师", "pinyin": "lǎoshī", "english": ["Teacher"], "level": 1, "difficulty": 1, "characters": ["老", "师"] },
-  { "hanzi": "学生", "pinyin": "xuésheng", "english": ["Student"], "level": 1, "difficulty": 1, "characters": ["学", "生"] },
-  { "hanzi": "爸爸", "pinyin": "bàba", "english": ["Dad", "Father"], "level": 1, "difficulty": 1, "characters": ["爸"] },
-  { "hanzi": "妈妈", "pinyin": "māma", "english": ["Mom", "Mother"], "level": 1, "difficulty": 1, "characters": ["妈"] },
-  { "hanzi": "人", "pinyin": "rén", "english": ["Person", "People"], "level": 1, "difficulty": 1, "characters": ["人"] },
-  { "hanzi": "您", "pinyin": "nín", "english": ["You (polite)"], "level": 1, "difficulty": 2, "characters": ["您"] },
-  { "hanzi": "它", "pinyin": "tā", "english": ["It"], "level": 1, "difficulty": 2, "characters": ["它"] },
-  { "hanzi": "大家", "pinyin": "dàjiā", "english": ["Everybody", "Everyone"], "level": 1, "difficulty": 2, "characters": ["大", "家"] },
-  { "hanzi": "同学", "pinyin": "tóngxué", "english": ["Classmate"], "level": 1, "difficulty": 2, "characters": ["同", "学"] },
-  { "hanzi": "朋友", "pinyin": "péngyou", "english": ["Friend"], "level": 1, "difficulty": 2, "characters": ["朋", "友"] },
-  { "hanzi": "儿子", "pinyin": "érzi", "english": ["Son"], "level": 1, "difficulty": 2, "characters": ["儿", "子"] },
-  { "hanzi": "女儿", "pinyin": "nǚ'ér", "english": ["Daughter"], "level": 1, "difficulty": 2, "characters": ["女", "儿"] },
-  { "hanzi": "别人", "pinyin": "biérén", "english": ["Other people"], "level": 1, "difficulty": 3, "characters": ["别", "人"] },
-  { "hanzi": "自己", "pinyin": "zìjǐ", "english": ["Oneself"], "level": 1, "difficulty": 3, "characters": ["自", "己"] }
-
-]
+{
+  "deckName": "Beginner 1",
+  "topic": "Beginner",
+  "wordIDs": [
+    "w00001",
+    "w00002",
+    "w00003",
+    "w00004",
+    "w00005",
+    "w00006",
+    "w00007",
+    "w00008",
+    "w00009",
+    "w00010",
+    "w00011",
+    "w00012",
+    "w00013",
+    "w00014",
+    "w00015",
+    "w00016",
+    "w00017",
+    "w00018",
+    "w00019",
+    "w00020",
+    "w00021",
+    "w00022"
+  ]
+}

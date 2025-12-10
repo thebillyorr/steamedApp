@@ -70,10 +70,53 @@ public final class ProgressManager {
         saveSessionCounts(counts)
     }
     
+    // MARK: - Daily Streak Tracking
+    
+    private static let streakCountKey = "streakCount"
+    private static let lastPracticeDateKey = "lastPracticeDate"
+    
+    // Get current streak count
+    static func getStreakCount() -> Int {
+        UserDefaults.standard.integer(forKey: streakCountKey)
+    }
+    
+    // Record practice session and update streak
+    static func recordDailyPractice() {
+        let today = Calendar.current.startOfDay(for: Date())
+        let lastDate = UserDefaults.standard.object(forKey: lastPracticeDateKey) as? Date ?? Date(timeIntervalSince1970: 0)
+        let lastDateNormalized = Calendar.current.startOfDay(for: lastDate)
+        
+        let calendar = Calendar.current
+        let daysDifference = calendar.dateComponents([.day], from: lastDateNormalized, to: today).day ?? 0
+        
+        if daysDifference == 0 {
+            // Same day - no streak change
+            return
+        } else if daysDifference == 1 {
+            // Consecutive day - increment streak
+            var streak = getStreakCount()
+            streak += 1
+            UserDefaults.standard.set(streak, forKey: streakCountKey)
+        } else {
+            // Missed day(s) - reset streak to 1
+            UserDefaults.standard.set(1, forKey: streakCountKey)
+        }
+        
+        // Update last practice date
+        UserDefaults.standard.set(today, forKey: lastPracticeDateKey)
+    }
+    
+    // Reset streak (for testing or if user wants to)
+    static func resetStreak() {
+        UserDefaults.standard.removeObject(forKey: streakCountKey)
+        UserDefaults.standard.removeObject(forKey: lastPracticeDateKey)
+    }
+    
     // reset (optional for testing)
     static func resetAll() {
         UserDefaults.standard.removeObject(forKey: progressKey)
         UserDefaults.standard.removeObject(forKey: sessionCountKey)
+        resetStreak()
     }
     
     // MARK: - Testing Helpers

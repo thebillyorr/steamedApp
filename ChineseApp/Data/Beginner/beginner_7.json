@@ -1,25 +1,27 @@
-[
-  { "hanzi": "的", "pinyin": "de", "english": ["(Particle) Posessive", "of"], "level": 1, "difficulty": 1, "characters": ["的"] },
-  { "hanzi": "了", "pinyin": "le", "english": ["(Particle) Completed/Changed state"], "level": 1, "difficulty": 1, "characters": ["了"] },
-  { "hanzi": "吗", "pinyin": "ma", "english": ["(Particle) Question Marker"], "level": 1, "difficulty": 1, "characters": ["吗"] },
-  { "hanzi": "不", "pinyin": "bù", "english": ["Not", "No"], "level": 1, "difficulty": 1, "characters": ["不"] },
-  { "hanzi": "很", "pinyin": "hěn", "english": ["Very"], "level": 1, "difficulty": 1, "characters": ["很"] },
-  { "hanzi": "和", "pinyin": "hé", "english": ["And", "With"], "level": 1, "difficulty": 1, "characters": ["和"] },
-  { "hanzi": "也", "pinyin": "yě", "english": ["Also", "Too"], "level": 1, "difficulty": 1, "characters": ["也"] },
-  { "hanzi": "还", "pinyin": "hái", "english": ["Still", "Also"], "level": 1, "difficulty": 1, "characters": ["还"] },
-  { "hanzi": "都", "pinyin": "dōu", "english": ["All", "Both"], "level": 1, "difficulty": 1, "characters": ["都"] },
-  { "hanzi": "对", "pinyin": "duì", "english": ["Correct", "To", "Towards"], "level": 1, "difficulty": 1, "characters": ["对"] },
-  { "hanzi": "用", "pinyin": "yòng", "english": ["Use"], "level": 1, "difficulty": 1, "characters": ["用"] },
-
-  { "hanzi": "给", "pinyin": "gěi", "english": ["Give", "For"], "level": 1, "difficulty": 2, "characters": ["给"] },
-  { "hanzi": "从", "pinyin": "cóng", "english": ["From"], "level": 1, "difficulty": 2, "characters": ["从"] },
-  { "hanzi": "到", "pinyin": "dào", "english": ["To", "Arrive"], "level": 1, "difficulty": 2, "characters": ["到"] },
-  { "hanzi": "比", "pinyin": "bǐ", "english": ["Compare", "Than"], "level": 1, "difficulty": 2, "characters": ["比"] },
-  { "hanzi": "让", "pinyin": "ràng", "english": ["Let", "Allow"], "level": 1, "difficulty": 2, "characters": ["让"] },
-  { "hanzi": "着", "pinyin": "zhe", "english": ["(Particle) Ongoing state"], "level": 1, "difficulty": 2, "characters": ["着"] },
-  { "hanzi": "过", "pinyin": "guò", "english": ["(Particle) experienced", "To pass"], "level": 1, "difficulty": 2, "characters": ["过"] },
-
-  { "hanzi": "跟", "pinyin": "gēn", "english": ["With", "And"], "level": 1, "difficulty": 3, "characters": ["跟"] },
-  { "hanzi": "向", "pinyin": "xiàng", "english": ["Toward", "To"], "level": 1, "difficulty": 3, "characters": ["向"] },
-  { "hanzi": "把", "pinyin": "bǎ", "english": ["(Particle) Disposal Marker", "To hold"], "level": 1, "difficulty": 3, "characters": ["把"] }
-]
+{
+  "deckName": "Beginner 7",
+  "topic": "Beginner",
+  "wordIDs": [
+    "w00144",
+    "w00145",
+    "w00146",
+    "w00147",
+    "w00148",
+    "w00149",
+    "w00150",
+    "w00151",
+    "w00152",
+    "w00153",
+    "w00154",
+    "w00155",
+    "w00156",
+    "w00157",
+    "w00158",
+    "w00159",
+    "w00160",
+    "w00161",
+    "w00162",
+    "w00163",
+    "w00164"
+  ]
+}

@@ -77,7 +77,6 @@ struct MultipleChoiceQuestionView: View {
             hanzi: "你",
             pinyin: "nǐ",
             english: ["you"],
-            level: 1,
             difficulty: 1
         ),
         options: ["you", "me", "he", "she"],
