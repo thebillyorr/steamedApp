@@ -14,7 +14,7 @@ struct Word: Identifiable, Codable {
     let pinyin: String
     // allow multiple english definitions
     let english: [String]
-    // difficulty 1 (easy) .. 5 (hard)
+    // difficulty 1 (easy) .. 6 (hard)
     var difficulty: Int = 3
 
     init(hanzi: String, pinyin: String, english: [String], difficulty: Int = 3) {

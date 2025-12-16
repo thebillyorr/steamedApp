@@ -17,10 +17,6 @@ struct TopicCompletionCongrats: View {
     @State private var scaleBadge = false
     @State private var showText = false
     
-    private var badge: TopicBadge? {
-        TopicBadgeManager.shared.getBadge(for: topicCategory)
-    }
-    
     var body: some View {
         ZStack {
             // Background gradient
@@ -78,86 +74,7 @@ struct TopicCompletionCongrats: View {
                 
                 Spacer()
                 
-                // Badge Display with scale animation
-                if let badge = badge {
-                    VStack(spacing: 24) {
-                        // Badge coin with 3D effect
-                        ZStack {
-                            // Outer glow
-                            Circle()
-                                .fill(
-                                    RadialGradient(
-                                        gradient: Gradient(colors: [
-                                            Color(hex: badge.badgeColor).opacity(0.4),
-                                            Color(hex: badge.badgeColor).opacity(0.1)
-                                        ]),
-                                        center: .center,
-                                        startRadius: 0,
-                                        endRadius: 120
-                                    )
-                                )
-                                .frame(width: 240, height: 240)
-                            
-                            // Badge coin with shadow
-                            Circle()
-                                .fill(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [
-                                            Color(hex: badge.badgeColor),
-                                            Color(hex: badge.badgeColor).opacity(0.8)
-                                        ]),
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                )
-                                .frame(width: 200, height: 200)
-                                .shadow(color: Color(hex: badge.badgeColor), radius: 20, x: 0, y: 10)
-                            
-                            // Inner shine effect
-                            Circle()
-                                .stroke(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [
-                                            Color.white.opacity(0.5),
-                                            Color.black.opacity(0.3)
-                                        ]),
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    ),
-                                    lineWidth: 3
-                                )
-                                .frame(width: 200, height: 200)
-                            
-                            // Roman numeral with bold text
-                            Text(badge.romanNumeral)
-                                .font(.system(size: 96, weight: .black))
-                                .foregroundColor(.white)
-                        }
-                        .scaleEffect(scaleBadge ? 1 : 0.3)
-                        .opacity(scaleBadge ? 1 : 0)
-                        .animation(
-                            Animation.spring(response: 0.7, dampingFraction: 0.5)
-                                .delay(0.6),
-                            value: scaleBadge
-                        )
-                        
-                        VStack(spacing: 8) {
-                            Text("🏆 \(topicCategory) \(badge.romanNumeral) Master")
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundColor(.white)
-                            
-                            Text("Your badge has been added to your profile")
-                                .font(.callout)
-                                .foregroundColor(.white.opacity(0.7))
-                                .multilineTextAlignment(.center)
-                        }
-                        .opacity(showText ? 1 : 0)
-                        .animation(
-                            Animation.easeInOut(duration: 0.6).delay(0.8),
-                            value: showText
-                        )
-                    }
-                }
+                // (Previously badge display; now just text + emoji celebration)
                 
                 Spacer()
                 
@@ -205,5 +122,5 @@ struct TopicCompletionCongrats: View {
 }
 
 #Preview {
-    TopicCompletionCongrats(topicCategory: "Beginner")
+    TopicCompletionCongrats(topicCategory: "Travel")
 }

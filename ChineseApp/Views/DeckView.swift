@@ -3,6 +3,7 @@ import SwiftUI
 struct DeckView: View {
     let topic: Topic
     @ObservedObject private var progressStore = ProgressStore.shared
+    @ObservedObject private var bookmarkManager = BookmarkManager.shared
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -43,6 +44,9 @@ struct DeckView: View {
                             }
 
                             Spacer()
+                            
+                            // Bookmark Button
+                            BookmarkButton(wordID: word.id)
 
                             // mastery bar
                             let progress = progressStore.getProgress(for: word.hanzi)
@@ -71,6 +75,22 @@ struct DeckView: View {
         // Post notification to set active deck and navigate
         NotificationCenter.default.post(name: NSNotification.Name("SetActiveDeckAndNavigate"), object: topic)
         dismiss()
+    }
+}
+
+struct BookmarkButton: View {
+    let wordID: String
+    @ObservedObject private var bookmarkManager = BookmarkManager.shared
+    
+    var body: some View {
+        Button(action: {
+            bookmarkManager.toggleBookmark(for: wordID)
+        }) {
+            Image(systemName: bookmarkManager.isBookmarked(wordID: wordID) ? "bookmark.fill" : "bookmark")
+                .foregroundColor(bookmarkManager.isBookmarked(wordID: wordID) ? .yellow : .gray)
+                .font(.system(size: 20))
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

@@ -45,23 +45,6 @@ final class DeckMasteryManager: ObservableObject {
         saveMasteredDecks(decks)
     }
     
-    // MARK: - Topic Completion Checking
-    
-    /// Check if all decks in a topic category are mastered
-    func isTopicMastered(category: String) -> Bool {
-        guard let categoryTopics = DataService.topicsByCategory.first(where: { $0.category == category })?.topics else {
-            return false
-        }
-        return categoryTopics.allSatisfy { isDeckMastered(filename: $0.filename) }
-    }
-    
-    /// Get all topics that are fully mastered
-    func getMasteredTopics() -> [String] {
-        DataService.topicsByCategory
-            .filter { isTopicMastered(category: $0.category) }
-            .map { $0.category }
-    }
-    
     // MARK: - Persistence
     
     private func saveMasteredDecks(_ decks: [String: DeckMasteryState]) {

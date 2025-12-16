@@ -147,13 +147,6 @@ public final class ProgressManager {
         // 2. Pass the exam (lock the deck)
         DeckMasteryManager.shared.masterDeck(filename: filename)
         
-        // 3. Auto-check if topic is now complete, award badge if so
-        if let category = DataService.topicsByCategory.first(where: { categoryTopics in
-            categoryTopics.topics.contains { $0.filename == filename }
-        })?.category {
-            TopicBadgeManager.shared.checkAndAwardTopicBadge(category: category)
-        }
-        
         print("✅ Deck mastered: \(filename)")
     }
     

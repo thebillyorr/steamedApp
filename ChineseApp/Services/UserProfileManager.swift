@@ -19,7 +19,12 @@ final class UserProfileManager: ObservableObject {
         self.userProfile = UserProfileManager.loadProfile()
     }
     
-    func updateProfile(username: String? = nil, fullName: String? = nil, profileColor: String? = nil) {
+    func updateProfile(
+        username: String? = nil,
+        fullName: String? = nil,
+        profileColor: String? = nil,
+        profileImageData: Data? = nil
+    ) {
         if let username = username {
             userProfile.username = username
         }
@@ -28,6 +33,9 @@ final class UserProfileManager: ObservableObject {
         }
         if let profileColor = profileColor {
             userProfile.profileColor = profileColor
+        }
+        if let profileImageData = profileImageData {
+            userProfile.profileImageData = profileImageData
         }
         saveProfile()
     }

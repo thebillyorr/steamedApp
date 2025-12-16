@@ -8,41 +8,43 @@
 import SwiftUI
 
 struct DictionaryView: View {
-    let categories = DataService.topicsByCategory
+    let decks = DataService.decks
     @ObservedObject private var progressStore = ProgressStore.shared
     @ObservedObject private var deckMasteryManager = DeckMasteryManager.shared
     
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    ForEach(categories, id: \.category) { category, topics in
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text(category)
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                                .padding(.horizontal, 12)
-                            
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 12) {
-                                    ForEach(topics) { topic in
-                                        NavigationLink(value: topic) {
-                                            let topicMastery = calculateTopicMastery(for: topic)
-                                            let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename) || isAllWordsMastered(for: topic)
-                                            DeckMasteryTile(
-                                                topic: topic,
-                                                masteryProgress: topicMastery,
-                                                isDeckMastered: isDeckMastered
-                                            )
-                                        }
-                                    }
+                VStack(alignment: .leading, spacing: 24) {
+                    // Bookmarks Section (Large)
+                    BookmarkedDeckView()
+                        .padding(.horizontal, 16)
+                        .frame(height: 200) // Give it some height
+                    
+                    // Themed Decks Section
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Themed Decks")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .padding(.horizontal, 16)
+                        
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 16)], spacing: 16) {
+                            ForEach(decks) { topic in
+                                NavigationLink(value: topic) {
+                                    let topicMastery = calculateTopicMastery(for: topic)
+                                    let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename) || isAllWordsMastered(for: topic)
+                                    DeckMasteryTile(
+                                        topic: topic,
+                                        masteryProgress: topicMastery,
+                                        isDeckMastered: isDeckMastered
+                                    )
                                 }
-                                .padding(.horizontal, 12)
                             }
                         }
+                        .padding(.horizontal, 16)
                     }
                 }
-                .padding(.vertical, 12)
+                .padding(.vertical, 16)
             }
             .navigationTitle("Dictionary")
             .navigationDestination(for: Topic.self) { topic in

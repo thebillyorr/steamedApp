@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PracticeRootView: View {
-    @State private var activeDeck: Topic = DataService.allTopics.first ?? Topic(name: "Beginner 1", filename: "beginner_1")
+    @State private var activeDeck: Topic = DataService.allTopics.first ?? Topic(name: "Aquarium", filename: "Aquarium")
     @State private var startPractice = false
     @State private var showDeckSelection = false
     

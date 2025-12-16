@@ -8,45 +8,21 @@
 import Foundation
 
 class DataService {
-    // organize topics by category for horizontal scrolling
-    // seen and mastered flags are stored in ProgressManager via UserDefaults, not on Word struct
-    static let topicsByCategory: [(category: String, topics: [Topic])] = [
-        (
-            category: "Beginner",
-            topics: [
-                Topic(name: "Beginner 1", filename: "beginner_1"),
-                Topic(name: "Beginner 2", filename: "beginner_2"),
-                Topic(name: "Beginner 3", filename: "beginner_3"),
-                Topic(name: "Beginner 4", filename: "beginner_4"),
-                Topic(name: "Beginner 5", filename: "beginner_5"),
-                Topic(name: "Beginner 6", filename: "beginner_6"),
-                Topic(name: "Beginner 7", filename: "beginner_7"),
-                Topic(name: "Beginner 8", filename: "beginner_8")
-            ]
-        ),
-        (
-            category: "Intermediate",
-            topics: [
-                Topic(name: "Intermediate 1", filename: "intermediate_1"),
-                Topic(name: "Intermediate 2", filename: "intermediate_2"),
-                Topic(name: "Intermediate 3", filename: "intermediate_3"),
-                Topic(name: "Intermediate 4", filename: "intermediate_4"),
-                Topic(name: "Intermediate 5", filename: "intermediate_5"),
-                Topic(name: "Intermediate 6", filename: "intermediate_6"),
-                Topic(name: "Intermediate 7", filename: "intermediate_7"),
-                Topic(name: "Intermediate 8", filename: "intermediate_8")
-            ]
-        )
+    // List of all available decks
+    static let decks: [Topic] = [
+        Topic(name: "Aquarium", filename: "Aquarium"),
+        Topic(name: "Travel", filename: "Travel")
     ]
     
     // flat list of all topics for practice mode
     static var allTopics: [Topic] {
-        return topicsByCategory.flatMap { $0.topics }
+        return decks
     }
     
     // MARK: - Dictionary Loading
     
     static private var cachedDictionary: [String: Word]?
+    static private var cachedHanziIndex: [String: Word]?
     
     /// Load the master dictionary (hashmap of word ID -> Word object)
     static func loadDictionary() -> [String: Word] {
@@ -65,6 +41,20 @@ class DataService {
         return dict
     }
     
+    static func getWord(byHanzi hanzi: String) -> Word? {
+        if let index = cachedHanziIndex {
+            return index[hanzi]
+        }
+        
+        let dict = loadDictionary()
+        var index: [String: Word] = [:]
+        for word in dict.values {
+            index[word.hanzi] = word
+        }
+        cachedHanziIndex = index
+        return index[hanzi]
+    }
+    
     /// Get the dictionary (public accessor for services like StoryService)
     static func getDictionary() -> [String: Word] {
         return loadDictionary()
@@ -80,6 +70,12 @@ class DataService {
     }
     
     static func loadWords(for topic: Topic) -> [Word] {
+        // Special case for Bookmarks deck
+        if topic.filename == "bookmarks_deck" {
+            let bookmarkedIDs = BookmarkManager.shared.bookmarkedWordIDs
+            return bookmarkedIDs.compactMap { getWord(byHanzi: $0) }
+        }
+
         // Load the deck file (contains word IDs)
         guard let url = Bundle.main.url(forResource: topic.filename, withExtension: "json"),
               let data = try? Data(contentsOf: url),

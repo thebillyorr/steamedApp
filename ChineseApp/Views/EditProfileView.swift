@@ -6,43 +6,59 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var profileManager = UserProfileManager.shared
-    @State private var username: String = ""
     @State private var fullName: String = ""
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var selectedImageData: Data?
     
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("Profile Information")) {
-                    HStack {
-                        Text("@")
-                            .foregroundColor(.secondary)
-                        TextField("username", text: $username)
-                            .textContentType(.username)
-                    }
-                    
                     TextField("Full Name", text: $fullName)
                         .textContentType(.name)
                 }
                 
                 Section(footer: Text("Profile Photo")) {
                     VStack(spacing: 12) {
-                        ZStack {
-                            Circle()
-                                .fill(colorFromHex(profileManager.userProfile.profileColor))
-                                .frame(width: 100, height: 100)
-                            
-                            Text(profileManager.userProfile.initials)
-                                .font(.system(size: 40, weight: .bold))
-                                .foregroundColor(.white)
+                        PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
+                            ZStack {
+                                if let data = selectedImageData, let uiImage = UIImage(data: data) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 100, height: 100)
+                                        .clipShape(Circle())
+                                        .shadow(radius: 8)
+                                } else if let data = profileManager.userProfile.profileImageData,
+                                          let uiImage = UIImage(data: data) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 100, height: 100)
+                                        .clipShape(Circle())
+                                        .shadow(radius: 8)
+                                } else {
+                                    Circle()
+                                        .fill(colorFromHex(profileManager.userProfile.profileColor))
+                                        .frame(width: 100, height: 100)
+                                        .shadow(radius: 8)
+                                    
+                                    Text(profileManager.userProfile.initials)
+                                        .font(.system(size: 40, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 20)
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 20)
+                        .buttonStyle(.plain)
                         
-                        Text("Profile photo upload coming soon!")
+                        Text("Tap the circle above to choose a photo from your library.")
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -62,20 +78,33 @@ struct EditProfileView: View {
                         saveChanges()
                     }
                     .fontWeight(.semibold)
-                    .disabled(username.isEmpty || fullName.isEmpty)
+                    .disabled(fullName.isEmpty)
                 }
             }
         }
         .navigationViewStyle(.stack)
         .onAppear {
-            username = profileManager.userProfile.username
             fullName = profileManager.userProfile.fullName
+            selectedImageData = profileManager.userProfile.profileImageData
+        }
+        .onChange(of: selectedItem) { newItem in
+            guard let newItem = newItem else { return }
+            Task {
+                if let data = try? await newItem.loadTransferable(type: Data.self) {
+                    await MainActor.run {
+                        selectedImageData = data
+                    }
+                }
+            }
         }
     }
     
     private func saveChanges() {
-        if !username.isEmpty && !fullName.isEmpty {
-            profileManager.updateProfile(username: username, fullName: fullName)
+        if !fullName.isEmpty {
+            profileManager.updateProfile(
+                fullName: fullName,
+                profileImageData: selectedImageData
+            )
             dismiss()
         }
     }

@@ -71,21 +71,21 @@ struct DeckMasteryTile: View {
     HStack(spacing: 16) {
         // State 1: In progress (25%)
         DeckMasteryTile(
-            topic: Topic(name: "Beginner 1", filename: "beginner_1"),
+            topic: Topic(name: "Aquarium", filename: "Aquarium"),
             masteryProgress: 0.25,
             isDeckMastered: false
         )
         
         // State 2: Ready for exam (100% words, not exam passed)
         DeckMasteryTile(
-            topic: Topic(name: "Beginner 2", filename: "beginner_2"),
+            topic: Topic(name: "Travel", filename: "Travel"),
             masteryProgress: 1.0,
             isDeckMastered: false
         )
         
         // State 3: Exam passed (mastered)
         DeckMasteryTile(
-            topic: Topic(name: "Beginner 3", filename: "beginner_3"),
+            topic: Topic(name: "Aquarium", filename: "Aquarium"),
             masteryProgress: 1.0,
             isDeckMastered: true
         )
@@ -97,21 +97,21 @@ struct DeckMasteryTile: View {
     HStack(spacing: 16) {
         // State 0: No mastery
         DeckMasteryTile(
-            topic: Topic(name: "Beginner 1", filename: "beginner_1"),
+            topic: Topic(name: "Aquarium", filename: "Aquarium"),
             masteryProgress: 0.0,
             isDeckMastered: false
         )
         
         // State A: 100% word mastery, not exam passed
         DeckMasteryTile(
-            topic: Topic(name: "Beginner 2", filename: "beginner_2"),
+            topic: Topic(name: "Travel", filename: "Travel"),
             masteryProgress: 1.0,
             isDeckMastered: false
         )
         
         // State B: Exam passed (fully mastered)
         DeckMasteryTile(
-            topic: Topic(name: "Beginner 3", filename: "beginner_3"),
+            topic: Topic(name: "Aquarium", filename: "Aquarium"),
             masteryProgress: 1.0,
             isDeckMastered: true
         )

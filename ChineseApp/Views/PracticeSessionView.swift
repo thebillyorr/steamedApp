@@ -563,20 +563,20 @@ struct PracticeSessionView: View {
 
     // compute delta (0.0 - 1.0) awarded for a correct response based on word level and question type
     private func deltaFor(word: Word, questionType: QuestionType) -> Double {
-        // Points scale: flashcard level1=10, level5=5; quiz level1=30, level5=15
+        // Points scale: flashcard level1=10, level6=5; quiz level1=30, level6=15
         let flash1 = 10.0
-        let flash5 = 5.0
+        let flash6 = 5.0
         let quiz1 = 30.0
-        let quiz5 = 15.0
+        let quiz6 = 15.0
 
-        let level = Double(max(1, min(5, word.difficulty)))
+        let level = Double(max(1, min(6, word.difficulty)))
         let isQuiz = (questionType == .multipleChoice)
         if isQuiz {
-            let step = (quiz1 - quiz5) / 4.0
+            let step = (quiz1 - quiz6) / 5.0
             let pts = quiz1 - (level - 1.0) * step
             return pts / 100.0
         } else {
-            let step = (flash1 - flash5) / 4.0
+            let step = (flash1 - flash6) / 5.0
             let pts = flash1 - (level - 1.0) * step
             return pts / 100.0
         }
@@ -625,15 +625,8 @@ struct PracticeSessionView: View {
             }
             
             if allWordsMastered {
-                // Automatically mark deck as mastered
+                // Automatically mark deck as mastered (no more badges)
                 DeckMasteryManager.shared.masterDeck(filename: topic.filename)
-                
-                // Check if topic is now complete for badge
-                if let category = DataService.topicsByCategory.first(where: { categoryTopics in
-                    categoryTopics.topics.contains { $0.filename == topic.filename }
-                })?.category {
-                    TopicBadgeManager.shared.checkAndAwardTopicBadge(category: category)
-                }
             }
             
             // Load current streak for summary display

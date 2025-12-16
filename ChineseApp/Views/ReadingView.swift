@@ -15,7 +15,7 @@ struct ReadingView: View {
                     selectedWord: $selectedWord,
                     fontSize: $fontSize
                 )
-                .navigationTitle("Library")
+                .navigationTitle(selectedStory.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -60,19 +60,52 @@ struct StoryListView: View {
     @Binding var isReadingStory: Bool
     @State private var library: StoryLibrary?
     @ObservedObject private var storyProgress = StoryProgressManager.shared
+    @State private var expandedDifficulties: Set<Int> = []
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let library = library, !library.stories.isEmpty {
                 ScrollView(.vertical, showsIndicators: true) {
                     VStack(spacing: 12) {
-                        ForEach(library.stories) { metadata in
-                            StoryCardView(
-                                metadata: metadata,
-                                isCompleted: storyProgress.isCompleted(storyId: metadata.storyId)
-                            ) {
-                                if let story = StoryService.shared.loadStory(storyId: metadata.storyId) {
-                                    selectedStory = story
+                        // Group stories by difficulty (level)
+                        let grouped = Dictionary(grouping: library.stories) { $0.difficulty }
+                        let sortedKeys = grouped.keys.sorted()
+
+                        ForEach(sortedKeys, id: \ .self) { level in
+                            let storiesForLevel = grouped[level] ?? []
+
+                            // Section header with expand/collapse toggle
+                            Button {
+                                if expandedDifficulties.contains(level) {
+                                    expandedDifficulties.remove(level)
+                                } else {
+                                    expandedDifficulties.insert(level)
+                                }
+                            } label: {
+                                HStack {
+                                    Text("Level \(level)")
+                                        .font(.system(size: 18, weight: .semibold))
+                                    Spacer()
+                                    Image(systemName: expandedDifficulties.contains(level) ? "chevron.up" : "chevron.down")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.horizontal, 4)
+                            }
+                            .buttonStyle(.plain)
+
+                            if expandedDifficulties.contains(level) {
+                                VStack(spacing: 12) {
+                                    ForEach(storiesForLevel) { metadata in
+                                        StoryCardView(
+                                            metadata: metadata,
+                                            isCompleted: storyProgress.isCompleted(storyId: metadata.storyId)
+                                        ) {
+                                            if let story = StoryService.shared.loadStory(storyId: metadata.storyId) {
+                                                selectedStory = story
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -92,6 +125,11 @@ struct StoryListView: View {
         }
         .onAppear {
             library = StoryService.shared.loadLibrary()
+            if let stories = library?.stories {
+                // Expand all existing difficulty levels by default
+                let levels = Set(stories.map { $0.difficulty })
+                expandedDifficulties = levels
+            }
         }
     }
 }
@@ -218,9 +256,10 @@ struct ReadingNavigationBar: View {
                                 .font(.system(size: 10, weight: .regular))
                                 .foregroundColor(.secondary)
                         }
-                    }
-                    .onTapGesture {
-                        selectedWord = nil
+                        
+                        // Bookmark Button
+                        BookmarkButton(wordID: word.id)
+                            .padding(.leading, 8)
                     }
                 }
 
@@ -291,7 +330,7 @@ struct ReadingNavigationBar: View {
                     Button(action: onToggleCompleted) {
                         HStack(spacing: 6) {
                             Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
-                            Text("Library")
+                            Text(isCompleted ? "Completed" : "Mark Complete")
                         }
                         .font(.system(size: 12, weight: .semibold))
                         .padding(.horizontal, 10)
