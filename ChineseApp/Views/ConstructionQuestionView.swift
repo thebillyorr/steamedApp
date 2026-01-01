@@ -18,6 +18,7 @@ struct ConstructionQuestionView: View {
     let feedbackState: QuizFeedbackState
     let onCharacterToggled: (Int) -> Void  // Changed to accept index
     let onSubmitted: () -> Void
+    var onReport: (() -> Void)? = nil
     
     private var constructedWord: String {
         selectedCharactersIndices.map { availableCharacters[$0] }.joined()
@@ -140,7 +141,8 @@ struct ConstructionQuestionView: View {
                 VStack(spacing: 12) {
                     QuestionFeedbackBox(
                         state: feedbackState,
-                        correctAnswer: feedbackState == .incorrect ? word.hanzi : nil
+                        correctAnswer: feedbackState == .incorrect ? word.hanzi : nil,
+                        onReport: onReport
                     )
 
                     NextQuestionButton(feedbackState: feedbackState) {
@@ -149,8 +151,6 @@ struct ConstructionQuestionView: View {
                 }
                 .transition(.scale.combined(with: .opacity))
             }
-
-            Spacer()
         }
         .padding(.horizontal)
     }

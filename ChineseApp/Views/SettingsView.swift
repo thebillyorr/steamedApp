@@ -11,7 +11,7 @@ import PhotosUI
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var profileManager = UserProfileManager.shared
-    @State private var selectedTheme: String = UserDefaults.standard.string(forKey: "appTheme") ?? "System"
+    @AppStorage("appTheme") private var selectedTheme: String = "System"
     
     // Profile State
     @State private var fullName: String = ""
@@ -91,11 +91,6 @@ struct SettingsView: View {
                         Text("Light").tag("Light")
                         Text("Dark").tag("Dark")
                     }
-                    .onChange(of: selectedTheme) { newValue in
-                        UserDefaults.standard.set(newValue, forKey: "appTheme")
-                        saveProfileChanges()
-                        dismiss()
-                    }
                 }
                 
                 // MARK: - Support & Info (Placeholders)
@@ -132,7 +127,6 @@ struct SettingsView: View {
             }
         }
         .onAppear {
-            selectedTheme = UserDefaults.standard.string(forKey: "appTheme") ?? "System"
             fullName = profileManager.userProfile.fullName
             selectedImageData = profileManager.userProfile.profileImageData
         }
@@ -150,6 +144,24 @@ struct SettingsView: View {
     
     private func saveProfileChanges() {
         profileManager.updateProfile(fullName: fullName, profileImageData: selectedImageData)
+    }
+}
+
+// Wrapper view for presenting SettingsView in a sheet with proper color scheme
+struct SettingsSheetView: View {
+    @AppStorage("appTheme") private var appTheme: String = "System"
+    
+    var preferredColorScheme: ColorScheme? {
+        switch appTheme {
+        case "Light": return .light
+        case "Dark": return .dark
+        default: return nil
+        }
+    }
+    
+    var body: some View {
+        SettingsView()
+            .preferredColorScheme(preferredColorScheme)
     }
 }
 

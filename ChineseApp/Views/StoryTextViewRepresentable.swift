@@ -172,28 +172,25 @@ struct StoryTextViewRepresentable: UIViewRepresentable {
         
         @objc func handleTap(_ gesture: UITapGestureRecognizer) {
             guard let textView = textView else { return }
-            
             // Get tap location in text view coordinates
             let tapPoint = gesture.location(in: textView)
             StoryTextViewRepresentable.debugLog("handleTap: tap at point=\(tapPoint), state=\(gesture.state.rawValue)")
-            
             // Convert tap point to character index
             guard let charIndex = getCharacterIndex(at: tapPoint, in: textView) else {
-                // Tap was on empty space - deselect
-                StoryTextViewRepresentable.debugLog("handleTap: no character at point -> deselect")
-                applySelection(nil, tokenIndex: nil)
+                // Tap was on empty space - only deselect if something is selected
+                StoryTextViewRepresentable.debugLog("handleTap: no character at point -> maybe deselect")
+                if selectedWordId != nil {
+                    applySelection(nil, tokenIndex: nil)
+                }
                 return
             }
-            
             // Get attributes at that character index
             let attributes = textView.attributedText?.attributes(at: charIndex, effectiveRange: nil) ?? [:]
-            
             // Check if this character has a word ID
             if let wordId = attributes[StoryTextViewRepresentable.wordIdAttribute] as? String {
                 let tokenIndex = attributes[StoryTextViewRepresentable.tokenIndexAttribute] as? Int
                 StoryTextViewRepresentable.debugLog("handleTap: charIndex=\(charIndex), attrs wordId=\(wordId), tokenIndex=\(String(describing: tokenIndex)), current sel wordId=\(selectedWordId ?? "nil"), selIndex=\(String(describing: selectedTokenIndex))")
                 // Toggle: if tapping the currently selected word, deselect immediately
-                // We only care that the wordId matches; tokenIndex equality can be unreliable on edge characters
                 if wordId == selectedWordId {
                     StoryTextViewRepresentable.debugLog("handleTap: toggling OFF selection")
                     applySelection(nil, tokenIndex: nil)
@@ -202,9 +199,11 @@ struct StoryTextViewRepresentable: UIViewRepresentable {
                     applySelection(wordId, tokenIndex: tokenIndex)
                 }
             } else {
-                // Tap was on punctuation/space - not a word; deselect
-                StoryTextViewRepresentable.debugLog("handleTap: tapped non-word character -> deselect")
-                applySelection(nil, tokenIndex: nil)
+                // Tap was on punctuation/space - only deselect if something is selected
+                StoryTextViewRepresentable.debugLog("handleTap: tapped non-word character -> maybe deselect")
+                if selectedWordId != nil {
+                    applySelection(nil, tokenIndex: nil)
+                }
             }
         }
 

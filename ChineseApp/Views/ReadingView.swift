@@ -228,7 +228,7 @@ struct StoryReaderView: View {
                             }
                             
                             selectedWord = word
-                        } else {
+                        } else if selectedWord != nil {
                             selectedWord = nil
                         }
                     }

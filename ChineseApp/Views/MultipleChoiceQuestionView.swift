@@ -24,6 +24,7 @@ struct MultipleChoiceQuestionView: View {
     let isAnswered: Bool
     let feedbackState: QuizFeedbackState
     let onOptionSelected: (String, Bool) -> Void  // (option, isCorrect)
+    var onReport: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 20) {
@@ -53,7 +54,8 @@ struct MultipleChoiceQuestionView: View {
                 VStack(spacing: 12) {
                     QuestionFeedbackBox(
                         state: feedbackState,
-                        correctAnswer: feedbackState == .incorrect ? correctChoice : nil
+                        correctAnswer: feedbackState == .incorrect ? correctChoice : nil,
+                        onReport: onReport
                     )
 
                     // Next button
@@ -64,8 +66,6 @@ struct MultipleChoiceQuestionView: View {
                 }
                 .transition(.scale.combined(with: .opacity))
             }
-
-            Spacer()
         }
         .padding(.horizontal)
     }

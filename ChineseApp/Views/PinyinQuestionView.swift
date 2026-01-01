@@ -16,6 +16,7 @@ struct PinyinQuestionView: View {
     let isAnswered: Bool
     let feedbackState: QuizFeedbackState
     let onOptionSelected: (String, Bool) -> Void
+    var onReport: (() -> Void)? = nil
     
     var body: some View {
         VStack(spacing: 20) {
@@ -52,7 +53,8 @@ struct PinyinQuestionView: View {
                 VStack(spacing: 12) {
                     QuestionFeedbackBox(
                         state: feedbackState,
-                        correctAnswer: feedbackState == .incorrect ? correctChoice : nil
+                        correctAnswer: feedbackState == .incorrect ? correctChoice : nil,
+                        onReport: onReport
                     )
 
                     NextQuestionButton(feedbackState: feedbackState) {
@@ -61,8 +63,6 @@ struct PinyinQuestionView: View {
                 }
                 .transition(.scale.combined(with: .opacity))
             }
-
-            Spacer()
         }
         .padding(.horizontal)
     }

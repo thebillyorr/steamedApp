@@ -36,6 +36,7 @@ struct PracticeSessionView: View {
     @State private var showExitConfirm = false
     @State private var journey: MasteryJourney = DataService.loadMasteryJourney()
     @State private var currentStreak: Int = 0
+    @State private var showReportOverlay = false
     @Environment(\.dismiss) private var dismiss
 
     // fixed session length
@@ -49,8 +50,9 @@ struct PracticeSessionView: View {
     }
 
     var body: some View {
-        VStack {
-            if showSummary {
+        ZStack {
+            VStack {
+                if showSummary {
                 // --- Summary screen ---
                 VStack(spacing: 0) {
                     ScrollView {
@@ -253,6 +255,9 @@ struct PracticeSessionView: View {
                         .padding()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
+                        Spacer()
+                            .frame(height: 20)
+                        
                         Text(topic.name)
                             .font(.headline)
 
@@ -273,7 +278,8 @@ struct PracticeSessionView: View {
                         if !sessionItems.isEmpty {
                             let currentWord = words[sessionItems[currentIndex].wordIndex]
                             
-                            Group {
+                            VStack {
+                                Group {
                                 switch currentQuestionType {
                             case .flashcard:
                                 let wordProgress = ProgressStore.shared.getProgress(for: currentWord.hanzi)
@@ -307,7 +313,8 @@ struct PracticeSessionView: View {
                                         selectedAnswer = option
                                         isAnswered = true
                                         feedbackState = correct ? .correct : .incorrect
-                                    }
+                                    },
+                                    onReport: { showReportOverlay = true }
                                 )
                                 
                             case .construction:
@@ -336,7 +343,8 @@ struct PracticeSessionView: View {
                                         let constructedWord = constructionSelectedIndices.map { constructionOptions[$0] }.joined()
                                         let correct = (constructedWord == currentWord.hanzi)
                                         feedbackState = correct ? .correct : .incorrect
-                                    }
+                                    },
+                                    onReport: { showReportOverlay = true }
                                 )
                                 
                             case .pinyin:
@@ -358,13 +366,18 @@ struct PracticeSessionView: View {
                                         selectedAnswer = option
                                         isAnswered = true
                                         feedbackState = correct ? .correct : .incorrect
-                                    }
+                                    },
+                                    onReport: { showReportOverlay = true }
                                 )
                                 
                             default:
                                 Text("Question type not implemented")
                             }
                             }
+                                
+                                Spacer()
+                            }
+                            .frame(maxHeight: .infinity)
                             .id(sessionItems[currentIndex].id)
                         }
                     }
@@ -478,7 +491,15 @@ struct PracticeSessionView: View {
                     Text("Are you sure you want to exit the practice session? Progress will be lost.")
                 }
             }
-        }
+            } // end VStack
+            
+            // Full-screen report overlay
+            if showReportOverlay {
+                ReportIssueOverlay {
+                    showReportOverlay = false
+                }
+            }
+        } // end ZStack
     }
 
 

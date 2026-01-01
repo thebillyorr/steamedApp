@@ -113,7 +113,7 @@ struct FlashcardQuestionView: View {
                             .font(.system(.body, design: .default))
                             .fontWeight(.semibold)
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
                     .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)

@@ -135,7 +135,7 @@ struct ProfileView: View {
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showSettings) {
-                SettingsView()
+                SettingsSheetView()
             }
             .onAppear {
                 currentStreak = ProgressManager.getStreakCount()

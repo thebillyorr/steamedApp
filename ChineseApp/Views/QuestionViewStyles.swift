@@ -1,3 +1,25 @@
+// MARK: - Unified Next Button
+struct NextQuestionButton: View {
+    let feedbackState: QuizFeedbackState
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Text("Next Question")
+                Image(systemName: "arrow.right")
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .background(
+                feedbackState == .correct ? Color.green : Color.orange
+            )
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .fontWeight(.semibold)
+        }
+    }
+}
 //
 //  QuestionViewStyles.swift
 //  ChineseApp
@@ -108,50 +130,89 @@ struct AnswerOptionButton: View {
 struct QuestionFeedbackBox: View {
     let state: QuizFeedbackState
     let correctAnswer: String?
+    var onReport: (() -> Void)? = nil
     
     var body: some View {
-        // Only show if incorrect with an answer to display
-        if state == .incorrect, let answer = correctAnswer {
-            VStack(alignment: .leading, spacing: 8) {
+        Group {
+            if state == .incorrect, let answer = correctAnswer {
                 HStack(spacing: 8) {
                     Image(systemName: "info.circle.fill")
                         .foregroundColor(.blue)
                     Text("Correct answer:")
                         .font(.subheadline)
                         .fontWeight(.semibold)
+                    Text(answer)
+                        .font(.body)
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Button(action: { onReport?() }) {
+                        Image(systemName: "flag")
+                            .foregroundColor(.orange)
+                            .padding(.leading, 8)
+                            .accessibilityLabel("Report an issue")
+                    }
                 }
-                Text(answer)
-                    .font(.body)
-                    .padding(.leading, 24)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(8)
+            } else {
+                EmptyView()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(12)
-            .background(Color.blue.opacity(0.1))
-            .cornerRadius(8)
         }
     }
 }
 
-// MARK: - Unified Next Button
-struct NextQuestionButton: View {
-    let feedbackState: QuizFeedbackState
-    let action: () -> Void
-    
+// MARK: - VisualEffectBlur for overlay blur
+struct VisualEffectBlur: UIViewRepresentable {
+    var style: UIBlurEffect.Style = .systemMaterial
+    func makeUIView(context: Context) -> UIVisualEffectView {
+        return UIVisualEffectView(effect: UIBlurEffect(style: style))
+    }
+    func updateUIView(_ uiView: UIVisualEffectView, context: Context) {}
+}
+
+// MARK: - Report Issue Overlay
+struct ReportIssueOverlay: View {
+    var onClose: () -> Void
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: 8) {
-                Text("Next Question")
-                Image(systemName: "arrow.right")
+        GeometryReader { geo in
+            ZStack {
+                VisualEffectBlur(style: .systemThinMaterialDark)
+                    .edgesIgnoringSafeArea(.all)
+                Color.black.opacity(0.35)
+                    .edgesIgnoringSafeArea(.all)
+
+                VStack(spacing: 20) {
+                    Image(systemName: "flag")
+                        .font(.system(size: 44))
+                        .foregroundColor(.orange)
+                    Text("Think something is wrong?")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                    Text("We realize there may be mistakes in our app. Send details and a screenshot to \n \n report@steamed.app \n \n  We'll do our very best to fix it!")
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.primary)
+                    Button(action: onClose) {
+                        Text("Got it")
+                            .font(.headline)
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 36)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                    }
+                }
+                .padding(32)
+                .background(Color(.systemBackground))
+                .cornerRadius(20)
+                .shadow(radius: 24)
+                .frame(maxWidth: 360)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(
-                feedbackState == .correct ? Color.green : Color.orange
-            )
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .fontWeight(.semibold)
+            .frame(width: geo.size.width, height: geo.size.height)
         }
+        .transition(.opacity.combined(with: .scale))
     }
 }
 
