@@ -141,8 +141,13 @@ struct FlashcardQuestionView: View {
         .gesture(
             DragGesture()
                 .onChanged { value in
-                    isDragging = true
-                    dragOffset = value.translation.width
+                    // Ensure drag updates are immediate and not animated
+                    var transaction = Transaction()
+                    transaction.animation = nil
+                    withTransaction(transaction) {
+                        isDragging = true
+                        dragOffset = value.translation.width
+                    }
                 }
                 .onEnded { value in
                     isDragging = false

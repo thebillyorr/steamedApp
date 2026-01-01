@@ -48,12 +48,17 @@ struct DeckView: View {
                             // Bookmark Button
                             BookmarkButton(wordID: word.id)
 
-                            // mastery bar
+                            // mastery indicator
                             let progress = progressStore.getProgress(for: word.hanzi)
-                            ProgressView(value: progress)
-                                .progressViewStyle(LinearProgressViewStyle())
-                                .tint(progress >= 1.0 ? .green : .accentColor)
-                                .frame(width: 120, height: 6)
+                            ZStack {
+                                Circle()
+                                    .stroke(Color.gray.opacity(0.2), lineWidth: 3)
+                                Circle()
+                                    .trim(from: 0, to: progress)
+                                    .stroke(progress >= 1.0 ? Color.green : Color.blue, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                                    .rotationEffect(.degrees(-90))
+                            }
+                            .frame(width: 24, height: 24)
                         }
                         .padding(.vertical, 12)
                         .padding(.horizontal, 16)
@@ -81,16 +86,38 @@ struct DeckView: View {
 struct BookmarkButton: View {
     let wordID: String
     @ObservedObject private var bookmarkManager = BookmarkManager.shared
+    @State private var showConfirmation = false
     
     var body: some View {
         Button(action: {
-            bookmarkManager.toggleBookmark(for: wordID)
+            if bookmarkManager.isBookmarked(wordID: wordID) {
+                showConfirmation = true
+            } else {
+                var transaction = Transaction()
+                transaction.disablesAnimations = true
+                withTransaction(transaction) {
+                    bookmarkManager.toggleBookmark(for: wordID)
+                }
+            }
         }) {
-            Image(systemName: bookmarkManager.isBookmarked(wordID: wordID) ? "bookmark.fill" : "bookmark")
+            Image(systemName: bookmarkManager.isBookmarked(wordID: wordID) ? "star.fill" : "star")
                 .foregroundColor(bookmarkManager.isBookmarked(wordID: wordID) ? .yellow : .gray)
                 .font(.system(size: 20))
+                .animation(nil, value: bookmarkManager.isBookmarked(wordID: wordID))
         }
         .buttonStyle(PlainButtonStyle())
+        .alert("Remove from Favorites?", isPresented: $showConfirmation) {
+            Button("Remove", role: .destructive) {
+                var transaction = Transaction()
+                transaction.disablesAnimations = true
+                withTransaction(transaction) {
+                    bookmarkManager.toggleBookmark(for: wordID)
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to remove this word from your favorites?")
+        }
     }
 }
 

@@ -7,115 +7,82 @@
 
 import SwiftUI
 
-struct DeckMasteryTile: View {
+struct DeckCardView: View {
     let topic: Topic
-    let masteryProgress: Double  // 0.0 to 1.0
-    let isDeckMastered: Bool     // All words in deck mastered?
+    let masteryProgress: Double
+    let isDeckMastered: Bool
     
     var body: some View {
-        VStack(spacing: 14) {
-            // Mastery ring (centered)
+        VStack(spacing: 12) {
             ZStack {
-                // Background circle
-                Circle()
-                    .stroke(Color(.systemGray5), lineWidth: 4)
+                // Icon
+                Image(systemName: topic.icon)
+                    .font(.system(size: 30))
+                    .foregroundColor(.primary)
                 
-                // Progress ring
-                Circle()
-                    .trim(from: 0, to: masteryProgress)
-                    .stroke(
-                        isDeckMastered ? Color.green : Color.blue,
-                        style: StrokeStyle(lineWidth: 4, lineCap: .round)
-                    )
-                    .rotationEffect(.degrees(-90))
-                    .animation(.easeInOut(duration: 0.5), value: masteryProgress)
+                // Mastery Ring around icon
+                if !isDeckMastered {
+                    Circle()
+                        .stroke(Color.gray.opacity(0.1), lineWidth: 3)
+                        .frame(width: 70, height: 70)
+                    
+                    Circle()
+                        .trim(from: 0, to: masteryProgress)
+                        .stroke(Color.blue.opacity(0.8), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                        .frame(width: 70, height: 70)
+                } else {
+                    // Completed Ring (Blue Theme)
+                    Circle()
+                        .stroke(Color.steamedGradient, lineWidth: 3)
+                        .frame(width: 70, height: 70)
+                }
                 
-                // Center icon based on state
-                VStack(spacing: 3) {
-                    if isDeckMastered {
-                        // All words mastered - green star
-                        Image(systemName: "star.fill")
-                            .font(.system(size: 24))
-                            .foregroundColor(.green)
-                    } else {
-                        // In progress - show percentage
-                        Text("\(Int(masteryProgress * 100))%")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(.primary)
-                    }
+                // Completed Badge
+                if isDeckMastered {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 16))
+                        .foregroundColor(.white)
+                        .padding(5)
+                        .background(Circle().fill(Color.steamedDarkBlue))
+                        .offset(x: 24, y: -24)
+                        .shadow(radius: 1)
                 }
             }
-            .frame(width: 60, height: 60)
+            .frame(height: 80)
             
-            // Topic name
             Text(topic.name)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: 15, weight: .semibold))
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
+                .minimumScaleFactor(0.8)
                 .foregroundColor(.primary)
+                .frame(height: 40, alignment: .top)
         }
-        .frame(width: 140, height: 140)
         .padding(12)
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(14)
-        .shadow(
-            color: isDeckMastered ? Color.green.opacity(0.15) : (masteryProgress >= 1.0 ? Color.green.opacity(0.1) : Color.clear),
-            radius: 4,
-            x: 0,
-            y: 2
-        )
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemGray6))
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
 }
 
 #Preview {
-    HStack(spacing: 16) {
-        // State 1: In progress (25%)
-        DeckMasteryTile(
-            topic: Topic(name: "Aquarium", filename: "Aquarium"),
-            masteryProgress: 0.25,
-            isDeckMastered: false
-        )
-        
-        // State 2: Ready for exam (100% words, not exam passed)
-        DeckMasteryTile(
-            topic: Topic(name: "Travel", filename: "Travel"),
-            masteryProgress: 1.0,
-            isDeckMastered: false
-        )
-        
-        // State 3: Exam passed (mastered)
-        DeckMasteryTile(
-            topic: Topic(name: "Aquarium", filename: "Aquarium"),
-            masteryProgress: 1.0,
-            isDeckMastered: true
-        )
+    ZStack {
+        Color(.systemGray6)
+        HStack {
+            DeckCardView(
+                topic: Topic(name: "Aquarium", filename: "Aquarium", icon: "fish"),
+                masteryProgress: 0.75,
+                isDeckMastered: false
+            )
+            DeckCardView(
+                topic: Topic(name: "Camping", filename: "Camping", icon: "tent"),
+                masteryProgress: 1.0,
+                isDeckMastered: true
+            )
+        }
+        .padding()
     }
-    .padding()
-}
-
-#Preview {
-    HStack(spacing: 16) {
-        // State 0: No mastery
-        DeckMasteryTile(
-            topic: Topic(name: "Aquarium", filename: "Aquarium"),
-            masteryProgress: 0.0,
-            isDeckMastered: false
-        )
-        
-        // State A: 100% word mastery, not exam passed
-        DeckMasteryTile(
-            topic: Topic(name: "Travel", filename: "Travel"),
-            masteryProgress: 1.0,
-            isDeckMastered: false
-        )
-        
-        // State B: Exam passed (fully mastered)
-        DeckMasteryTile(
-            topic: Topic(name: "Aquarium", filename: "Aquarium"),
-            masteryProgress: 1.0,
-            isDeckMastered: true
-        )
-    }
-    .padding()
 }
 

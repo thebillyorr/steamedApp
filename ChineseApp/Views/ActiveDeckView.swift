@@ -52,7 +52,7 @@ struct ActiveDeckView: View {
                         Circle()
                             .trim(from: 0, to: masteryValue / 100)
                             .stroke(
-                                isDeckMastered ? Color.green : Color.blue,
+                                Color.steamedGradient,
                                 style: StrokeStyle(lineWidth: 10, lineCap: .round)
                             )
                             .rotationEffect(.degrees(-90))
@@ -63,11 +63,11 @@ struct ActiveDeckView: View {
                             if isDeckMastered {
                                 Image(systemName: "star.fill")
                                     .font(.system(size: 40))
-                                    .foregroundColor(.green)
+                                    .foregroundColor(.steamedDarkBlue)
                                 Text("Mastered")
                                     .font(.headline)
                                     .fontWeight(.semibold)
-                                    .foregroundColor(.green)
+                                    .foregroundColor(.steamedDarkBlue)
                             } else {
                                 Text("\(Int(masteryValue))%")
                                     .font(.system(size: 48, weight: .bold))
@@ -89,7 +89,7 @@ struct ActiveDeckView: View {
                             label: "Mastered",
                             value: "\(getMasteredWordCount())",
                             icon: "checkmark.circle.fill",
-                            color: .green
+                            color: .steamedDarkBlue
                         )
                         .transition(.opacity)
                         .id("mastered-\(topic.id)")

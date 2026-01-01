@@ -7,7 +7,7 @@ struct StoryTextViewRepresentable: UIViewRepresentable {
     let tokens: [StoryToken]
     let fontSize: CGFloat
     let selectedWordId: String?
-    let onSelectionChanged: (String?) -> Void
+    let onSelectionChanged: (String?, Int?) -> Void
     
     // Debug logging toggle (disabled in production)
     static let logEnabled: Bool = false
@@ -65,7 +65,7 @@ struct StoryTextViewRepresentable: UIViewRepresentable {
         
         // Font styling
         textView.font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
-        textView.textColor = .black
+        textView.textColor = .label
         
         // CRITICAL: Invalidate intrinsic content size so SwiftUI recalculates layout
         textView.invalidateIntrinsicContentSize()
@@ -159,13 +159,13 @@ struct StoryTextViewRepresentable: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, UIGestureRecognizerDelegate {
-        var onSelectionChanged: ((String?) -> Void)?
+        var onSelectionChanged: ((String?, Int?) -> Void)?
         var textView: UITextView?
         var tokens: [StoryToken]
     var selectedWordId: String?
     var selectedTokenIndex: Int?
         
-        init(onSelectionChanged: @escaping (String?) -> Void, tokens: [StoryToken]) {
+        init(onSelectionChanged: @escaping (String?, Int?) -> Void, tokens: [StoryToken]) {
             self.onSelectionChanged = onSelectionChanged
             self.tokens = tokens
         }
@@ -212,7 +212,7 @@ struct StoryTextViewRepresentable: UIViewRepresentable {
         private func applySelection(_ newWordId: String?, tokenIndex: Int?) {
             selectedWordId = newWordId
             selectedTokenIndex = tokenIndex
-            onSelectionChanged?(newWordId)
+            onSelectionChanged?(newWordId, tokenIndex)
             StoryTextViewRepresentable.debugLog("applySelection: newWordId=\(newWordId ?? "nil"), tokenIndex=\(String(describing: tokenIndex))")
             guard let textView = textView else { return }
             // Rebuild attributed text with new selection to update highlight immediately

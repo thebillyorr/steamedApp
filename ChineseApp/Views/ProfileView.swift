@@ -12,23 +12,17 @@ struct ProfileView: View {
     @ObservedObject private var progressStore = ProgressStore.shared
     @ObservedObject private var deckMasteryManager = DeckMasteryManager.shared
     @ObservedObject private var storyProgress = StoryProgressManager.shared
-    @ObservedObject private var themeManager = ThemeManager.shared
     @State private var showSettings = false
-    @State private var showEditProfile = false
     @State private var currentStreak = 0
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(.systemGroupedBackground)
-                    .ignoresSafeArea()
-
-                ScrollView {
-                    VStack(spacing: 24) {
-                        // MARK: - Header Row (Avatar + Info + Settings)
-                        HStack(alignment: .center, spacing: 16) {
-                            // Avatar
-                            ZStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // MARK: - Header Row (Avatar + Info + Settings)
+                    HStack(alignment: .center, spacing: 16) {
+                        // Avatar
+                        ZStack {
                                 if let data = profileManager.userProfile.profileImageData,
                                    let uiImage = UIImage(data: data) {
                                     Image(uiImage: uiImage)
@@ -49,21 +43,11 @@ struct ProfileView: View {
                                 }
                             }
 
-                            // Name + Edit button
+                            // Name
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(profileManager.userProfile.fullName)
                                     .font(.title3)
                                     .fontWeight(.semibold)
-
-                                Button(action: { showEditProfile = true }) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "pencil")
-                                            .font(.system(size: 14, weight: .semibold))
-                                        Text("Edit profile")
-                                            .font(.subheadline)
-                                    }
-                                    .foregroundColor(.blue)
-                                }
                             }
 
                             Spacer()
@@ -94,21 +78,21 @@ struct ProfileView: View {
                                         title: "Words Practiced",
                                         value: getTotalWordsPracticed(),
                                         icon: "book.fill",
-                                        color: Color.blue
+                                        color: .steamedDarkBlue
                                     )
 
                                     StatCard(
                                         title: "Mastered",
                                         value: getTotalWordsMastered(),
                                         icon: "star.fill",
-                                        color: Color.green
+                                        color: .steamedDarkBlue
                                     )
 
                                     StatCard(
                                         title: "Sessions",
                                         value: getTotalSessions(),
                                         icon: "play.circle.fill",
-                                        color: Color.orange
+                                        color: .steamedDarkBlue
                                     )
                                 }
 
@@ -118,21 +102,21 @@ struct ProfileView: View {
                                         title: "Decks Mastered",
                                         value: getDecksmastered(),
                                         icon: "checkmark.seal.fill",
-                                        color: Color.purple
+                                        color: .steamedDarkBlue
                                     )
 
                                     StatCard(
                                         title: "Best Streak",
                                         value: currentStreak,
                                         icon: "flame.fill",
-                                        color: Color.red
+                                        color: .steamedDarkBlue
                                     )
 
                                     StatCard(
                                         title: "Stories",
                                         value: storyProgress.totalCompleted(),
                                         icon: "book.closed.fill",
-                                        color: Color.cyan
+                                        color: .steamedDarkBlue
                                     )
                                 }
                             }
@@ -148,20 +132,15 @@ struct ProfileView: View {
                     }
                     .padding(.vertical, 16)
                 }
-            }
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showSettings) {
                 SettingsView()
             }
-            .sheet(isPresented: $showEditProfile) {
-                EditProfileView()
-            }
             .onAppear {
                 currentStreak = ProgressManager.getStreakCount()
             }
         }
-        .navigationViewStyle(.stack)
     }
     
     // MARK: - Helper Functions
@@ -247,7 +226,7 @@ struct StatCard: View {
         .frame(maxWidth: .infinity)
         .frame(height: 100)
         .padding(12)
-        .background(Color(.systemGray6).opacity(0.5))
+        .background(Color(.systemGray6))
         .cornerRadius(12)
         .opacity(isPlaceholder ? 0.6 : 1.0)
     }

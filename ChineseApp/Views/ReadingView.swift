@@ -172,7 +172,7 @@ struct StoryCardView: View {
 
                         if isCompleted {
                             Image(systemName: "star.fill")
-                                .foregroundColor(.green)
+                                .foregroundColor(.steamedDarkBlue)
                         } else if metadata.locked {
                             Image(systemName: "lock.fill")
                                 .foregroundColor(.orange)
@@ -207,10 +207,27 @@ struct StoryReaderView: View {
                     tokens: story.tokens,
                     fontSize: fontSize,
                     selectedWordId: selectedWordId,
-                    onSelectionChanged: { wordId in
+                    onSelectionChanged: { wordId, tokenIndex in
                         selectedWordId = wordId
                         if let id = wordId {
-                            selectedWord = StoryService.shared.getWord(wordId: id)
+                            var word = StoryService.shared.getWord(wordId: id)
+                            
+                            // Special handling for Character Name (w05005)
+                            // If the token is a character name placeholder, use the actual token text as the hanzi
+                            if id == "w05005", let index = tokenIndex, index < story.tokens.count {
+                                let tokenText = story.tokens[index].text
+                                if let originalWord = word {
+                                    word = Word(
+                                        hanzi: tokenText,
+                                        pinyin: originalWord.pinyin,
+                                        english: originalWord.english,
+                                        difficulty: originalWord.difficulty,
+                                        customId: id
+                                    )
+                                }
+                            }
+                            
+                            selectedWord = word
                         } else {
                             selectedWord = nil
                         }
@@ -237,115 +254,115 @@ struct ReadingNavigationBar: View {
     let onToggleCompleted: () -> Void
     
     var body: some View {
-        VStack {
-            HStack {
-                // Tooltip first
-                if let word = selectedWord {
-                    HStack(spacing: 12) {
-                        // Chinese character on left
+        VStack(spacing: 0) {
+            // Tooltip Section (Only visible when word selected)
+            if let word = selectedWord {
+                VStack(spacing: 0) {
+                    HStack(alignment: .top, spacing: 16) {
+                        // Chinese character
                         Text(word.hanzi)
-                            .font(.system(size: 22, weight: .bold))
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundColor(.primary)
                         
-                        // English and Pinyin on right
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(word.english.joined(separator: ", "))
-                                .font(.system(size: 12, weight: .semibold))
-                                .lineLimit(1)
-                            
+                        VStack(alignment: .leading, spacing: 4) {
+                            // Pinyin
                             Text(word.pinyin)
-                                .font(.system(size: 10, weight: .regular))
+                                .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.secondary)
+                            
+                            // English Definitions (Allowed to wrap)
+                            Text(word.english.joined(separator: ", "))
+                                .font(.system(size: 16, weight: .regular))
+                                .foregroundColor(.primary)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .lineLimit(nil)
                         }
+                        
+                        Spacer()
                         
                         // Bookmark Button
                         BookmarkButton(wordID: word.id)
-                            .padding(.leading, 8)
                     }
+                    .padding(16)
+                    
+                    Divider()
                 }
-
-                Spacer()
-
-                // Center controls: font toggle + completed status styled cohesively
-                HStack(spacing: 10) {
-                    // Font size segmented control
-                    HStack(spacing: 0) {
-                        Button {
-                            fontSize = 26
-                        } label: {
-                            Text("A-")
-                                .font(.system(size: 13, weight: .semibold))
-                                .frame(width: 40, height: 32)
-                        }
-                        .buttonStyle(.plain)
-
-                        Button {
-                            fontSize = 40
-                        } label: {
-                            Text("A+")
-                                .font(.system(size: 19, weight: .semibold))
-                                .frame(width: 40, height: 32)
-                        }
-                        .buttonStyle(.plain)
+                .background(Color(.systemBackground))
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+            
+            // Controls Section (Always visible)
+            HStack {
+                // Font Size Controls
+                HStack(spacing: 0) {
+                    Button {
+                        fontSize = 26
+                    } label: {
+                        Text("A-")
+                            .font(.system(size: 13, weight: .semibold))
+                            .frame(width: 40, height: 32)
                     }
-                    .foregroundColor(.primary)
-                    .background(
-                        ZStack {
-                            // Outer pill
-                            Capsule()
-                                .fill(Color(.systemGray6))
-
-                            // Selected half highlight
-                            GeometryReader { geo in
-                                let halfWidth = geo.size.width / 2
-
-                                Capsule()
-                                    .fill(Color.blue)
-                                    .frame(
-                                        width: halfWidth,
-                                        alignment: .leading
-                                    )
-                                    .offset(x: fontSize == 26 ? 0 : halfWidth)
-                            }
-                        }
-                    )
-                    .clipShape(Capsule())
-                    .overlay(
-                        // Ensure text is readable over blue/gray background
-                        HStack(spacing: 0) {
-                            Text("A-")
-                                .font(.system(size: 13, weight: .semibold))
-                                .frame(width: 40, height: 32)
-                                .foregroundColor(fontSize == 26 ? .white : .primary)
-
-                            Text("A+")
-                                .font(.system(size: 19, weight: .semibold))
-                                .frame(width: 40, height: 32)
-                                .foregroundColor(fontSize == 40 ? .white : .primary)
-                        }
-                        .allowsHitTesting(false)
-                    )
-                    .frame(height: 32)
-
-                    // Completed pill
-                    Button(action: onToggleCompleted) {
-                        HStack(spacing: 6) {
-                            Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
-                            Text(isCompleted ? "Completed" : "Mark Complete")
-                        }
-                        .font(.system(size: 12, weight: .semibold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .frame(height: 32)
-                        .background(isCompleted ? Color.green.opacity(0.15) : Color(.systemGray6))
-                        .foregroundColor(isCompleted ? .green : .primary)
-                        .clipShape(Capsule())
+                    .buttonStyle(.plain)
+                    
+                    Button {
+                        fontSize = 40
+                    } label: {
+                        Text("A+")
+                            .font(.system(size: 19, weight: .semibold))
+                            .frame(width: 40, height: 32)
                     }
                     .buttonStyle(.plain)
                 }
+                .foregroundColor(.primary)
+                .background(
+                    ZStack {
+                        Capsule().fill(Color(.systemGray6))
+                        GeometryReader { geo in
+                            let halfWidth = geo.size.width / 2
+                            Capsule()
+                                .fill(Color.blue)
+                                .frame(width: halfWidth, alignment: .leading)
+                                .offset(x: fontSize == 26 ? 0 : halfWidth)
+                        }
+                    }
+                )
+                .clipShape(Capsule())
+                .overlay(
+                    HStack(spacing: 0) {
+                        Text("A-")
+                            .font(.system(size: 13, weight: .semibold))
+                            .frame(width: 40, height: 32)
+                            .foregroundColor(fontSize == 26 ? .white : .primary)
+                        Text("A+")
+                            .font(.system(size: 19, weight: .semibold))
+                            .frame(width: 40, height: 32)
+                            .foregroundColor(fontSize == 40 ? .white : .primary)
+                    }
+                    .allowsHitTesting(false)
+                )
+                .frame(height: 32)
+                
+                Spacer()
+                
+                // Mark Complete Button
+                Button(action: onToggleCompleted) {
+                    HStack(spacing: 6) {
+                        Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
+                        Text(isCompleted ? "Completed" : "Mark Complete")
+                    }
+                    .font(.system(size: 12, weight: .semibold))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(isCompleted ? Color.steamedBlue.opacity(0.3) : Color(.systemGray6))
+                    .foregroundColor(isCompleted ? .steamedDarkBlue : .primary)
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
             }
-            .padding()
+            .padding(16)
+            .background(Color(.systemBackground))
         }
-        .background(Color(.systemBackground))
+        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: -4)
     }
 }
 

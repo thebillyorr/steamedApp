@@ -5,8 +5,13 @@ struct BookmarkedDeckView: View {
     @ObservedObject private var progressStore = ProgressStore.shared
     @ObservedObject private var deckMasteryManager = DeckMasteryManager.shared
     
-    // Create a virtual topic for the bookmarks
-    let bookmarkTopic = Topic(name: "Bookmarks", filename: "bookmarks_deck")
+    // Create a virtual topic for the bookmarks with a stable ID
+    let bookmarkTopic = Topic(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
+        name: "Favorites",
+        filename: "bookmarks_deck",
+        icon: "star.fill"
+    )
     
     var body: some View {
         let bookmarkedWords = DataService.loadWords(for: bookmarkTopic)
@@ -80,14 +85,10 @@ struct BookmarkedDeckView: View {
             }
             .padding(20)
             .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.blue, Color.purple]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                Color.steamedGradient
             )
             .cornerRadius(20)
-            .shadow(color: Color.blue.opacity(0.3), radius: 10, x: 0, y: 5)
+            .shadow(color: Color.steamedDarkBlue.opacity(0.3), radius: 10, x: 0, y: 5)
         }
     }
     

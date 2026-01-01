@@ -9,12 +9,22 @@ import SwiftUI
 
 @main
 struct ChineseAppApp: App {
-    @StateObject private var themeManager = ThemeManager.shared
+    @State private var showSplash = true
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .preferredColorScheme(themeManager.colorScheme)
+            ZStack {
+                if showSplash {
+                    SplashView(showSplash: $showSplash)
+                        .transition(.opacity)
+                        .zIndex(1) // Ensure it stays on top during transition
+                } else {
+                    ContentView()
+                        .transition(.opacity)
+                        .zIndex(0)
+                }
+            }
+            .animation(.easeInOut(duration: 0.5), value: showSplash)
         }
     }
 }

@@ -22,26 +22,36 @@ struct DictionaryView: View {
                         .frame(height: 200) // Give it some height
                     
                     // Themed Decks Section
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Themed Decks")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .padding(.horizontal, 16)
+                    VStack(alignment: .leading, spacing: 24) {
+                        let groupedDecks = Dictionary(grouping: decks) { $0.category }
+                        // Define custom order for categories
+                        let categoryOrder = ["Entertainment", "Nature & Outdoors", "Living in China", "Travel", "Speak like a Local"]
                         
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 16)], spacing: 16) {
-                            ForEach(decks) { topic in
-                                NavigationLink(value: topic) {
-                                    let topicMastery = calculateTopicMastery(for: topic)
-                                    let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename) || isAllWordsMastered(for: topic)
-                                    DeckMasteryTile(
-                                        topic: topic,
-                                        masteryProgress: topicMastery,
-                                        isDeckMastered: isDeckMastered
-                                    )
+                        ForEach(categoryOrder, id: \.self) { category in
+                            if let categoryDecks = groupedDecks[category] {
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text(category)
+                                        .font(.title2)
+                                        .fontWeight(.semibold)
+                                        .padding(.horizontal, 16)
+                                    
+                                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 16)], spacing: 16) {
+                                        ForEach(categoryDecks) { topic in
+                                            NavigationLink(value: topic) {
+                                                let topicMastery = calculateTopicMastery(for: topic)
+                                                let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename) || isAllWordsMastered(for: topic)
+                                                DeckCardView(
+                                                    topic: topic,
+                                                    masteryProgress: topicMastery,
+                                                    isDeckMastered: isDeckMastered
+                                                )
+                                            }
+                                        }
+                                    }
+                                    .padding(.horizontal, 16)
                                 }
                             }
                         }
-                        .padding(.horizontal, 16)
                     }
                 }
                 .padding(.vertical, 16)

@@ -10,13 +10,58 @@ import Foundation
 class DataService {
     // List of all available decks
     static let decks: [Topic] = [
-        Topic(name: "Aquarium", filename: "Aquarium"),
-        Topic(name: "Travel", filename: "Travel")
+
+        // Things to do
+        Topic(name: "Aquarium", filename: "Aquarium", icon: "fish", category: "Entertainment"),
+        Topic(name: "Zoo", filename: "Zoo", icon: "pawprint.fill", category: "Entertainment"),
+        Topic(name: "Shopping Mall", filename: "Shopping Mall", icon: "building.2.crop.circle.fill", category: "Entertainment"),
+        Topic(name: "Museum", filename: "Museum", icon: "paintpalette.fill", category: "Entertainment"),
+        Topic(name: "Amusement Park", filename: "Theme Park", icon: "star.circle.fill", category: "Entertainment"),
+        Topic(name: "Cafe & Drinks", filename: "Cafe", icon: "cup.and.saucer.fill", category: "Entertainment"),
+        
+
+        // Outdoors
+        Topic(name: "Camping", filename: "Camping", icon: "tent", category: "Nature & Outdoors"),
+        Topic(name: "Hiking", filename: "Hiking", icon: "figure.hiking", category: "Nature & Outdoors"),
+        Topic(name: "Gardening", filename: "Gardening", icon: "leaf.fill", category: "Nature & Outdoors"),
+        
+        // Living in China
+        Topic(name: "Digital Life", filename: "Digital Life", icon: "iphone", category: "Living in China"),
+        Topic(name: "Online Chat", filename: "Online Chat", icon: "bubble.left.and.bubble.right", category: "Living in China"),
+        Topic(name: "Chinese New Year", filename: "Chinese New Year", icon: "party.popper", category: "Living in China"),
+        Topic(name: "Tea Culture", filename: "Tea", icon: "cup.and.saucer.fill", category: "Living in China"),
+        Topic(name: "Corporate", filename: "Corporate", icon: "building.2.fill", category: "Living in China"),
+        Topic(name: "Shopping", filename: "Shopping", icon: "bag.fill", category: "Living in China"),
+
+        
+        
+        // Travel
+        Topic(name: "Air Travel", filename: "Plane", icon: "airplane", category: "Travel"),
+        Topic(name: "Train Travel", filename: "Train", icon: "tram.fill", category: "Travel"),
+        Topic(name: "Hotel Stay", filename: "Hotel", icon: "bed.double.fill", category: "Travel"),
+        Topic(name: "Car Travel", filename: "Car Travel", icon: "car.fill", category: "Travel"),
+    
+        
+        
+        
+        // Speak like a Local
+        Topic(name: "Chinese Lingo", filename: "Chinese Lingo", icon: "quote.bubble.fill", category: "Speak like a Local"),
+        Topic(name: "Internet Lingo", filename: "Internet Lingo", icon: "network", category: "Speak like a Local"),
+        Topic(name: "Office Lingo", filename: "Office Lingo", icon: "briefcase.fill", category: "Speak like a Local"),
+
+        
     ]
     
     // flat list of all topics for practice mode
     static var allTopics: [Topic] {
-        return decks
+        let favorites = Topic(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
+            name: "Favorites",
+            filename: "bookmarks_deck",
+            icon: "star.fill",
+            category: "User"
+        )
+        return [favorites] + decks
     }
     
     // MARK: - Dictionary Loading
@@ -32,9 +77,15 @@ class DataService {
         
         guard let url = Bundle.main.url(forResource: "dictionary", withExtension: "json"),
               let data = try? Data(contentsOf: url),
-              let dict = try? JSONDecoder().decode([String: Word].self, from: data) else {
+              var dict = try? JSONDecoder().decode([String: Word].self, from: data) else {
             print("❌ Failed to load dictionary.json")
             return [:]
+        }
+        
+        // Inject the dictionary key as the customId so that word.id returns the stable ID (e.g. "w00001")
+        // instead of the Hanzi. This is crucial for bookmarks to work correctly.
+        for key in dict.keys {
+            dict[key]?.customId = key
         }
         
         cachedDictionary = dict
@@ -73,7 +124,8 @@ class DataService {
         // Special case for Bookmarks deck
         if topic.filename == "bookmarks_deck" {
             let bookmarkedIDs = BookmarkManager.shared.bookmarkedWordIDs
-            return bookmarkedIDs.compactMap { getWord(byHanzi: $0) }
+            let dictionary = loadDictionary()
+            return bookmarkedIDs.compactMap { dictionary[$0] }
         }
 
         // Load the deck file (contains word IDs)
@@ -125,6 +177,11 @@ class DataService {
     /// First 5 words always unlocked, then 1 new word per session completed
     /// Configurable via constant
     static func getUnlockedWordCount(for topicFilename: String, totalWords: Int) -> Int {
+        // Special case: Bookmarks deck always has all words unlocked
+        if topicFilename == "bookmarks_deck" {
+            return totalWords
+        }
+
         let baseUnlockedWords = 8  // First 5 words always available
         let wordsReleasedPerSession = 2  // Can be changed to 2, 3, etc.
         

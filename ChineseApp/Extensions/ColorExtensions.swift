@@ -17,4 +17,14 @@ extension Color {
         let blue = Double(rgb & 0xFF) / 255.0
         self.init(red: red, green: green, blue: blue)
     }
+    
+    // MARK: - Steamed Theme Colors
+    static let steamedBlue = Color(red: 0.6, green: 0.85, blue: 0.95) // Pastel Light Blue
+    static let steamedDarkBlue = Color(red: 0.3, green: 0.5, blue: 0.7) // Darker blue
+    
+    static let steamedGradient = LinearGradient(
+        gradient: Gradient(colors: [.steamedBlue, .steamedDarkBlue]),
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
 }

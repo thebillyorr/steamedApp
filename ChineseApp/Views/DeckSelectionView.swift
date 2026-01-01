@@ -29,14 +29,14 @@ struct DeckSelectionView: View {
                             }
                         }
                     }
-                    .padding(16)
+                    .padding()
                 }
             }
             .navigationTitle("Select Deck")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
                         dismiss()
                     }
                 }

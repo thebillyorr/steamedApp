@@ -234,7 +234,24 @@ struct PracticeSessionView: View {
                     }
                     .padding(.horizontal)
                     if words.isEmpty {
-                        Text("Loading...")
+                        VStack(spacing: 16) {
+                            Image(systemName: "books.vertical")
+                                .font(.system(size: 48))
+                                .foregroundColor(.secondary)
+                            Text("No words found")
+                                .font(.headline)
+                            Text("Add words to this deck to start practicing.")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                            
+                            Button("Go Back") {
+                                dismiss()
+                            }
+                            .padding(.top)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
                         Text(topic.name)
                             .font(.headline)
@@ -256,7 +273,8 @@ struct PracticeSessionView: View {
                         if !sessionItems.isEmpty {
                             let currentWord = words[sessionItems[currentIndex].wordIndex]
                             
-                            switch currentQuestionType {
+                            Group {
+                                switch currentQuestionType {
                             case .flashcard:
                                 let wordProgress = ProgressStore.shared.getProgress(for: currentWord.hanzi)
                                 FlashcardQuestionView(
@@ -346,6 +364,8 @@ struct PracticeSessionView: View {
                             default:
                                 Text("Question type not implemented")
                             }
+                            }
+                            .id(sessionItems[currentIndex].id)
                         }
                     }
                 }
@@ -380,38 +400,47 @@ struct PracticeSessionView: View {
                     // Randomly select words from unlocked pool using 95/5 split (95% unmastered, 5% maintenance)
                     var selectedIndices: [Int] = []
                     var repetitionCount: [Int: Int] = [:]
+                    var attempts = 0
+                    let maxAttempts = fixedSessionLength * 10 // Safety break
                     
-                    while selectedIndices.count < fixedSessionLength {
+                    while selectedIndices.count < fixedSessionLength && attempts < maxAttempts {
+                        attempts += 1
+                        
                         let useMaintenanceWord = Double.random(in: 0..<1.0) < 0.05 && !masteredIndices.isEmpty
                         let pool = useMaintenanceWord ? masteredIndices : unmasteredIndices
                         
-                        guard !pool.isEmpty else {
-                            // If one pool is empty, fall back to the other
-                            let fallbackPool = useMaintenanceWord ? unmasteredIndices : masteredIndices
-                            guard !fallbackPool.isEmpty else { break }  // Can't continue if both empty
-                            
-                            let randomIndex = fallbackPool.randomElement()!
+                        // Helper to try adding a word from a pool
+                        func tryAddFrom(_ p: [Int]) -> Bool {
+                            guard let randomIndex = p.randomElement() else { return false }
                             let repsForThisWord = repetitionCount[randomIndex, default: 0]
-                            let isLastWord = !selectedIndices.isEmpty && selectedIndices.last == randomIndex
                             
-                            if repsForThisWord < maxRepetitionsPerWord && !isLastWord {
+                            // Relax "isLastWord" constraint if we have very few words available
+                            let isLastWord = !selectedIndices.isEmpty && selectedIndices.last == randomIndex
+                            let canRepeatBackToBack = unlockedIndices.count < 3
+                            
+                            if repsForThisWord < maxRepetitionsPerWord && (!isLastWord || canRepeatBackToBack) {
                                 selectedIndices.append(randomIndex)
                                 repetitionCount[randomIndex, default: 0] += 1
+                                return true
                             }
-                            continue
+                            return false
+                        }
+
+                        if !pool.isEmpty {
+                            if tryAddFrom(pool) { continue }
                         }
                         
-                        let randomIndex = pool.randomElement()!
-                        let repsForThisWord = repetitionCount[randomIndex, default: 0]
+                        // Fallback to the other pool if primary failed or was empty
+                        let fallbackPool = useMaintenanceWord ? unmasteredIndices : masteredIndices
+                        if !fallbackPool.isEmpty {
+                            if tryAddFrom(fallbackPool) { continue }
+                        }
                         
-                        // Check if we can add this word:
-                        // 1. Hasn't hit max repetitions
-                        // 2. Not the same as the last selected word (prevent back-to-back)
-                        let isLastWord = !selectedIndices.isEmpty && selectedIndices.last == randomIndex
-                        
-                        if repsForThisWord < maxRepetitionsPerWord && !isLastWord {
-                            selectedIndices.append(randomIndex)
-                            repetitionCount[randomIndex, default: 0] += 1
+                        // If we are here, we failed to add a word this iteration.
+                        // If we have exhausted all words (all hit max reps), we should break.
+                        let allMaxed = unlockedIndices.allSatisfy { (repetitionCount[$0] ?? 0) >= maxRepetitionsPerWord }
+                        if allMaxed {
+                            break
                         }
                     }
 
@@ -461,7 +490,16 @@ struct PracticeSessionView: View {
         // take up to 3 other random meanings from different words as distractors
         // only select from words in the current topic, and exclude meanings that match the correct answer
         var others: [String] = []
-        let candidateWords = words
+        
+        // If the deck is too small (e.g. Favorites with < 4 words), pull distractors from the global dictionary
+        let sourceWords: [Word]
+        if words.count < 4 {
+            sourceWords = Array(DataService.getDictionary().values)
+        } else {
+            sourceWords = words
+        }
+        
+        let candidateWords = sourceWords
             .filter { $0.hanzi != correct.hanzi } // exclude the correct word itself
             .filter { word in
                 // FILTER: Exclude words that have ANY overlap in English meanings
@@ -492,7 +530,16 @@ struct PracticeSessionView: View {
         
         // Collect all characters from other words as potential distractors
         var distractorCharacters: [String] = []
-        let otherWords = words.filter { $0.hanzi != correct.hanzi }
+        
+        // If the deck is too small, pull distractors from the global dictionary
+        let sourceWords: [Word]
+        if words.count < 4 {
+            sourceWords = Array(DataService.getDictionary().values)
+        } else {
+            sourceWords = words
+        }
+        
+        let otherWords = sourceWords.filter { $0.hanzi != correct.hanzi }
         
         for word in otherWords {
             let chars = Array(word.hanzi).map { String($0) }
@@ -539,7 +586,15 @@ struct PracticeSessionView: View {
         }
         
         // Add other pinyin from different words as distractors
-        let otherWords = words.filter { $0.hanzi != correct.hanzi }
+        // If the deck is too small, pull distractors from the global dictionary
+        let sourceWords: [Word]
+        if words.count < 4 {
+            sourceWords = Array(DataService.getDictionary().values)
+        } else {
+            sourceWords = words
+        }
+        
+        let otherWords = sourceWords.filter { $0.hanzi != correct.hanzi }
         for word in otherWords.shuffled() {
             // Don't add duplicate meanings
             if !options.contains(word.pinyin) {
