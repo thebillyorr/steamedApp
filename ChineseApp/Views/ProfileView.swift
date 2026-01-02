@@ -6,136 +6,233 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct ProfileView: View {
     @ObservedObject private var profileManager = UserProfileManager.shared
     @ObservedObject private var progressStore = ProgressStore.shared
     @ObservedObject private var deckMasteryManager = DeckMasteryManager.shared
     @ObservedObject private var storyProgress = StoryProgressManager.shared
-    @State private var showSettings = false
+    
+    @AppStorage("appTheme") private var selectedTheme: String = "System"
+    @State private var showEditProfile = false
     @State private var currentStreak = 0
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    // MARK: - Header Row (Avatar + Info + Settings)
-                    HStack(alignment: .center, spacing: 16) {
-                        // Avatar
-                        ZStack {
+            ZStack {
+                Color(.systemGroupedBackground)
+                    .ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // MARK: - Profile Header
+                        VStack(spacing: 16) {
+                            // Avatar
+                            ZStack {
+                                Circle()
+                                    .fill(Color(.secondarySystemGroupedBackground))
+                                    .frame(width: 100, height: 100)
+                                    .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
+                                
                                 if let data = profileManager.userProfile.profileImageData,
                                    let uiImage = UIImage(data: data) {
                                     Image(uiImage: uiImage)
                                         .resizable()
                                         .scaledToFill()
-                                        .frame(width: 80, height: 80)
+                                        .frame(width: 90, height: 90)
                                         .clipShape(Circle())
-                                        .shadow(radius: 4)
                                 } else {
-                                    Circle()
-                                        .fill(colorFromHex(profileManager.userProfile.profileColor))
-                                        .frame(width: 80, height: 80)
-                                        .shadow(radius: 4)
-
-                                    Text(profileManager.userProfile.initials)
-                                        .font(.system(size: 32, weight: .bold))
-                                        .foregroundColor(.white)
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color(hex: profileManager.userProfile.profileColor))
+                                            .frame(width: 90, height: 90)
+                                        
+                                        Text(profileManager.userProfile.initials)
+                                            .font(.system(size: 36, weight: .bold))
+                                            .foregroundColor(.white)
+                                    }
                                 }
+                                
+                                // Edit Badge
+                                Button(action: { showEditProfile = true }) {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .font(.system(size: 28))
+                                        .foregroundColor(.steamedDarkBlue)
+                                        .background(Circle().fill(Color.white))
+                                }
+                                .offset(x: 35, y: 35)
                             }
-
-                            // Name
-                            VStack(alignment: .leading, spacing: 4) {
+                            
+                            // Name & Join Date
+                            VStack(spacing: 4) {
                                 Text(profileManager.userProfile.fullName)
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                            }
-
-                            Spacer()
-
-                            // Settings icon
-                            Button(action: { showSettings = true }) {
-                                Image(systemName: "gearshape")
-                                    .font(.system(size: 18, weight: .semibold))
+                                    .font(.title2)
+                                    .fontWeight(.bold)
                                     .foregroundColor(.primary)
-                                    .frame(width: 36, height: 36)
-                                    .background(Color(.systemGray5))
-                                    .clipShape(Circle())
+                                
+                                Text("Member since 2025")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
                             }
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 8)
-
-                        // MARK: - Progress Tiles Card
+                        .padding(.top, 20)
+                        
+                        // MARK: - Stats Grid
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("Your Progress")
-                                .font(.headline)
+                            Text("STATISTICS")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundColor(.secondary)
                                 .padding(.horizontal, 4)
-
-                            VStack(spacing: 12) {
-                                // Top row: Words Practiced, Mastered, Sessions
-                                HStack(spacing: 12) {
-                                    StatCard(
-                                        title: "Words Practiced",
-                                        value: getTotalWordsPracticed(),
-                                        icon: "book.fill",
-                                        color: .steamedDarkBlue
-                                    )
-
-                                    StatCard(
-                                        title: "Mastered",
-                                        value: getTotalWordsMastered(),
-                                        icon: "star.fill",
-                                        color: .steamedDarkBlue
-                                    )
-
-                                    StatCard(
-                                        title: "Sessions",
-                                        value: getTotalSessions(),
-                                        icon: "play.circle.fill",
-                                        color: .steamedDarkBlue
-                                    )
+                            
+                            // Streak Card (Full Width)
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("\(currentStreak)")
+                                        .font(.system(size: 32, weight: .bold))
+                                        .foregroundColor(.primary)
+                                    Text("Day Streak")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(.secondary)
                                 }
-
-                                // Bottom row: Decks Mastered, Best Streak, Stories
-                                HStack(spacing: 12) {
-                                    StatCard(
-                                        title: "Decks Mastered",
-                                        value: getDecksmastered(),
-                                        icon: "checkmark.seal.fill",
-                                        color: .steamedDarkBlue
-                                    )
-
-                                    StatCard(
-                                        title: "Best Streak",
-                                        value: currentStreak,
-                                        icon: "flame.fill",
-                                        color: .steamedDarkBlue
-                                    )
-
-                                    StatCard(
-                                        title: "Stories",
-                                        value: storyProgress.totalCompleted(),
-                                        icon: "book.closed.fill",
-                                        color: .steamedDarkBlue
-                                    )
-                                }
+                                
+                                Spacer()
+                                
+                                Image(systemName: "flame.fill")
+                                    .font(.system(size: 36))
+                                    .foregroundStyle(Color.steamedGradient)
+                            }
+                            .padding(20)
+                            .background(Color(.secondarySystemGroupedBackground))
+                            .cornerRadius(16)
+                            .shadow(color: Color.black.opacity(0.03), radius: 2, x: 0, y: 1)
+                            
+                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                                StatCard(
+                                    title: "Words Mastered",
+                                    value: getTotalWordsMastered(),
+                                    icon: "star.fill",
+                                    color: .steamedDarkBlue
+                                )
+                                
+                                StatCard(
+                                    title: "Stories Read",
+                                    value: storyProgress.totalCompleted(),
+                                    icon: "book.closed.fill",
+                                    color: .steamedDarkBlue
+                                )
+                                
+                                StatCard(
+                                    title: "Decks Mastered",
+                                    value: getDecksmastered(),
+                                    icon: "checkmark.seal.fill",
+                                    color: .steamedDarkBlue
+                                )
+                                
+                                StatCard(
+                                    title: "Sessions",
+                                    value: getTotalSessions(),
+                                    icon: "clock.fill",
+                                    color: .steamedDarkBlue
+                                )
                             }
                         }
-                        .padding(16)
-                        .background(Color(.systemBackground))
-                        .cornerRadius(16)
-                        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 1)
                         .padding(.horizontal, 16)
-
-                        Spacer()
-                            .frame(height: 12)
+                        
+                        // MARK: - Settings Section
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("PREFERENCES")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 4)
+                            
+                            VStack(spacing: 0) {
+                                // Theme Picker
+                                HStack {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: "moon.stars.fill")
+                                            .foregroundColor(.steamedDarkBlue)
+                                            .font(.system(size: 18))
+                                        Text("App Theme")
+                                            .font(.body)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Picker("Theme", selection: $selectedTheme) {
+                                        Text("System").tag("System")
+                                        Text("Light").tag("Light")
+                                        Text("Dark").tag("Dark")
+                                    }
+                                    .pickerStyle(.menu)
+                                    .tint(.secondary)
+                                }
+                                .padding(16)
+                                
+                                Divider().padding(.leading, 46)
+                                
+                                // Support Link
+                                NavigationLink(destination: Text("Contact Support").navigationTitle("Support")) {
+                                    HStack {
+                                        HStack(spacing: 12) {
+                                            Image(systemName: "envelope.fill")
+                                                .foregroundColor(.steamedDarkBlue)
+                                                .font(.system(size: 18))
+                                            Text("Contact Support")
+                                                .font(.body)
+                                                .foregroundColor(.primary)
+                                        }
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: 14, weight: .semibold))
+                                            .foregroundColor(.secondary.opacity(0.5))
+                                    }
+                                    .padding(16)
+                                }
+                                
+                                Divider().padding(.leading, 46)
+                                
+                                // Privacy Policy
+                                NavigationLink(destination: Text("Privacy Policy").navigationTitle("Privacy Policy")) {
+                                    HStack {
+                                        HStack(spacing: 12) {
+                                            Image(systemName: "hand.raised.fill")
+                                                .foregroundColor(.steamedDarkBlue)
+                                                .font(.system(size: 18))
+                                            Text("Privacy Policy")
+                                                .font(.body)
+                                                .foregroundColor(.primary)
+                                        }
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: 14, weight: .semibold))
+                                            .foregroundColor(.secondary.opacity(0.5))
+                                    }
+                                    .padding(16)
+                                }
+                            }
+                            .background(Color(.secondarySystemGroupedBackground))
+                            .cornerRadius(16)
+                            .shadow(color: Color.black.opacity(0.03), radius: 2, x: 0, y: 1)
+                        }
+                        .padding(.horizontal, 16)
+                        
+                        // Version Info
+                        Text("Steamed v1.0.0")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding(.top, 8)
+                            .padding(.bottom, 32)
                     }
-                    .padding(.vertical, 16)
                 }
+            }
             .navigationTitle("Profile")
-            .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showSettings) {
-                SettingsSheetView()
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showEditProfile) {
+                EditProfileSheet()
             }
             .onAppear {
                 currentStreak = ProgressManager.getStreakCount()
@@ -162,83 +259,148 @@ struct ProfileView: View {
         let allTopics = DataService.allTopics
         return allTopics.filter { deckMasteryManager.isDeckMastered(filename: $0.filename) }.count
     }
-    
-    private func calculateMasteryPercentage() -> Double {
-        let progress = progressStore.progress
-        guard !progress.isEmpty else { return 0 }
-        
-        // If all words are at 1.0, return exactly 100%
-        if progress.values.allSatisfy({ $0 >= 0.99 }) {
-            return 100.0
-        }
-        
-        let totalProgress = progress.values.reduce(0, +)
-        let percentage = (totalProgress / Double(progress.count)) * 100
-        
-        // Round to nearest integer to avoid floating point artifacts
-        return round(percentage)
-    }
-    
-    private func colorFromHex(_ hex: String) -> Color {
-        let hex = hex.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
-        let rgb = Int(hex, radix: 16) ?? 0xFF6B6B
-        let red = Double((rgb >> 16) & 0xFF) / 255.0
-        let green = Double((rgb >> 8) & 0xFF) / 255.0
-        let blue = Double(rgb & 0xFF) / 255.0
-        return Color(red: red, green: green, blue: blue)
-    }
 }
 
 // MARK: - Stat Card Component
+
 struct StatCard: View {
     let title: String
     let value: Int
     let icon: String
     let color: Color
-    var isPlaceholder: Bool = false
     
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundColor(color)
-                .opacity(isPlaceholder ? 0.4 : 1.0)
-            
-            if isPlaceholder {
-                Text("—")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.secondary)
-                    .opacity(0.5)
-            } else {
-                Text(String(value))
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: icon)
+                    .font(.system(size: 20))
+                    .foregroundColor(color)
+                Spacer()
             }
             
-            Text(title)
-                .font(.caption2)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .opacity(isPlaceholder ? 0.5 : 1.0)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(value)")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(.primary)
+                
+                Text(title)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.secondary)
+            }
         }
-        .frame(maxWidth: .infinity)
-        .frame(height: 100)
-        .padding(12)
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
-        .opacity(isPlaceholder ? 0.6 : 1.0)
+        .padding(16)
+        .background(Color(.secondarySystemGroupedBackground))
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.03), radius: 2, x: 0, y: 1)
     }
 }
 
-// MARK: - Border Line Extension
-extension View {
-    func borderLine(color: Color = Color.black, width: CGFloat = 1) -> some View {
-        self.border(color, width: width)
-    }
-}
+// MARK: - Edit Profile Sheet
 
-#Preview {
-    ProfileView()
+struct EditProfileSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var profileManager = UserProfileManager.shared
+    
+    @State private var fullName: String = ""
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var selectedImageData: Data?
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    HStack {
+                        Spacer()
+                        VStack(spacing: 16) {
+                            PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
+                                ZStack {
+                                    if let data = selectedImageData, let uiImage = UIImage(data: data) {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 100, height: 100)
+                                            .clipShape(Circle())
+                                    } else if let data = profileManager.userProfile.profileImageData,
+                                              let uiImage = UIImage(data: data) {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 100, height: 100)
+                                            .clipShape(Circle())
+                                    } else {
+                                        Circle()
+                                            .fill(Color(hex: profileManager.userProfile.profileColor))
+                                            .frame(width: 100, height: 100)
+                                        
+                                        Text(profileManager.userProfile.initials)
+                                            .font(.system(size: 40, weight: .bold))
+                                            .foregroundColor(.white)
+                                    }
+                                    
+                                    // Camera Overlay
+                                    VStack {
+                                        Spacer()
+                                        HStack {
+                                            Spacer()
+                                            Image(systemName: "camera.fill")
+                                                .foregroundColor(.white)
+                                                .padding(8)
+                                                .background(Color.black.opacity(0.6))
+                                                .clipShape(Circle())
+                                        }
+                                    }
+                                    .frame(width: 100, height: 100)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                            
+                            Text("Tap to change photo")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                    }
+                    .listRowBackground(Color.clear)
+                }
+                
+                Section(header: Text("Personal Information")) {
+                    TextField("Full Name", text: $fullName)
+                        .textContentType(.name)
+                }
+            }
+            .navigationTitle("Edit Profile")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        saveProfile()
+                        dismiss()
+                    }
+                }
+            }
+            .onAppear {
+                fullName = profileManager.userProfile.fullName
+            }
+            .onChange(of: selectedItem) { newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                        selectedImageData = data
+                    }
+                }
+            }
+        }
+    }
+    
+    private func saveProfile() {
+        profileManager.updateProfile(
+            fullName: fullName,
+            profileImageData: selectedImageData
+        )
+    }
 }

@@ -13,26 +13,15 @@ struct SplashView: View {
     @State private var size = 0.8
     @State private var opacity = 0.5
     
-    // Custom Light Blue Theme Color
-    let steamedBlue = Color(red: 0.6, green: 0.85, blue: 0.95) // Pastel Light Blue
-    let steamedDarkBlue = Color(red: 0.3, green: 0.5, blue: 0.7) // Darker blue for gradient
-    
     @Environment(\.colorScheme) var colorScheme
     
     var backgroundColor: Color {
-        colorScheme == .dark ? .black : .white
-    }
-    var steamedGradient: LinearGradient {
-        LinearGradient(
-            gradient: Gradient(colors: [Color(red: 0.6, green: 0.85, blue: 0.95), Color(red: 0.3, green: 0.5, blue: 0.7)]),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+        Color(.systemGroupedBackground)
     }
     
     var body: some View {
         ZStack {
-            // Background: white or black depending on system
+            // Background
             backgroundColor
                 .ignoresSafeArea()
             
@@ -43,21 +32,21 @@ struct SplashView: View {
                 .offset(y: -30)
                 
                 // PNG Logo (no steam)
-                Image("LogoImageSet")
+                Image("LogoNoSteam")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 160, height: 160)
                     .shadow(color: Color.black.opacity(0.10), radius: 10, x: 0, y: 5)
                 
                 // App Title
-                    Text("Steamed")
-                        .font(Font.custom("SF Pro Rounded", size: 42).weight(.black))
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
-                        .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
+                Text("Steamed")
+                    .font(.system(size: 48, weight: .black, design: .rounded))
+                    .foregroundStyle(Color.steamedDarkBlue)
+                    .shadow(color: Color.steamedBlue.opacity(0.3), radius: 2, x: 0, y: 2)
 
-                    Text("Freshly Served Chinese")
-                        .font(Font.custom("SF Pro Rounded", size: 20).weight(.semibold))
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                Text("Freshly Served Chinese")
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundColor(.secondary)
             }
             .scaleEffect(size)
             .opacity(opacity)
@@ -105,7 +94,7 @@ struct SimpleAnimatedSteamTrail: View {
         SteamWavyShape()
             .stroke(
                 LinearGradient(
-                    gradient: Gradient(colors: [Color(red: 0.6, green: 0.85, blue: 0.95), Color(red: 0.3, green: 0.5, blue: 0.7)]),
+                    gradient: Gradient(colors: [.steamedBlue, .steamedDarkBlue]),
                     startPoint: .top, endPoint: .bottom),
                 style: StrokeStyle(lineWidth: 10, lineCap: .round)
             )

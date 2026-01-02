@@ -17,140 +17,155 @@ struct ActiveDeckView: View {
     @State private var isHovered = false
     
     var body: some View {
-        VStack(spacing: 16) {
-            // Header
-            Text("Active Deck")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity)
+        ZStack {
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea()
             
-            // Tappable tall card deck
-            Button(action: onStartPractice) {
-                VStack(spacing: 0) {
-                    Spacer()
-                        .frame(minHeight: 12)
-                    
-                    // Deck title (centered)
-                    Text(topic.name)
-                        .font(.system(size: 26, weight: .bold))
-                        .foregroundColor(.primary)
-                        .transition(.opacity)
-                    
-                    Spacer()
-                        .frame(minHeight: 24)
-                    
-                    // Mastery ring (centered)
-                    let masteryValue = calculateDeckMastery()
-                    let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename) || isAllWordsMastered()
-                    
-                    ZStack {
-                        // Background circle
-                        Circle()
-                            .stroke(Color(.systemGray6), lineWidth: 10)
-                        
-                        // Progress ring
-                        Circle()
-                            .trim(from: 0, to: masteryValue / 100)
-                            .stroke(
-                                Color.steamedGradient,
-                                style: StrokeStyle(lineWidth: 10, lineCap: .round)
-                            )
-                            .rotationEffect(.degrees(-90))
-                            .animation(.easeInOut(duration: 0.6), value: masteryValue)
-                        
-                        // Inner content
-                        VStack(spacing: 8) {
-                            if isDeckMastered {
-                                Image(systemName: "star.fill")
-                                    .font(.system(size: 40))
-                                    .foregroundColor(.steamedDarkBlue)
-                                Text("Mastered")
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.steamedDarkBlue)
-                            } else {
-                                Text("\(Int(masteryValue))%")
-                                    .font(.system(size: 48, weight: .bold))
-                                    .foregroundColor(.primary)
-                                Text("Mastery")
-                                    .font(.subheadline)
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Main Practice Card
+                    VStack(spacing: 32) {
+                        // Header: Deck Info & Switch
+                        HStack(alignment: .top) {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("CURRENT DECK")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
                                     .foregroundColor(.secondary)
+                                    .tracking(1)
+                                
+                                Button(action: onShowDeckSelection) {
+                                    HStack(spacing: 8) {
+                                        Text(topic.name)
+                                            .font(.title)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.primary)
+                                            .multilineTextAlignment(.leading)
+                                        
+                                        Image(systemName: "chevron.down.circle.fill")
+                                            .font(.title2)
+                                            .foregroundColor(.steamedBlue)
+                                    }
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
+                            
+                            Spacer()
+                            
+                            // Icon
+                            ZStack {
+                                Circle()
+                                    .fill(Color.steamedBlue.opacity(0.1))
+                                    .frame(width: 60, height: 60)
+                                
+                                if topic.icon == "Logo" {
+                                    Image("Logo")
+                                        .resizable()
+                                        .renderingMode(.template)
+                                        .scaledToFit()
+                                        .frame(width: 30, height: 30)
+                                        .foregroundStyle(Color.steamedGradient)
+                                } else {
+                                    Image(systemName: topic.icon)
+                                        .font(.system(size: 30))
+                                        .foregroundStyle(Color.steamedGradient)
+                                }
                             }
                         }
-                    }
-                    .frame(height: 140)
-                    
-                    Spacer()
-                        .frame(minHeight: 24)
-                    
-                    // Stats grid (3 columns, centered)
-                    HStack(spacing: 12) {
-                        DeckStatCard(
-                            label: "Mastered",
-                            value: "\(getMasteredWordCount())",
-                            icon: "checkmark.circle.fill",
-                            color: .steamedDarkBlue
-                        )
-                        .transition(.opacity)
-                        .id("mastered-\(topic.id)")
                         
-                        DeckStatCard(
-                            label: "In Progress",
-                            value: "\(getInProgressWordCount())",
-                            icon: "circle.dashed",
-                            color: .orange
-                        )
-                        .transition(.opacity)
-                        .id("inprogress-\(topic.id)")
+                        // Progress Circle
+                        let masteryValue = calculateDeckMastery()
+                        // For My Basket (dynamic deck), only rely on current word status, not historical mastery
+                        let isDeckMastered = (topic.filename == "bookmarks_deck" ? false : deckMasteryManager.isDeckMastered(filename: topic.filename)) || isAllWordsMastered()
                         
-                        DeckStatCard(
-                            label: "Not Started",
-                            value: "\(getNotStartedWordCount())",
-                            icon: "circle",
-                            color: .gray
-                        )
-                        .transition(.opacity)
-                        .id("notstarted-\(topic.id)")
+                        ZStack {
+                            // Background circle
+                            Circle()
+                                .stroke(Color(.systemGray5), lineWidth: 15)
+                                .frame(width: 200, height: 200)
+                            
+                            // Progress ring
+                            Circle()
+                                .trim(from: 0, to: masteryValue / 100)
+                                .stroke(
+                                    isDeckMastered ? 
+                                    LinearGradient(colors: [.yellow, .orange], startPoint: .topLeading, endPoint: .bottomTrailing) :
+                                    Color.steamedGradient,
+                                    style: StrokeStyle(lineWidth: 15, lineCap: .round)
+                                )
+                                .rotationEffect(.degrees(-90))
+                                .frame(width: 200, height: 200)
+                                .animation(.easeInOut(duration: 0.6), value: masteryValue)
+                            
+                            // Inner content
+                            VStack(spacing: 4) {
+                                if isDeckMastered {
+                                    Image(systemName: "star.fill")
+                                        .font(.system(size: 48))
+                                        .foregroundColor(.orange)
+                                        .padding(.bottom, 8)
+                                    Text("Mastered")
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.primary)
+                                } else {
+                                    Text("\(Int(masteryValue))%")
+                                        .font(.system(size: 56, weight: .bold))
+                                        .foregroundColor(.primary)
+                                    Text("Mastery")
+                                        .font(.headline)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 12)
+                        
+                        // Stats Grid
+                        HStack(spacing: 16) {
+                            DeckStatCard(
+                                label: "Mastered",
+                                value: "\(getMasteredWordCount())",
+                                icon: "star.fill"
+                            )
+                            
+                            DeckStatCard(
+                                label: "Learning",
+                                value: "\(getInProgressWordCount())",
+                                icon: "book.fill"
+                            )
+                            
+                            DeckStatCard(
+                                label: "New",
+                                value: "\(getNotStartedWordCount())",
+                                icon: "sparkles"
+                            )
+                        }
+                        
+                        // Start Button
+                        Button(action: onStartPractice) {
+                            HStack {
+                                Image(systemName: "play.fill")
+                                Text("Start Session")
+                            }
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 18)
+                            .background(Color.steamedGradient)
+                            .cornerRadius(20)
+                            .shadow(color: Color.steamedDarkBlue.opacity(0.3), radius: 10, x: 0, y: 5)
+                        }
                     }
-                    .id("stats-\(topic.id)")
-                    
-                    Spacer()
-                        .frame(minHeight: 12)
+                    .padding(24)
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .cornerRadius(32)
+                    .shadow(color: Color.black.opacity(0.05), radius: 15, x: 0, y: 5)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(20)
-                .background(Color(.systemGray6))
-                .cornerRadius(20)
-                .foregroundColor(.primary)
             }
-            .frame(height: 480)
-            .padding(.horizontal, 24)
-            .scaleEffect(isHovered ? 1.02 : 1.0)
-            .offset(y: isHovered ? -8 : 0)
-            .animation(.easeInOut(duration: 0.2), value: isHovered)
-            // Card deck shadows (layered effect)
-            .shadow(color: Color.black.opacity(0.08), radius: 2, x: 0, y: 4)
-            .shadow(color: Color.black.opacity(0.06), radius: 8, x: 0, y: 12)
-            .shadow(color: Color.black.opacity(0.04), radius: 16, x: 0, y: 20)
-            .onHover { hovering in
-                isHovered = hovering
-            }
-            
-            // Change deck option (below card)
-            Button(action: onShowDeckSelection) {
-                HStack(spacing: 4) {
-                    Image(systemName: "arrow.left.arrow.right")
-                        .font(.system(size: 12))
-                    Text("Tap to change deck")
-                        .font(.caption)
-                }
-                .foregroundColor(.blue)
-                .opacity(0.7)
-            }
-            
-            Spacer()
         }
-        .padding(.vertical, 24)
     }
     
     private func calculateDeckMastery() -> Double {
@@ -199,27 +214,26 @@ struct DeckStatCard: View {
     let label: String
     let value: String
     let icon: String
-    let color: Color
     
     var body: some View {
         VStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.system(size: 20))
-                .foregroundColor(color)
+                .foregroundStyle(Color.steamedGradient)
             
             Text(value)
-                .font(.system(size: 24, weight: .bold))
+                .font(.system(size: 20, weight: .bold))
                 .foregroundColor(.primary)
             
             Text(label)
-                .font(.caption2)
+                .font(.caption)
+                .fontWeight(.medium)
                 .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(12)
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(.vertical, 16)
+        .background(Color(.systemGroupedBackground))
+        .cornerRadius(16)
     }
 }
 

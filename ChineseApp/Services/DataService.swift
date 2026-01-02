@@ -56,9 +56,9 @@ class DataService {
     static var allTopics: [Topic] {
         let favorites = Topic(
             id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-            name: "Favorites",
+            name: "My Bookmarks",
             filename: "bookmarks_deck",
-            icon: "star.fill",
+            icon: "Logo",
             category: "User"
         )
         return [favorites] + decks

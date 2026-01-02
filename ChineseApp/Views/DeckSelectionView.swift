@@ -19,17 +19,49 @@ struct DeckSelectionView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
+            ZStack {
+                Color(.systemGroupedBackground)
+                    .ignoresSafeArea()
+                
                 ScrollView {
-                    VStack(spacing: 12) {
-                        ForEach(availableDecks) { topic in
-                            DeckSelectionCard(topic: topic) {
-                                onSelect(topic)
-                                dismiss()
+                    LazyVStack(spacing: 16) {
+                        // Separate "My Bookmarks" if it exists and isn't the current deck
+                        if let bookmarks = availableDecks.first(where: { $0.filename == "bookmarks_deck" }) {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("MY COLLECTION")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.secondary)
+                                    .padding(.leading, 4)
+                                
+                                DeckSelectionCard(topic: bookmarks) {
+                                    onSelect(bookmarks)
+                                    dismiss()
+                                }
+                            }
+                        }
+                        
+                        // Other Decks
+                        let otherDecks = availableDecks.filter { $0.filename != "bookmarks_deck" }
+                        if !otherDecks.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("ALL DECKS")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.secondary)
+                                    .padding(.leading, 4)
+                                    .padding(.top, 8)
+                                
+                                ForEach(otherDecks) { topic in
+                                    DeckSelectionCard(topic: topic) {
+                                        onSelect(topic)
+                                        dismiss()
+                                    }
+                                }
                             }
                         }
                     }
-                    .padding()
+                    .padding(16)
                 }
             }
             .navigationTitle("Select Deck")
@@ -49,51 +81,95 @@ struct DeckSelectionCard: View {
     let topic: Topic
     let onTap: () -> Void
     @ObservedObject private var progressStore = ProgressStore.shared
+    @ObservedObject private var deckMasteryManager = DeckMasteryManager.shared
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 16) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(topic.name)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    
-                    HStack(spacing: 12) {
-                        Label("\(getWordCount()) words", systemImage: "character")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+            HStack(alignment: .center, spacing: 16) {
+                // Icon Section
+                ZStack {
+                    if topic.icon == "Logo" {
+                        Image("Logo")
+                            .resizable()
+                            .renderingMode(.template)
+                            .scaledToFit()
+                            .frame(width: 32, height: 32)
+                            .foregroundColor(isDeckMastered ? .orange : (colorScheme == .dark ? .steamedBlue : .steamedDarkBlue))
+                    } else {
+                        Image(systemName: topic.icon)
+                            .font(.system(size: 32))
+                            .foregroundColor(isDeckMastered ? .orange : (colorScheme == .dark ? .steamedBlue : .steamedDarkBlue))
+                    }
+                }
+                .frame(width: 60, height: 60)
+                
+                // Content Section
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Text(topic.name)
+                            .font(.system(size: 17, weight: .bold))
+                            .foregroundColor(.primary)
+                            .lineLimit(1)
                         
-                        Label("\(Int(calculateMastery()))%", systemImage: "star.fill")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        Spacer()
+                        
+                        if isDeckMastered {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.orange)
+                                .font(.system(size: 14))
+                        }
+                    }
+                    
+                    // Progress Bar
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text("\(getWordCount()) words")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            
+                            Spacer()
+                            
+                            Text("\(Int(calculateMastery()))%")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundColor(isDeckMastered ? .orange : .secondary)
+                        }
+                        
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                Capsule()
+                                    .fill(Color(.systemGray5))
+                                    .frame(height: 6)
+                                
+                                Capsule()
+                                    .fill(
+                                        isDeckMastered ?
+                                        LinearGradient(colors: [.yellow, .orange], startPoint: .leading, endPoint: .trailing) :
+                                        LinearGradient(colors: [.steamedBlue, .steamedDarkBlue], startPoint: .leading, endPoint: .trailing)
+                                    )
+                                    .frame(width: geo.size.width * (calculateMastery() / 100), height: 6)
+                            }
+                        }
+                        .frame(height: 6)
                     }
                 }
                 
-                Spacer()
-                
-                // Mastery indicator (mini ring)
-                ZStack {
-                    Circle()
-                        .stroke(Color(.systemGray6), lineWidth: 3)
-                    
-                    Circle()
-                        .trim(from: 0, to: calculateMastery() / 100)
-                        .stroke(
-                            calculateMastery() >= 100 ? Color.green : Color.blue,
-                            style: StrokeStyle(lineWidth: 3, lineCap: .round)
-                        )
-                        .rotationEffect(.degrees(-90))
-                    
-                    Text("\(Int(calculateMastery()))%")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundColor(.primary)
-                }
-                .frame(width: 50, height: 50)
+                // Chevron
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.secondary.opacity(0.5))
             }
             .padding(16)
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
+            .background(Color(.secondarySystemGroupedBackground))
+            .cornerRadius(16)
+            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
         }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    private var isDeckMastered: Bool {
+        (topic.filename == "bookmarks_deck" ? false : deckMasteryManager.isDeckMastered(filename: topic.filename)) || calculateMastery() >= 100
     }
     
     private func calculateMastery() -> Double {

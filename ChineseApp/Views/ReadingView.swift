@@ -60,77 +60,137 @@ struct StoryListView: View {
     @Binding var isReadingStory: Bool
     @State private var library: StoryLibrary?
     @ObservedObject private var storyProgress = StoryProgressManager.shared
-    @State private var expandedDifficulties: Set<Int> = []
+    @State private var selectedTab: Int = 0 // 0: Library, 1: Bookshelf
+    
+    // Alert State
+    @State private var showUncompleteAlert = false
+    @State private var storyIdToUncomplete: String?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(spacing: 0) {
+            // Segmented Control
+            Picker("View", selection: $selectedTab) {
+                Text("Library").tag(0)
+                Text("Bookshelf").tag(1)
+            }
+            .pickerStyle(.segmented)
+            .padding()
+            .background(Color(.systemBackground))
+            
             if let library = library, !library.stories.isEmpty {
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack(spacing: 12) {
-                        // Group stories by difficulty (level)
-                        let grouped = Dictionary(grouping: library.stories) { $0.difficulty }
-                        let sortedKeys = grouped.keys.sorted()
-
-                        ForEach(sortedKeys, id: \ .self) { level in
-                            let storiesForLevel = grouped[level] ?? []
-
-                            // Section header with expand/collapse toggle
-                            Button {
-                                if expandedDifficulties.contains(level) {
-                                    expandedDifficulties.remove(level)
-                                } else {
-                                    expandedDifficulties.insert(level)
-                                }
-                            } label: {
-                                HStack {
-                                    Text("Level \(level)")
-                                        .font(.system(size: 18, weight: .semibold))
-                                    Spacer()
-                                    Image(systemName: expandedDifficulties.contains(level) ? "chevron.up" : "chevron.down")
-                                        .font(.system(size: 14, weight: .semibold))
-                                        .foregroundColor(.secondary)
-                                }
-                                .padding(.horizontal, 4)
-                            }
-                            .buttonStyle(.plain)
-
-                            if expandedDifficulties.contains(level) {
-                                VStack(spacing: 12) {
-                                    ForEach(storiesForLevel) { metadata in
-                                        StoryCardView(
-                                            metadata: metadata,
-                                            isCompleted: storyProgress.isCompleted(storyId: metadata.storyId)
-                                        ) {
+                ScrollView {
+                    LazyVStack(spacing: 20) {
+                        // Filter stories based on tab
+                        let filteredStories = library.stories.filter { story in
+                            let isCompleted = storyProgress.isCompleted(storyId: story.storyId)
+                            return selectedTab == 0 ? !isCompleted : isCompleted
+                        }
+                        
+                        if filteredStories.isEmpty {
+                            EmptyStateView(tab: selectedTab)
+                        } else {
+                            // Group by difficulty
+                            let grouped = Dictionary(grouping: filteredStories) { $0.difficulty }
+                            let sortedKeys = grouped.keys.sorted()
+                            
+                            ForEach(sortedKeys, id: \.self) { level in
+                                SectionHeader(level: level)
+                                
+                                ForEach(grouped[level] ?? []) { metadata in
+                                    StoryCardView(
+                                        metadata: metadata,
+                                        isCompleted: storyProgress.isCompleted(storyId: metadata.storyId),
+                                        onToggleCompletion: {
+                                            let isCompleted = storyProgress.isCompleted(storyId: metadata.storyId)
+                                            if isCompleted {
+                                                // If currently completed, show confirmation before uncompleting
+                                                storyIdToUncomplete = metadata.storyId
+                                                showUncompleteAlert = true
+                                            } else {
+                                                // If not completed, just complete it immediately
+                                                withAnimation {
+                                                    storyProgress.toggleCompletion(storyId: metadata.storyId)
+                                                }
+                                            }
+                                        },
+                                        onTap: {
                                             if let story = StoryService.shared.loadStory(storyId: metadata.storyId) {
                                                 selectedStory = story
                                             }
                                         }
-                                    }
+                                    )
                                 }
                             }
                         }
                     }
                     .padding()
+                    .padding(.bottom, 80) // Extra padding for bottom tab bar
                 }
+                .background(Color(.systemGroupedBackground))
             } else {
-                VStack(alignment: .center, spacing: 8) {
-                    Image(systemName: "book.fill")
-                        .font(.system(size: 40))
-                        .foregroundColor(.gray)
-                    Text("No stories available yet")
-                        .foregroundColor(.gray)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .onAppear {
             library = StoryService.shared.loadLibrary()
-            if let stories = library?.stories {
-                // Expand all existing difficulty levels by default
-                let levels = Set(stories.map { $0.difficulty })
-                expandedDifficulties = levels
+        }
+        .alert("Remove from Bookshelf?", isPresented: $showUncompleteAlert) {
+            Button("Remove", role: .destructive) {
+                if let id = storyIdToUncomplete {
+                    withAnimation {
+                        storyProgress.toggleCompletion(storyId: id)
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                storyIdToUncomplete = nil
+            }
+        } message: {
+            Text("This story will be moved back to your Library as unread.")
+        }
+    }
+}
+
+// MARK: - Helper Views
+
+struct SectionHeader: View {
+    let level: Int
+    var body: some View {
+        HStack {
+            Text("HSK Level \(level)")
+                .font(.headline)
+                .foregroundColor(.secondary)
+                .padding(.leading, 4)
+            Spacer()
+        }
+        .padding(.top, 8)
+        .padding(.bottom, 4)
+    }
+}
+
+struct EmptyStateView: View {
+    let tab: Int
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: tab == 0 ? "checkmark.circle" : "books.vertical")
+                .font(.system(size: 60))
+                .foregroundColor(.secondary.opacity(0.5))
+            
+            VStack(spacing: 8) {
+                Text(tab == 0 ? "All Caught Up!" : "Your Bookshelf is Empty")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+                
+                Text(tab == 0 ? "Check your bookshelf for completed stories." : "Finish a story to see it here.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
         }
+        .padding(.top, 60)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -139,53 +199,56 @@ struct StoryListView: View {
 struct StoryCardView: View {
     let metadata: StoryMetadata
     let isCompleted: Bool
+    let onToggleCompletion: () -> Void
     let onTap: () -> Void
     
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .top, spacing: 12) {
-                    // Title + subtitle on the left
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(metadata.title)
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.primary)
-                            .lineLimit(2)
-
-                        if let subtitle = metadata.subtitle, !subtitle.isEmpty {
-                            Text(subtitle)
-                                .font(.system(size: 15, weight: .regular))
-                                .foregroundColor(.secondary)
-                                .lineLimit(2)
-                        }
-                    }
-
-                    Spacer()
-
-                    // Level indicator with star/lock anchored near the bottom-right
-                    VStack(alignment: .trailing, spacing: 4) {
-                        Label("Level \(metadata.difficulty)", systemImage: "chart.bar.fill")
-                            .font(.system(size: 12))
+            HStack(alignment: .center, spacing: 16) {
+                // Left: Content
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(metadata.title)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.primary)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                    
+                    if let subtitle = metadata.subtitle, !subtitle.isEmpty {
+                        Text(subtitle)
+                            .font(.system(size: 14))
                             .foregroundColor(.secondary)
-
-                        Spacer(minLength: 4)
-
-                        if isCompleted {
-                            Image(systemName: "star.fill")
-                                .foregroundColor(.steamedDarkBlue)
-                        } else if metadata.locked {
-                            Image(systemName: "lock.fill")
-                                .foregroundColor(.orange)
-                        }
+                            .lineLimit(1)
                     }
-                    .frame(minHeight: 40, alignment: .bottomTrailing)
+                    
+                    // HSK Badge
+                    Text("HSK \(metadata.difficulty)")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule()
+                                .fill(Color.steamedDarkBlue)
+                        )
                 }
+                
+                Spacer()
+                
+                // Right: Action Button (Mark Read/Unread)
+                Button(action: onToggleCompletion) {
+                    Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 28))
+                        .foregroundColor(isCompleted ? .green : .gray.opacity(0.3))
+                        .contentShape(Circle()) // Ensure tap target is solid
+                }
+                .buttonStyle(PlainButtonStyle()) // Important to not trigger the parent button
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
+            .padding(16)
+            .background(Color(.secondarySystemGroupedBackground)) // Better for dark mode
+            .cornerRadius(16)
+            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
         }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

@@ -8,9 +8,9 @@ struct BookmarkedDeckView: View {
     // Create a virtual topic for the bookmarks with a stable ID
     let bookmarkTopic = Topic(
         id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-        name: "Favorites",
+        name: "My Bookmarks",
         filename: "bookmarks_deck",
-        icon: "star.fill"
+        icon: "Logo"
     )
     
     var body: some View {
@@ -23,21 +23,25 @@ struct BookmarkedDeckView: View {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Favorites")
+                        Text("My Bookmarks")
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                         
-                        Text("\(wordCount) Words Saved")
+                        Text("Your collection of saved words")
                             .font(.subheadline)
                             .foregroundColor(.white.opacity(0.9))
                     }
                     
                     Spacer()
                     
-                    Image(systemName: "star.fill")
-                        .font(.system(size: 32))
-                        .foregroundColor(.yellow)
+                    // Logo Icon
+                    Image("Logo")
+                        .resizable()
+                        .renderingMode(.template)
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.white)
                 }
                 
                 HStack(spacing: 20) {
