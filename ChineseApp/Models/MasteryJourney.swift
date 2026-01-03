@@ -39,21 +39,12 @@ struct QuestionTypeOption: Codable {
 /// Available question types
 enum QuestionType: String, Codable {
     case flashcard
-    case multipleChoice
-    case construction
-    case pinyin
-    case fillInBlank      // Not implemented yet - will use quiz
-    case trueOrFalse      // Not implemented yet - will use quiz
-    case speaking         // Not implemented yet - will use quiz
+    case chineseToEnglish        // Was multipleChoice
+    case englishConstructChinese // Was construction
+    case chineseToPinyin         // Was pinyin
     
     /// For unimplemented types, fall back to the closest implemented type
     var implementedType: QuestionType {
-        switch self {
-        case .flashcard, .multipleChoice, .construction, .pinyin:
-            return self
-        case .fillInBlank, .trueOrFalse, .speaking:
-            // Fallback to quiz (multipleChoice) for now
-            return .multipleChoice
-        }
+        return self
     }
 }

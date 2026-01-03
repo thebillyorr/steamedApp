@@ -1,5 +1,5 @@
 //
-//  ConstructionQuestionView.swift
+//  EnglishConstructChineseQuestionView.swift
 //  ChineseApp
 //
 //  Created by Billy Orr on 2025-11-11.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ConstructionQuestionView: View {
+struct EnglishConstructChineseQuestionView: View {
     let word: Word
     let availableCharacters: [String]
     let onSubmit: (Bool) -> Void
@@ -142,6 +142,7 @@ struct ConstructionQuestionView: View {
                     QuestionFeedbackBox(
                         state: feedbackState,
                         correctAnswer: feedbackState == .incorrect ? word.hanzi : nil,
+                        word: word,
                         onReport: onReport
                     )
 
@@ -157,7 +158,7 @@ struct ConstructionQuestionView: View {
 }
 
 #Preview {
-    ConstructionQuestionView(
+    EnglishConstructChineseQuestionView(
         word: Word(
             hanzi: "你",
             pinyin: "nǐ",

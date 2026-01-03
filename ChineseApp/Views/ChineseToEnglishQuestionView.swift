@@ -1,5 +1,5 @@
 //
-//  MultipleChoiceQuestionView.swift
+//  ChineseToEnglishQuestionView.swift
 //  ChineseApp
 //
 //  Created by Billy Orr on 2025-11-11.
@@ -13,7 +13,7 @@ enum QuizFeedbackState {
     case incorrect
 }
 
-struct MultipleChoiceQuestionView: View {
+struct ChineseToEnglishQuestionView: View {
     let word: Word
     let options: [String]
     let correctChoice: String
@@ -55,6 +55,7 @@ struct MultipleChoiceQuestionView: View {
                     QuestionFeedbackBox(
                         state: feedbackState,
                         correctAnswer: feedbackState == .incorrect ? correctChoice : nil,
+                        word: word,
                         onReport: onReport
                     )
 
@@ -72,7 +73,7 @@ struct MultipleChoiceQuestionView: View {
 }
 
 #Preview {
-    MultipleChoiceQuestionView(
+    ChineseToEnglishQuestionView(
         word: Word(
             hanzi: "你",
             pinyin: "nǐ",

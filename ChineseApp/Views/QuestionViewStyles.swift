@@ -130,32 +130,78 @@ struct AnswerOptionButton: View {
 struct QuestionFeedbackBox: View {
     let state: QuizFeedbackState
     let correctAnswer: String?
+    var word: Word? = nil
     var onReport: (() -> Void)? = nil
     
     var body: some View {
         Group {
             if state == .incorrect, let answer = correctAnswer {
-                HStack(spacing: 8) {
-                    Image(systemName: "info.circle.fill")
-                        .foregroundColor(.blue)
-                    Text("Correct answer:")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                    Text(answer)
-                        .font(.body)
-                        .foregroundColor(.primary)
-                    Spacer()
-                    Button(action: { onReport?() }) {
-                        Image(systemName: "flag")
-                            .foregroundColor(.orange)
-                            .padding(.leading, 8)
-                            .accessibilityLabel("Report an issue")
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 24))
+                            .foregroundColor(.red)
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Correct Answer")
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.secondary)
+                            
+                            Text(answer)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+                                .fixedSize(horizontal: false, vertical: true)
+                            
+                            if let word = word {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    if answer != word.hanzi {
+                                        Text(word.hanzi)
+                                            .font(.headline)
+                                    }
+                                    if answer != word.pinyin {
+                                        Text(word.pinyin)
+                                            .font(.subheadline)
+                                    }
+                                    let englishText = word.english.joined(separator: ", ")
+                                    if !word.english.contains(answer) && answer != englishText {
+                                        Text(englishText)
+                                            .font(.caption)
+                                    }
+                                }
+                                .foregroundColor(.secondary)
+                                .padding(.top, 4)
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        if let word = word {
+                            BookmarkButton(wordID: word.id, size: 32)
+                        }
                     }
+                    
+                    Divider()
+                        .background(Color.red.opacity(0.2))
+                    
+                    Button(action: { onReport?() }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "flag")
+                            Text("Report Issue")
+                        }
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    }
+                    .padding(.leading, 36) // Align with text
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(12)
-                .background(Color.blue.opacity(0.1))
-                .cornerRadius(8)
+                .padding(16)
+                .background(Color.red.opacity(0.05))
+                .cornerRadius(16)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.red.opacity(0.1), lineWidth: 1)
+                )
             } else {
                 EmptyView()
             }
@@ -176,43 +222,58 @@ struct VisualEffectBlur: UIViewRepresentable {
 struct ReportIssueOverlay: View {
     var onClose: () -> Void
     var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                VisualEffectBlur(style: .systemThinMaterialDark)
-                    .edgesIgnoringSafeArea(.all)
-                Color.black.opacity(0.35)
-                    .edgesIgnoringSafeArea(.all)
+        ZStack {
+            // Dimmed background
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+                .onTapGesture { onClose() }
 
-                VStack(spacing: 20) {
-                    Image(systemName: "flag")
-                        .font(.system(size: 44))
-                        .foregroundColor(.orange)
-                    Text("Think something is wrong?")
-                        .font(.title3)
+            VStack(spacing: 24) {
+                // Icon
+                Image(systemName: "flag")
+                    .font(.system(size: 48))
+                    .foregroundStyle(Color.steamedGradient)
+                
+                VStack(spacing: 12) {
+                    Text("Spot a mistake?")
+                        .font(.title2)
                         .fontWeight(.bold)
-                    Text("We realize there may be mistakes in our app. Send details and a screenshot to \n \n report@steamed.app \n \n  We'll do our very best to fix it!")
+                        .foregroundColor(.primary)
+                    
+                    Text("We're constantly improving. Please send details and a screenshot to:")
                         .font(.body)
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.primary)
-                    Button(action: onClose) {
-                        Text("Got it")
-                            .font(.headline)
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 36)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
-                    }
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    
+                    Text("report@steamed.app")
+                        .font(.headline)
+                        .foregroundColor(.steamedDarkBlue)
+                        .padding(.vertical, 4)
+                    
+                    Text("We'll do our very best to fix it!")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
-                .padding(32)
-                .background(Color(.systemBackground))
-                .cornerRadius(20)
-                .shadow(radius: 24)
-                .frame(maxWidth: 360)
+                
+                Button(action: onClose) {
+                    Text("Got it")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color.steamedGradient)
+                        .cornerRadius(16)
+                }
             }
-            .frame(width: geo.size.width, height: geo.size.height)
+            .padding(32)
+            .background(Color(.secondarySystemGroupedBackground))
+            .cornerRadius(24)
+            .shadow(color: Color.black.opacity(0.1), radius: 20, x: 0, y: 10)
+            .padding(.horizontal, 32)
+            .frame(maxWidth: 400)
         }
-        .transition(.opacity.combined(with: .scale))
+        .transition(.opacity)
     }
 }
 
@@ -231,5 +292,40 @@ struct QuestionTitleBox: View {
                 .font(.system(size: fontSize, weight: .bold))
         }
         .padding(.vertical, 24)
+    }
+}
+
+// MARK: - Summary Stat Card
+struct SummaryStatCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    // Fixed to theme gradient
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 24))
+                .foregroundStyle(Color.steamedGradient)
+                .frame(width: 50, height: 50)
+                .background(Color.steamedBlue.opacity(0.15))
+                .clipShape(Circle())
+            
+            VStack(spacing: 4) {
+                Text(value)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.primary)
+                
+                Text(title)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 16)
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 }

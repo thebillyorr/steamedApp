@@ -4,7 +4,7 @@ struct ReadingView: View {
     @State private var library: StoryLibrary?
     @State private var selectedStory: Story?
     @State private var selectedWord: Word?
-    @State private var fontSize: CGFloat = 26
+    @AppStorage("readingFontSize") private var fontSize: Double = 26.0
     @ObservedObject private var storyProgress = StoryProgressManager.shared
     
     var body: some View {
@@ -13,7 +13,7 @@ struct ReadingView: View {
                 StoryReaderView(
                     story: selectedStory,
                     selectedWord: $selectedWord,
-                    fontSize: $fontSize
+                    fontSize: Binding(get: { CGFloat(fontSize) }, set: { fontSize = Double($0) })
                 )
                 .navigationTitle(selectedStory.title)
                 .navigationBarTitleDisplayMode(.inline)
@@ -32,7 +32,7 @@ struct ReadingView: View {
                 }
                 .safeAreaInset(edge: .bottom) {
                     ReadingNavigationBar(
-                        fontSize: $fontSize,
+                        fontSize: Binding(get: { CGFloat(fontSize) }, set: { fontSize = Double($0) }),
                         selectedWord: $selectedWord,
                         isCompleted: storyProgress.isCompleted(storyId: selectedStory.storyId),
                         onToggleCompleted: {
@@ -228,7 +228,7 @@ struct StoryCardView: View {
                         .padding(.vertical, 4)
                         .background(
                             Capsule()
-                                .fill(Color.steamedDarkBlue)
+                                .fill(Color.steamedGradient)
                         )
                 }
                 
@@ -238,7 +238,7 @@ struct StoryCardView: View {
                 Button(action: onToggleCompletion) {
                     Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
                         .font(.system(size: 28))
-                        .foregroundColor(isCompleted ? .green : .gray.opacity(0.3))
+                        .foregroundStyle(isCompleted ? AnyShapeStyle(Color.steamedGradient) : AnyShapeStyle(Color.gray.opacity(0.3)))
                         .contentShape(Circle()) // Ensure tap target is solid
                 }
                 .buttonStyle(PlainButtonStyle()) // Important to not trigger the parent button
@@ -326,12 +326,16 @@ struct ReadingNavigationBar: View {
                         Text(word.hanzi)
                             .font(.system(size: 32, weight: .bold))
                             .foregroundColor(.primary)
+                            .frame(minWidth: 60, minHeight: 60)
+                            .padding(.horizontal, 8)
+                            .background(Color.steamedBlue.opacity(0.15))
+                            .cornerRadius(12)
                         
                         VStack(alignment: .leading, spacing: 4) {
                             // Pinyin
                             Text(word.pinyin)
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.secondary)
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.steamedDarkBlue)
                             
                             // English Definitions (Allowed to wrap)
                             Text(word.english.joined(separator: ", "))
@@ -346,64 +350,51 @@ struct ReadingNavigationBar: View {
                         // Bookmark Button
                         BookmarkButton(wordID: word.id)
                     }
-                    .padding(16)
-                    
-                    Divider()
+                    .padding(20)
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .cornerRadius(20)
+                    .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: -2)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 16)
                 }
-                .background(Color(.systemBackground))
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
             
             // Controls Section (Always visible)
-            HStack {
+            HStack(spacing: 20) {
                 // Font Size Controls
                 HStack(spacing: 0) {
                     Button {
-                        fontSize = 26
+                        withAnimation { fontSize = 26 }
                     } label: {
-                        Text("A-")
-                            .font(.system(size: 13, weight: .semibold))
-                            .frame(width: 40, height: 32)
+                        Text("A")
+                            .font(.system(size: 16, weight: .medium))
+                            .frame(width: 44, height: 36)
+                            .foregroundColor(fontSize < 34 ? .white : .primary)
+                            .background(fontSize < 34 ? Color.steamedDarkBlue : Color.clear)
                     }
                     .buttonStyle(.plain)
                     
+                    Divider()
+                        .frame(height: 20)
+                    
                     Button {
-                        fontSize = 40
+                        withAnimation { fontSize = 40 }
                     } label: {
-                        Text("A+")
-                            .font(.system(size: 19, weight: .semibold))
-                            .frame(width: 40, height: 32)
+                        Text("A")
+                            .font(.system(size: 22, weight: .bold))
+                            .frame(width: 44, height: 36)
+                            .foregroundColor(fontSize >= 34 ? .white : .primary)
+                            .background(fontSize >= 34 ? Color.steamedDarkBlue : Color.clear)
                     }
                     .buttonStyle(.plain)
                 }
-                .foregroundColor(.primary)
-                .background(
-                    ZStack {
-                        Capsule().fill(Color(.systemGray6))
-                        GeometryReader { geo in
-                            let halfWidth = geo.size.width / 2
-                            Capsule()
-                                .fill(Color.blue)
-                                .frame(width: halfWidth, alignment: .leading)
-                                .offset(x: fontSize == 26 ? 0 : halfWidth)
-                        }
-                    }
-                )
-                .clipShape(Capsule())
+                .background(Color(.secondarySystemGroupedBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
                 .overlay(
-                    HStack(spacing: 0) {
-                        Text("A-")
-                            .font(.system(size: 13, weight: .semibold))
-                            .frame(width: 40, height: 32)
-                            .foregroundColor(fontSize == 26 ? .white : .primary)
-                        Text("A+")
-                            .font(.system(size: 19, weight: .semibold))
-                            .frame(width: 40, height: 32)
-                            .foregroundColor(fontSize == 40 ? .white : .primary)
-                    }
-                    .allowsHitTesting(false)
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color(.separator), lineWidth: 0.5)
                 )
-                .frame(height: 32)
                 
                 Spacer()
                 
@@ -411,21 +402,34 @@ struct ReadingNavigationBar: View {
                 Button(action: onToggleCompleted) {
                     HStack(spacing: 6) {
                         Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
+                            .font(.system(size: 18))
                         Text(isCompleted ? "Completed" : "Mark Complete")
+                            .font(.system(size: 14, weight: .semibold))
                     }
-                    .font(.system(size: 12, weight: .semibold))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(isCompleted ? Color.steamedBlue.opacity(0.3) : Color(.systemGray6))
-                    .foregroundColor(isCompleted ? .steamedDarkBlue : .primary)
-                    .clipShape(Capsule())
+                    .padding(.horizontal, 16)
+                    .frame(height: 36)
+                    .foregroundStyle(isCompleted ? AnyShapeStyle(Color.white) : AnyShapeStyle(Color.primary))
+                    .background(
+                        Capsule()
+                            .fill(isCompleted ? AnyShapeStyle(Color.steamedGradient) : AnyShapeStyle(Color(.secondarySystemGroupedBackground)))
+                    )
+                    .overlay(
+                        Capsule()
+                            .stroke(Color(.separator), lineWidth: isCompleted ? 0 : 0.5)
+                    )
                 }
                 .buttonStyle(.plain)
             }
             .padding(16)
             .background(Color(.systemBackground))
+            .overlay(
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(Color(.separator))
+                    .opacity(0.5),
+                alignment: .top
+            )
         }
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: -4)
     }
 }
 

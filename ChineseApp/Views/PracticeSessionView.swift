@@ -57,73 +57,49 @@ struct PracticeSessionView: View {
                 VStack(spacing: 0) {
                     ScrollView {
                         VStack(spacing: 24) {
-                            // Header
-                            VStack(spacing: 12) {
-                                Text("🎉")
-                                    .font(.system(size: 56))
-                                Text("Session Complete!")
-                                    .font(.system(size: 32, weight: .bold))
-                                    .foregroundColor(.primary)
+                            // Header with Bao Logo
+                            VStack(spacing: 16) {
+                                Image("Logo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 140, height: 140)
+                                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+                                
+                                VStack(spacing: 8) {
+                                    Text("Session Complete!")
+                                        .font(.system(size: 28, weight: .bold))
+                                        .foregroundColor(.primary)
+                                    
+                                    Text("Great job! Here's how you did.")
+                                        .font(.body)
+                                        .foregroundColor(.secondary)
+                                }
                             }
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 32)
+                            .padding(.top, 40)
                             
-                            // Stats Grid (2x2)
-                            VStack(spacing: 12) {
-                                HStack(spacing: 12) {
-                                    // Questions Answered
-                                    VStack(spacing: 8) {
-                                        Image(systemName: "questionmark.circle.fill")
-                                            .font(.system(size: 28))
-                                            .foregroundColor(.blue)
-                                        Text("\(fixedSessionLength)")
-                                            .font(.system(size: 24, weight: .bold))
-                                            .foregroundColor(.primary)
-                                        Text("Questions")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding(16)
-                                    .background(Color(.systemBackground))
-                                    .cornerRadius(12)
-                                    
-                                    // Words Mastered
-                                    VStack(spacing: 8) {
-                                        Image(systemName: "star.fill")
-                                            .font(.system(size: 28))
-                                            .foregroundColor(.green)
-                                        Text("\(sessionMastered.count)")
-                                            .font(.system(size: 24, weight: .bold))
-                                            .foregroundColor(.primary)
-                                        Text("Mastered")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding(16)
-                                    .background(Color(.systemBackground))
-                                    .cornerRadius(12)
-                                }
+                            // Stats Grid
+                            HStack(spacing: 16) {
+                                // Questions Answered
+                                SummaryStatCard(
+                                    title: "Questions",
+                                    value: "\(fixedSessionLength)",
+                                    icon: "checkmark.circle.fill"
+                                )
                                 
-                                HStack(spacing: 12) {
-                                    // Current Streak
-                                    VStack(spacing: 8) {
-                                        Image(systemName: "flame.fill")
-                                            .font(.system(size: 28))
-                                            .foregroundColor(.orange)
-                                        Text("\(currentStreak)")
-                                            .font(.system(size: 24, weight: .bold))
-                                            .foregroundColor(.primary)
-                                        Text("Streak")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding(16)
-                                    .background(Color(.systemBackground))
-                                    .cornerRadius(12)
-                                }
+                                // Words Mastered
+                                SummaryStatCard(
+                                    title: "Mastered",
+                                    value: "\(sessionMastered.count)",
+                                    icon: "star.fill"
+                                )
+                                
+                                // Streak
+                                SummaryStatCard(
+                                    title: "Streak",
+                                    value: "\(currentStreak)",
+                                    icon: "flame.fill"
+                                )
                             }
                             .padding(.horizontal, 20)
                             
@@ -134,23 +110,23 @@ struct PracticeSessionView: View {
                                         .font(.headline)
                                         .padding(.horizontal, 20)
                                     
-                                    VStack(spacing: 8) {
+                                    VStack(spacing: 12) {
                                         ForEach(sessionMastered, id: \.self) { hanzi in
                                             if let w = words.first(where: { $0.hanzi == hanzi }) {
-                                                HStack(spacing: 12) {
-                                                    // Chinese character (large) - scale box based on character count with padding
+                                                HStack(spacing: 16) {
+                                                    // Chinese character
                                                     Text(w.hanzi)
-                                                        .font(.system(size: 28, weight: .semibold))
-                                                        .frame(width: CGFloat(44 + (w.hanzi.count - 1) * 32), height: 44)
-                                                        .background(Color.green.opacity(0.1))
-                                                        .cornerRadius(8)
+                                                        .font(.system(size: 24, weight: .bold))
+                                                        .frame(width: 50, height: 50)
+                                                        .background(Color.green.opacity(0.15))
+                                                        .foregroundColor(.green)
+                                                        .cornerRadius(12)
                                                     
                                                     // Word details
                                                     VStack(alignment: .leading, spacing: 4) {
                                                         Text(w.pinyin)
                                                             .font(.subheadline)
                                                             .fontWeight(.semibold)
-                                                            .foregroundColor(.primary)
                                                         Text(w.english.joined(separator: ", "))
                                                             .font(.caption)
                                                             .foregroundColor(.secondary)
@@ -159,37 +135,41 @@ struct PracticeSessionView: View {
                                                     
                                                     Spacer()
                                                     
-                                                    // Checkmark
-                                                    Image(systemName: "checkmark.circle.fill")
-                                                        .font(.system(size: 24))
-                                                        .foregroundColor(.green)
+                                                    // Mastery Icon
+                                                    Image(systemName: "star.fill")
+                                                        .foregroundColor(.yellow)
                                                 }
-                                                .padding(12)
+                                                .padding(16)
                                                 .background(Color(.systemBackground))
-                                                .cornerRadius(10)
+                                                .cornerRadius(16)
+                                                .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
                                             }
                                         }
                                     }
                                     .padding(.horizontal, 20)
                                 }
                             } else {
-                                VStack(spacing: 8) {
+                                VStack(spacing: 16) {
                                     Image(systemName: "checkmark.circle")
-                                        .font(.system(size: 40))
-                                        .foregroundColor(.secondary)
-                                    Text("Keep practicing!")
-                                        .font(.headline)
-                                        .foregroundColor(.secondary)
-                                    Text("No words mastered this session, but you're building progress.")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
+                                        .font(.system(size: 48))
+                                        .foregroundColor(.secondary.opacity(0.5))
+                                    
+                                    VStack(spacing: 8) {
+                                        Text("Keep practicing!")
+                                            .font(.headline)
+                                            .foregroundColor(.secondary)
+                                        Text("No words mastered this session, but you're building progress.")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                            .multilineTextAlignment(.center)
+                                    }
                                 }
                                 .frame(maxWidth: .infinity)
-                                .padding(24)
+                                .padding(32)
                                 .background(Color(.systemBackground))
-                                .cornerRadius(12)
+                                .cornerRadius(20)
                                 .padding(.horizontal, 20)
+                                .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
                             }
                             
                             Spacer()
@@ -198,24 +178,21 @@ struct PracticeSessionView: View {
                         .padding(.vertical, 24)
                     }
                     
-                    // Done Button (sticky at bottom)
-                    VStack {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            Text("Back to Practice")
-                                .font(.headline)
-                                .fontWeight(.semibold)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(12)
-                        }
-                        .padding(20)
+                    // Done Button
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Text("Continue")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.steamedGradient)
+                            .foregroundColor(.white)
+                            .cornerRadius(16)
+                            .shadow(color: Color.steamedDarkBlue.opacity(0.3), radius: 8, x: 0, y: 4)
                     }
-                    .background(Color(.systemGroupedBackground))
-                    .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: -2)
+                    .padding(20)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(.systemGroupedBackground))
@@ -294,8 +271,8 @@ struct PracticeSessionView: View {
                                     }
                                 )
                                 
-                            case .multipleChoice:
-                                MultipleChoiceQuestionView(
+                            case .chineseToEnglish:
+                                ChineseToEnglishQuestionView(
                                     word: currentWord,
                                     options: quizOptions,
                                     correctChoice: quizCorrectChoice,
@@ -317,8 +294,8 @@ struct PracticeSessionView: View {
                                     onReport: { showReportOverlay = true }
                                 )
                                 
-                            case .construction:
-                                ConstructionQuestionView(
+                            case .englishConstructChinese:
+                                EnglishConstructChineseQuestionView(
                                     word: currentWord,
                                     availableCharacters: constructionOptions,
                                     onSubmit: { correct in
@@ -347,8 +324,8 @@ struct PracticeSessionView: View {
                                     onReport: { showReportOverlay = true }
                                 )
                                 
-                            case .pinyin:
-                                PinyinQuestionView(
+                            case .chineseToPinyin:
+                                ChineseToPinyinQuestionView(
                                     word: currentWord,
                                     options: pinyinOptions,
                                     correctChoice: pinyinCorrectChoice,
@@ -467,13 +444,13 @@ struct PracticeSessionView: View {
                     
                     // Generate initial quiz options if first question is a quiz
                     if !sessionItems.isEmpty {
-                        if sessionItems[0].questionType == .multipleChoice {
+                        if sessionItems[0].questionType == .chineseToEnglish {
                             let (options, correctChoice) = makeOptions(correct: words[sessionItems[0].wordIndex])
                             quizOptions = options
                             quizCorrectChoice = correctChoice
-                        } else if sessionItems[0].questionType == .construction {
+                        } else if sessionItems[0].questionType == .englishConstructChinese {
                             constructionOptions = makeConstructionOptions(correct: words[sessionItems[0].wordIndex])
-                        } else if sessionItems[0].questionType == .pinyin {
+                        } else if sessionItems[0].questionType == .chineseToPinyin {
                             let (options, correctChoice) = makePinyinOptions(correct: words[sessionItems[0].wordIndex])
                             pinyinOptions = options
                             pinyinCorrectChoice = correctChoice
@@ -646,12 +623,18 @@ struct PracticeSessionView: View {
         let quiz6 = 15.0
 
         let level = Double(max(1, min(6, word.difficulty)))
-        let isQuiz = (questionType == .multipleChoice)
-        if isQuiz {
+        
+        // Group all active recall types together for higher points
+        let isActiveRecall = (questionType == .chineseToEnglish || 
+                              questionType == .chineseToPinyin || 
+                              questionType == .englishConstructChinese)
+                              
+        if isActiveRecall {
             let step = (quiz1 - quiz6) / 5.0
             let pts = quiz1 - (level - 1.0) * step
             return pts / 100.0
         } else {
+            // Flashcards get lower points
             let step = (flash1 - flash6) / 5.0
             let pts = flash1 - (level - 1.0) * step
             return pts / 100.0
@@ -720,13 +703,13 @@ struct PracticeSessionView: View {
         // Generate new question's options IMMEDIATELY if next question is a quiz, construction, or pinyin
         // This ensures options are ready BEFORE the view re-renders
         if !sessionItems.isEmpty && currentIndex < sessionItems.count {
-            if sessionItems[currentIndex].questionType == .multipleChoice {
+            if sessionItems[currentIndex].questionType == .chineseToEnglish {
                 let (options, correctChoice) = makeOptions(correct: words[sessionItems[currentIndex].wordIndex])
                 quizOptions = options
                 quizCorrectChoice = correctChoice
-            } else if sessionItems[currentIndex].questionType == .construction {
+            } else if sessionItems[currentIndex].questionType == .englishConstructChinese {
                 constructionOptions = makeConstructionOptions(correct: words[sessionItems[currentIndex].wordIndex])
-            } else if sessionItems[currentIndex].questionType == .pinyin {
+            } else if sessionItems[currentIndex].questionType == .chineseToPinyin {
                 let (options, correctChoice) = makePinyinOptions(correct: words[sessionItems[currentIndex].wordIndex])
                 pinyinOptions = options
                 pinyinCorrectChoice = correctChoice

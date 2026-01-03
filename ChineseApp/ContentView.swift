@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var showTestMenu = false
     @State private var selectedTab: Int = 0
     
     var body: some View {
@@ -38,71 +37,10 @@ struct ContentView: View {
                     }
                     .tag(3)
             }
-            
-            // Test menu button (top right)
-            VStack {
-                HStack {
-                    Spacer()
-                    Button(action: { showTestMenu.toggle() }) {
-                        Image(systemName: "wrench.and.screwdriver.fill")
-                            .font(.system(size: 12))
-                            .foregroundColor(.red)
-                            .padding(8)
-                            .opacity(0.4)
-                    }
-                }
-                .padding()
-                Spacer()
-            }
-            .zIndex(100)
-            
-            // Test menu sheet
-            .sheet(isPresented: $showTestMenu) {
-                TestMenuView()
-            }
             .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToPracticeTab"))) { _ in
                 selectedTab = 0
             }
         }
-    }
-}
-
-struct TestMenuView: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        NavigationView {
-            Form {
-                Section("Test Suite") {
-                    Button("Run Tests", action: runTests)
-                        .foregroundColor(.blue)
-                }
-                
-                Section("Info") {
-                    Text("Edit the runTests() function in ContentView.swift to customize test commands")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
-            .navigationTitle("🔧 Test Menu")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-    
-    private func runTests() {
-        // ===== EDIT YOUR TEST COMMANDS HERE =====
-        ProgressStore.shared.setDeckMastered(filename: "Corporate")
-        // ProgressStore.shared.setWordMastered("可以")
-        
-        print("✅ Test completed!")
-        // ===== END TEST COMMANDS =====
     }
 }
 

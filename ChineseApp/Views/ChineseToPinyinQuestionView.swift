@@ -1,5 +1,5 @@
 //
-//  PinyinQuestionView.swift
+//  ChineseToPinyinQuestionView.swift
 //  ChineseApp
 //
 //  Created by Billy Orr on 2025-11-11.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PinyinQuestionView: View {
+struct ChineseToPinyinQuestionView: View {
     let word: Word
     let options: [String]
     let correctChoice: String
@@ -54,6 +54,7 @@ struct PinyinQuestionView: View {
                     QuestionFeedbackBox(
                         state: feedbackState,
                         correctAnswer: feedbackState == .incorrect ? correctChoice : nil,
+                        word: word,
                         onReport: onReport
                     )
 
@@ -69,7 +70,7 @@ struct PinyinQuestionView: View {
 }
 
 #Preview {
-    PinyinQuestionView(
+    ChineseToPinyinQuestionView(
         word: Word(
             hanzi: "你",
             pinyin: "nǐ",

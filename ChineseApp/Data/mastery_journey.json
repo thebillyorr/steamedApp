@@ -5,8 +5,8 @@
       "masteryMin": 0.0,
       "masteryMax": 0.1,
       "questionTypes": [
-        { "type": "flashcard", "weight": 0.9 },
-        { "type": "multipleChoice", "weight": 0.1 }
+        { "type": "flashcard", "weight": 0.8 },
+        { "type": "chineseToEnglish", "weight": 0.2 }
       ]
     },
     {
@@ -14,8 +14,8 @@
       "masteryMin": 0.1,
       "masteryMax": 0.2,
       "questionTypes": [
-        { "type": "flashcard", "weight": 0.8 },
-        { "type": "multipleChoice", "weight": 0.2 }
+        { "type": "flashcard", "weight": 0.6 },
+        { "type": "chineseToEnglish", "weight": 0.4 }
       ]
     },
     {
@@ -23,8 +23,8 @@
       "masteryMin": 0.2,
       "masteryMax": 0.3,
       "questionTypes": [
-        { "type": "flashcard", "weight": 0.5 },
-        { "type": "multipleChoice", "weight": 0.5 }
+        { "type": "flashcard", "weight": 0.4 },
+        { "type": "chineseToEnglish", "weight": 0.6 }
       ]
     },
     {
@@ -32,8 +32,8 @@
       "masteryMin": 0.3,
       "masteryMax": 0.4,
       "questionTypes": [
-        { "type": "flashcard", "weight": 0.25 },
-        { "type": "multipleChoice", "weight": 0.75 }
+        { "type": "flashcard", "weight": 0.2 },
+        { "type": "chineseToEnglish", "weight": 0.8 }
       ]
     },
     {
@@ -41,7 +41,7 @@
       "masteryMin": 0.4,
       "masteryMax": 0.5,
       "questionTypes": [
-        { "type": "multipleChoice", "weight": 1.0 }
+        { "type": "chineseToEnglish", "weight": 1.0 }
       ]
     },
     {
@@ -49,8 +49,8 @@
       "masteryMin": 0.5,
       "masteryMax": 0.6,
       "questionTypes": [
-        { "type": "multipleChoice", "weight": 0.8 },
-        { "type": "construction", "weight": 0.2 }
+        { "type": "chineseToEnglish", "weight": 0.7 },
+        { "type": "chineseToPinyin", "weight": 0.3 }
       ]
     },
     {
@@ -58,9 +58,9 @@
       "masteryMin": 0.6,
       "masteryMax": 0.7,
       "questionTypes": [
-        { "type": "multipleChoice", "weight": 0.4 },
-        { "type": "construction", "weight": 0.3 },
-        { "type": "pinyin", "weight": 0.3 }
+        { "type": "chineseToEnglish", "weight": 0.4 },
+        { "type": "chineseToPinyin", "weight": 0.4 },
+        { "type": "englishConstructChinese", "weight": 0.2 }
       ]
     },
     {
@@ -68,9 +68,8 @@
       "masteryMin": 0.7,
       "masteryMax": 0.8,
       "questionTypes": [
-        { "type": "construction", "weight": 0.4 },
-        { "type": "pinyin", "weight": 0.3 },
-        { "type": "trueOrFalse", "weight": 0.3 }
+        { "type": "chineseToPinyin", "weight": 0.5 },
+        { "type": "englishConstructChinese", "weight": 0.5 }
       ]
     },
     {
@@ -78,9 +77,8 @@
       "masteryMin": 0.8,
       "masteryMax": 0.9,
       "questionTypes": [
-        { "type": "construction", "weight": 0.4 },
-        { "type": "pinyin", "weight": 0.4 },
-        { "type": "speaking", "weight": 0.2 }
+        { "type": "chineseToPinyin", "weight": 0.3 },
+        { "type": "englishConstructChinese", "weight": 0.7 }
       ]
     },
     {
@@ -88,9 +86,7 @@
       "masteryMin": 0.9,
       "masteryMax": 1.0,
       "questionTypes": [
-        { "type": "construction", "weight": 0.33 },
-        { "type": "pinyin", "weight": 0.33 },
-        { "type": "speaking", "weight": 0.34 }
+        { "type": "englishConstructChinese", "weight": 1.0 }
       ]
     }
   ]

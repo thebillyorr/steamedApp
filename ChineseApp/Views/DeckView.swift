@@ -247,43 +247,7 @@ struct WordCard: View {
     }
 }
 
-struct BookmarkButton: View {
-    let wordID: String
-    @ObservedObject private var bookmarkManager = BookmarkManager.shared
-    @State private var showConfirmation = false
-    
-    var body: some View {
-        Button(action: {
-            if bookmarkManager.isBookmarked(wordID: wordID) {
-                showConfirmation = true
-            } else {
-                var transaction = Transaction()
-                transaction.disablesAnimations = true
-                withTransaction(transaction) {
-                    bookmarkManager.toggleBookmark(for: wordID)
-                }
-            }
-        }) {
-            Image(systemName: bookmarkManager.isBookmarked(wordID: wordID) ? "bookmark.fill" : "bookmark")
-                .foregroundColor(bookmarkManager.isBookmarked(wordID: wordID) ? .steamedDarkBlue : .gray.opacity(0.5))
-                .font(.system(size: 20))
-                .animation(nil, value: bookmarkManager.isBookmarked(wordID: wordID))
-        }
-        .buttonStyle(PlainButtonStyle())
-        .alert("Remove from My Basket?", isPresented: $showConfirmation) {
-            Button("Remove", role: .destructive) {
-                var transaction = Transaction()
-                transaction.disablesAnimations = true
-                withTransaction(transaction) {
-                    bookmarkManager.toggleBookmark(for: wordID)
-                }
-            }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("Are you sure you want to remove this word from your basket?")
-        }
-    }
-}
+
 
 #Preview {
     DeckView(topic: Topic(name: "HSK 1 Part 1", filename: "hsk1_part1"))
