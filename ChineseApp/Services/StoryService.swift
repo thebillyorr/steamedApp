@@ -35,7 +35,7 @@ class StoryService {
                             title: story.title,
                             subtitle: story.subtitle,
                             difficulty: story.difficulty,
-                            topic: story.topic,
+                                topic: story.topic, // Already an array
                             locked: false
                         )
                         metadata.append(meta)
@@ -69,7 +69,7 @@ class StoryService {
                                 title: story.title,
                                 subtitle: story.subtitle,
                                 difficulty: story.difficulty,
-                                topic: story.topic,
+                                topic: story.topic, // Pass topic directly as [String]
                                 locked: false
                             )
                             metadata.append(meta)
@@ -92,7 +92,7 @@ class StoryService {
     
     func loadStory(storyId: String) -> Story? {
         // Try multiple possible paths
-        var paths = [
+        let paths = [
             Bundle.main.path(forResource: storyId, ofType: "json", inDirectory: "Reading"),
             Bundle.main.path(forResource: storyId, ofType: "json")
         ]

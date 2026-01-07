@@ -21,39 +21,20 @@ struct DictionaryView: View {
                         .padding(.horizontal, 16)
                         .frame(height: 200) // Give it some height
                     
-                    // Themed Decks Section
-                    LazyVStack(spacing: 24) {
+                    // Themed Decks Section (Modern Swimlanes)
+                    if true {
                         let groupedDecks = Dictionary(grouping: decks) { $0.category }
-                        // Define custom order for categories
                         let categoryOrder = ["Entertainment", "Nature & Outdoors", "Living in China", "Travel", "Speak like a Local"]
                         
-                        ForEach(categoryOrder, id: \.self) { category in
-                            if let categoryDecks = groupedDecks[category] {
-                                VStack(alignment: .leading, spacing: 12) {
-                                    // Section Header
-                                    HStack {
-                                        Text(category)
-                                            .font(.headline)
-                                            .foregroundColor(.secondary)
-                                            .padding(.leading, 4)
-                                        Spacer()
-                                    }
-                                    .padding(.horizontal, 16)
-                                    
-                                    // Cards
-                                    ForEach(categoryDecks) { topic in
-                                        NavigationLink(value: topic) {
-                                            let topicMastery = calculateTopicMastery(for: topic)
-                                            let isDeckMastered = deckMasteryManager.isDeckMastered(filename: topic.filename) || isAllWordsMastered(for: topic)
-                                            
-                                            DictionaryDeckCard(
-                                                topic: topic,
-                                                masteryProgress: topicMastery,
-                                                isDeckMastered: isDeckMastered
-                                            )
-                                        }
-                                        .buttonStyle(PlainButtonStyle())
-                                    }
+                        VStack(spacing: 32) {
+                            ForEach(categoryOrder, id: \.self) { category in
+                                if let categoryDecks = groupedDecks[category] {
+                                    DeckSwimlaneSection(
+                                        title: category,
+                                        decks: categoryDecks,
+                                        progressStore: progressStore,
+                                        deckMasteryManager: deckMasteryManager
+                                    )
                                 }
                             }
                         }

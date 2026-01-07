@@ -175,7 +175,7 @@ struct ProfileView: View {
                                 Divider().padding(.leading, 46)
                                 
                                 // Support Link
-                                NavigationLink(destination: Text("Contact Support").navigationTitle("Support")) {
+                                NavigationLink(destination: SupportView()) {
                                     HStack {
                                         HStack(spacing: 12) {
                                             Image(systemName: "envelope.fill")
@@ -196,13 +196,34 @@ struct ProfileView: View {
                                 Divider().padding(.leading, 46)
                                 
                                 // Privacy Policy
-                                NavigationLink(destination: Text("Privacy Policy").navigationTitle("Privacy Policy")) {
+                                NavigationLink(destination: PrivacyPolicyView()) {
                                     HStack {
                                         HStack(spacing: 12) {
                                             Image(systemName: "hand.raised.fill")
                                                 .foregroundColor(.steamedDarkBlue)
                                                 .font(.system(size: 18))
                                             Text("Privacy Policy")
+                                                .font(.body)
+                                                .foregroundColor(.primary)
+                                        }
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: 14, weight: .semibold))
+                                            .foregroundColor(.secondary.opacity(0.5))
+                                    }
+                                    .padding(16)
+                                }
+                                
+                                Divider().padding(.leading, 46)
+                                
+                                // Terms of Service
+                                NavigationLink(destination: TermsOfServiceView()) {
+                                    HStack {
+                                        HStack(spacing: 12) {
+                                            Image(systemName: "doc.text.fill")
+                                                .foregroundColor(.steamedDarkBlue)
+                                                .font(.system(size: 18))
+                                            Text("Terms of Service")
                                                 .font(.body)
                                                 .foregroundColor(.primary)
                                         }

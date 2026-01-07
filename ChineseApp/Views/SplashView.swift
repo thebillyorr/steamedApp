@@ -40,12 +40,18 @@ struct SplashView: View {
                 
                 // App Title
                 Text("Steamed")
-                    .font(.system(size: 48, weight: .black, design: .rounded))
-                    .foregroundStyle(Color.steamedDarkBlue)
+                    .font(.system(size: 48, weight: .bold))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [Color(hex: "4b7db0"), Color(hex: "335b8c")],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
                     .shadow(color: Color.steamedBlue.opacity(0.3), radius: 2, x: 0, y: 2)
 
-                Text("Freshly Served Chinese")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                Text("Stop Memorizing. Start Reading.")
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.secondary)
             }
             .scaleEffect(size)

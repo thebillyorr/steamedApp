@@ -19,6 +19,7 @@ struct ChineseAppApp: App {
 struct RootView: View {
     @State private var showSplash = true
     @AppStorage("appTheme") private var appTheme: String = "System"
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     @Environment(\.colorScheme) private var systemColorScheme
     
     var preferredColorScheme: ColorScheme? {
@@ -34,6 +35,10 @@ struct RootView: View {
             if showSplash {
                 SplashView(showSplash: $showSplash)
                     .transition(.opacity)
+                    .zIndex(2)
+            } else if !hasCompletedOnboarding {
+                OnboardingView(isOnboardingCompleted: $hasCompletedOnboarding)
+                    .transition(.opacity)
                     .zIndex(1)
             } else {
                 ContentView()
@@ -42,6 +47,7 @@ struct RootView: View {
             }
         }
         .animation(.easeInOut(duration: 0.5), value: showSplash)
+        .animation(.easeInOut(duration: 0.5), value: hasCompletedOnboarding)
         .preferredColorScheme(preferredColorScheme)
     }
 }

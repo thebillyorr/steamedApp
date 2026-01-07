@@ -5,6 +5,11 @@ struct ReadingView: View {
     @State private var selectedStory: Story?
     @State private var selectedWord: Word?
     @AppStorage("readingFontSize") private var fontSize: Double = 26.0
+    
+    // Persistent Filter State (Hoisted from StoryListView)
+    @State private var searchText = ""
+    @State private var selectedFilters: Set<String> = []
+    
     @ObservedObject private var storyProgress = StoryProgressManager.shared
     
     var body: some View {
@@ -42,9 +47,14 @@ struct ReadingView: View {
                 }
                 .toolbar(.hidden, for: .tabBar)
             } else {
-                StoryListView(selectedStory: $selectedStory, isReadingStory: .constant(false))
-                    .navigationTitle("Library")
-                    .navigationBarTitleDisplayMode(.large)
+                StoryListView(
+                    selectedStory: $selectedStory,
+                    isReadingStory: .constant(false),
+                    searchText: $searchText,
+                    selectedFilters: $selectedFilters
+                )
+                .navigationTitle("Library")
+                .navigationBarTitleDisplayMode(.large)
             }
         }
         .onAppear {
@@ -58,73 +68,183 @@ struct ReadingView: View {
 struct StoryListView: View {
     @Binding var selectedStory: Story?
     @Binding var isReadingStory: Bool
+    
+    // Search & Filter State Binding
+    @Binding var searchText: String
+    @Binding var selectedFilters: Set<String>
+    
     @State private var library: StoryLibrary?
     @ObservedObject private var storyProgress = StoryProgressManager.shared
-    @State private var selectedTab: Int = 0 // 0: Library, 1: Bookshelf
     
     // Alert State
     @State private var showUncompleteAlert = false
     @State private var storyIdToUncomplete: String?
     
+    // Static allowed topics and HSK levels
+    static let hskFilters = ["HSK 1-2", "HSK 3", "HSK 4", "HSK 5", "HSK 6"]
+    static let topicFilters = ["New Arrivals", "Fable", "Recipe", "News", "Story"]
+    static let filters: [String] = ["Completed"] + hskFilters + topicFilters
+    
     var body: some View {
         VStack(spacing: 0) {
-            // Segmented Control
-            Picker("View", selection: $selectedTab) {
-                Text("Library").tag(0)
-                Text("Bookshelf").tag(1)
-            }
-            .pickerStyle(.segmented)
-            .padding()
-            .background(Color(.systemBackground))
-            
-            if let library = library, !library.stories.isEmpty {
-                ScrollView {
-                    LazyVStack(spacing: 20) {
-                        // Filter stories based on tab
-                        let filteredStories = library.stories.filter { story in
-                            let isCompleted = storyProgress.isCompleted(storyId: story.storyId)
-                            return selectedTab == 0 ? !isCompleted : isCompleted
+            // Search Bar Area
+            VStack(spacing: 12) {
+                // Search Field
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.secondary)
+                    TextField("Search title, English...", text: $searchText)
+                        .textFieldStyle(.plain)
+                    
+                    if !searchText.isEmpty {
+                        Button(action: { searchText = "" }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                .padding(10)
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .padding(.horizontal, 16)
+                
+                // Filter Chips with Categories
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        // "All" Chip (Special logic: active if set is empty)
+                        FilterChip(title: "All", isSelected: selectedFilters.isEmpty) {
+                            withAnimation {
+                                selectedFilters.removeAll()
+                            }
                         }
                         
-                        if filteredStories.isEmpty {
-                            EmptyStateView(tab: selectedTab)
-                        } else {
-                            // Group by difficulty
-                            let grouped = Dictionary(grouping: filteredStories) { $0.difficulty }
-                            let sortedKeys = grouped.keys.sorted()
-                            
-                            ForEach(sortedKeys, id: \.self) { level in
-                                SectionHeader(level: level)
-                                
-                                ForEach(grouped[level] ?? []) { metadata in
-                                    StoryCardView(
-                                        metadata: metadata,
-                                        isCompleted: storyProgress.isCompleted(storyId: metadata.storyId),
-                                        onToggleCompletion: {
-                                            let isCompleted = storyProgress.isCompleted(storyId: metadata.storyId)
-                                            if isCompleted {
-                                                // If currently completed, show confirmation before uncompleting
-                                                storyIdToUncomplete = metadata.storyId
-                                                showUncompleteAlert = true
-                                            } else {
-                                                // If not completed, just complete it immediately
-                                                withAnimation {
-                                                    storyProgress.toggleCompletion(storyId: metadata.storyId)
-                                                }
-                                            }
-                                        },
-                                        onTap: {
-                                            if let story = StoryService.shared.loadStory(storyId: metadata.storyId) {
-                                                selectedStory = story
-                                            }
-                                        }
-                                    )
+                        // Completion Status
+                        FilterChip(title: "Completed", isSelected: selectedFilters.contains("Completed")) {
+                            withAnimation {
+                                if selectedFilters.contains("Completed") {
+                                    selectedFilters.remove("Completed")
+                                } else {
+                                    selectedFilters.insert("Completed")
+                                }
+                            }
+                        }
+                        
+                        Divider()
+                            .frame(height: 20)
+                            .padding(.horizontal, 4)
+                        
+                        // HSK Levels
+                        ForEach(Self.hskFilters, id: \.self) { filter in
+                            FilterChip(title: filter, isSelected: selectedFilters.contains(filter)) {
+                                withAnimation {
+                                    if selectedFilters.contains(filter) {
+                                        selectedFilters.remove(filter)
+                                    } else {
+                                        selectedFilters.insert(filter)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Divider()
+                            .frame(height: 20)
+                            .padding(.horizontal, 4)
+                        
+                        // Topics
+                        ForEach(Self.topicFilters, id: \.self) { filter in
+                            FilterChip(title: filter, isSelected: selectedFilters.contains(filter)) {
+                                withAnimation {
+                                    if selectedFilters.contains(filter) {
+                                        selectedFilters.remove(filter)
+                                    } else {
+                                        selectedFilters.insert(filter)
+                                    }
                                 }
                             }
                         }
                     }
-                    .padding()
-                    .padding(.bottom, 80) // Extra padding for bottom tab bar
+                    .padding(.horizontal, 16)
+                }
+                .padding(.bottom, 8)
+            }
+            .padding(.top, 8)
+            .background(Color(.systemBackground))
+            
+            // Content
+            if let library = library, !library.stories.isEmpty {
+                ScrollView {
+                    if isSearchingOrFiltering {
+                        // Search Results List (Clean Vertical List)
+                        LazyVStack(spacing: 12) {
+                            let results = filterStories(library.stories).sorted { a, b in
+                                // 1. Completion Status (Uncompleted first)
+                                let aComp = storyProgress.isCompleted(storyId: a.storyId)
+                                let bComp = storyProgress.isCompleted(storyId: b.storyId)
+                                if aComp != bComp {
+                                    return !aComp && bComp
+                                }
+                                
+                                // 2. HSK Level (Ascending) e.g., HSK 3 before HSK 4
+                                if a.difficulty != b.difficulty {
+                                    return a.difficulty < b.difficulty
+                                }
+                                
+                                // 3. ID (Ascending) - Fallback
+                                return a.storyId < b.storyId
+                            }
+                            
+                            if results.isEmpty {
+                                ContentUnavailableView.search
+                                    .padding(.top, 40)
+                            } else {
+                                ForEach(results) { story in
+                                    Button {
+                                        loadAndSelectStory(metadata: story)
+                                    } label: {
+                                        DetailedStoryRow(
+                                            story: story,
+                                            isCompleted: storyProgress.isCompleted(storyId: story.storyId)
+                                        )
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                }
+                            }
+                        }
+                        .padding(16)
+                    } else {
+                        // Swimlanes (Explore Mode)
+                        VStack(spacing: 32) {
+                            // 1. New Arrivals (Stories tagged with "New Arrivals")
+                            let newArrivals = library.stories.filter { story in
+                                story.topic.contains("New Arrivals")
+                            }.sorted { a, b in
+                                let aComp = storyProgress.isCompleted(storyId: a.storyId)
+                                let bComp = storyProgress.isCompleted(storyId: b.storyId)
+                                if aComp == bComp {
+                                    return a.storyId > b.storyId
+                                }
+                                return !aComp && bComp
+                            }
+                            
+                            if !newArrivals.isEmpty {
+                                StorySwimlaneSection(
+                                    title: "New Arrivals",
+                                    stories: newArrivals,
+                                    storyProgress: storyProgress
+                                ) { story in
+                                    loadAndSelectStory(metadata: story)
+                                }
+                            }
+                            
+                            // 2. HSK Levels
+                            buildSwimlane(for: "HSK 3 Stories", level: 3, allStories: library.stories)
+                            buildSwimlane(for: "HSK 4 Stories", level: 4, allStories: library.stories)
+                            buildSwimlane(for: "HSK 5 Stories", level: 5, allStories: library.stories)
+                            buildSwimlane(for: "HSK 6 Stories", level: 6, allStories: library.stories)
+                            
+                        }
+                        .padding(.vertical, 16)
+                    }
                 }
                 .background(Color(.systemGroupedBackground))
             } else {
@@ -135,19 +255,122 @@ struct StoryListView: View {
         .onAppear {
             library = StoryService.shared.loadLibrary()
         }
-        .alert("Remove from Bookshelf?", isPresented: $showUncompleteAlert) {
-            Button("Remove", role: .destructive) {
-                if let id = storyIdToUncomplete {
-                    withAnimation {
-                        storyProgress.toggleCompletion(storyId: id)
+    }
+    
+    // MARK: - Logic Helpers
+    
+    private var isSearchingOrFiltering: Bool {
+        !searchText.isEmpty || !selectedFilters.isEmpty
+    }
+    
+    private func filterStories(_ stories: [StoryMetadata]) -> [StoryMetadata] {
+        stories.filter { story in
+            // 1. Check Filter Chips (Multi-select OR logic for levels, AND logic for Completed)
+            var matchesFilter = true
+            if !selectedFilters.isEmpty {
+                // Separate levels, status, and topics
+                let levelFilters = selectedFilters.filter { $0.hasPrefix("HSK") }
+                let statusFilters = selectedFilters.filter { $0 == "Completed" }
+                let topicFilters = selectedFilters.filter { Self.topicFilters.contains($0) }
+
+                // If any levels selected, story must match at least one (OR logic)
+                if !levelFilters.isEmpty {
+                    let matchesLevel = levelFilters.contains { filter in
+                        switch filter {
+                        case "HSK 1-2": return story.difficulty <= 2
+                        case "HSK 3": return story.difficulty == 3
+                        case "HSK 4": return story.difficulty == 4
+                        case "HSK 5": return story.difficulty == 5
+                        case "HSK 6": return story.difficulty == 6
+                        default: return false
+                        }
+                    }
+                    if !matchesLevel { matchesFilter = false }
+                }
+
+                // If any topic selected, story must match at least one (OR logic)
+                if matchesFilter && !topicFilters.isEmpty {
+                    let matchesTopic = story.topic.contains { storyTopic in
+                        topicFilters.contains(storyTopic)
+                    }
+                    if !matchesTopic {
+                        matchesFilter = false
+                    }
+                }
+
+                // If "Completed" is selected, story MUST be completed (AND logic)
+                if matchesFilter && !statusFilters.isEmpty {
+                    if !storyProgress.isCompleted(storyId: story.storyId) {
+                        matchesFilter = false
                     }
                 }
             }
-            Button("Cancel", role: .cancel) {
-                storyIdToUncomplete = nil
+            
+            // 2. Check Search Text
+            let matchesSearch: Bool
+            if searchText.isEmpty {
+                matchesSearch = true
+            } else {
+                let query = searchText.lowercased()
+                let titleMatch = story.title.lowercased().contains(query)
+                let subtitleMatch = story.subtitle?.lowercased().contains(query) ?? false
+                matchesSearch = titleMatch || subtitleMatch
             }
-        } message: {
-            Text("This story will be moved back to your Library as unread.")
+            
+            return matchesFilter && matchesSearch
+        }
+    }
+    
+    @ViewBuilder
+    private func buildSwimlane(for title: String, level: Int, allStories: [StoryMetadata]) -> some View {
+        let stories = allStories.filter {
+            return $0.difficulty == level
+        }.sorted { a, b in
+            let aComp = storyProgress.isCompleted(storyId: a.storyId)
+            let bComp = storyProgress.isCompleted(storyId: b.storyId)
+            if aComp == bComp {
+                // If completion status is same, sort by date/ID (using storyId as proxy for added date if formatted s001, s002)
+                return a.storyId > b.storyId
+            }
+            return !aComp && bComp
+        }
+        
+        if !stories.isEmpty {
+            StorySwimlaneSection(
+                title: title,
+                stories: stories,
+                storyProgress: storyProgress
+            ) { story in
+                loadAndSelectStory(metadata: story)
+            }
+        }
+    }
+    
+    private func loadAndSelectStory(metadata: StoryMetadata) {
+        if let fullStory = StoryService.shared.loadStory(storyId: metadata.storyId) {
+            self.selectedStory = fullStory
+            self.isReadingStory = true
+        }
+    }
+}
+
+// MARK: - Filter Chip Component
+
+struct FilterChip: View {
+    let title: String
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(isSelected ? .white : .primary)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(isSelected ? Color.steamedDarkBlue : Color(.systemGray5))
+                .cornerRadius(20)
         }
     }
 }
@@ -265,6 +488,53 @@ struct StoryReaderView: View {
     var body: some View {
         ScrollView(.vertical, showsIndicators: true) {
             VStack(alignment: .leading, spacing: 16) {
+                // Story Header
+                VStack(alignment: .leading, spacing: 12) {
+                    // Title
+                    Text(story.title)
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.primary)
+                        .multilineTextAlignment(.leading)
+                    
+                    // Subtitle
+                    if let subtitle = story.subtitle, !subtitle.isEmpty {
+                        Text(subtitle)
+                            .font(.system(size: 18))
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.leading)
+                    }
+                    
+                    // Tags Row
+                    HStack(spacing: 8) {
+                        // HSK Badge
+                        Text("HSK \(story.difficulty)")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(getBadgeColor(level: story.difficulty))
+                            .clipShape(Capsule())
+                        
+                        // Topic Tags
+                        ForEach(story.topic, id: \.self) { tag in
+                            Text(tag)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(Color(.tertiarySystemFill))
+                                .clipShape(Capsule())
+                        }
+                    }
+                }
+                .padding(.horizontal, fontSize >= 34 ? 8 : 16)
+                .padding(.top, 8)
+                .padding(.bottom, 4)
+                
+                // Divider
+                Divider()
+                    .padding(.horizontal, fontSize >= 34 ? 8 : 16)
+                
                 // Simple text view that lays out like a book page
                 StoryTextViewRepresentable(
                     tokens: story.tokens,
@@ -304,6 +574,16 @@ struct StoryReaderView: View {
             }
             .padding(.vertical)
             .frame(maxWidth: .infinity, alignment: .topLeading)
+        }
+    }
+    
+    private func getBadgeColor(level: Int) -> Color {
+        switch level {
+        case 1, 2: return .green
+        case 3: return .blue
+        case 4: return .orange
+        case 5, 6: return .red
+        default: return .gray
         }
     }
 }
@@ -399,19 +679,31 @@ struct ReadingNavigationBar: View {
                 Spacer()
                 
                 // Mark Complete Button
-                Button(action: onToggleCompleted) {
+                Button(action: {
+                    // Disable animation for this state change
+                    var transaction = Transaction()
+                    transaction.disablesAnimations = true
+                    withTransaction(transaction) {
+                        onToggleCompleted()
+                    }
+                }) {
                     HStack(spacing: 6) {
                         Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
                             .font(.system(size: 18))
-                        Text(isCompleted ? "Completed" : "Mark Complete")
+                        Text("Complete")
                             .font(.system(size: 14, weight: .semibold))
                     }
                     .padding(.horizontal, 16)
                     .frame(height: 36)
-                    .foregroundStyle(isCompleted ? AnyShapeStyle(Color.white) : AnyShapeStyle(Color.primary))
+                    .foregroundColor(isCompleted ? .white : .primary)
                     .background(
-                        Capsule()
-                            .fill(isCompleted ? AnyShapeStyle(Color.steamedGradient) : AnyShapeStyle(Color(.secondarySystemGroupedBackground)))
+                        ZStack {
+                            Capsule()
+                                .fill(Color.white)
+                            Capsule()
+                                .fill(Color.steamedGoldGradient)
+                                .opacity(isCompleted ? 1 : 0)
+                        }
                     )
                     .overlay(
                         Capsule()
@@ -419,6 +711,7 @@ struct ReadingNavigationBar: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .animation(nil, value: isCompleted)
             }
             .padding(16)
             .background(Color(.systemBackground))

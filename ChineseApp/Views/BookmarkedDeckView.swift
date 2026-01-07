@@ -71,28 +71,29 @@ struct BookmarkedDeckView: View {
                     Image(systemName: "play.circle.fill")
                         .font(.system(size: 44))
                         .foregroundColor(.white)
+                        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                 }
                 
                 // Progress bar
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         Capsule()
-                            .fill(Color.white.opacity(0.3))
-                            .frame(height: 6)
+                            .fill(Color.white.opacity(0.2))
+                            .frame(height: 8)
                         
                         Capsule()
                             .fill(Color.white)
-                            .frame(width: geo.size.width * mastery, height: 6)
+                            .frame(width: max(0, geo.size.width * mastery), height: 8)
                     }
                 }
-                .frame(height: 6)
+                .frame(height: 8)
             }
-            .padding(20)
+            .padding(24) // increased padding for more breathing room
             .background(
                 Color.steamedGradient
             )
-            .cornerRadius(20)
-            .shadow(color: Color.steamedDarkBlue.opacity(0.3), radius: 10, x: 0, y: 5)
+            .cornerRadius(24) // slightly rounder
+            .shadow(color: Color.steamedDarkBlue.opacity(0.25), radius: 15, x: 0, y: 8) // softer, deeper shadow
         }
     }
     
