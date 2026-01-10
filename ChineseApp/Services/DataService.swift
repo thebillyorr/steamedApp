@@ -11,6 +11,25 @@ class DataService {
     // List of all available decks
     static let decks: [Topic] = [
 
+        // Start Here
+        Topic(name: "Core 1", filename: "Core 1", icon: "star.fill", category: "Start Here"),
+        Topic(name: "Core 2", filename: "Core 2", icon: "star.fill", category: "Start Here"),
+        Topic(name: "Core 3", filename: "Core 3", icon: "star.fill", category: "Start Here"),
+
+        // Reading Essentials
+        Topic(name: "Sentence Flow & Logic", filename: "Sentence Flow & Logic", icon: "arrow.triangle.branch", category: "Reading Essentials"),
+        Topic(name: "Thinking, Feeling, Intention", filename: "Thinking, Feeling, Intention", icon: "brain.head.profile", category: "Reading Essentials"),
+        Topic(name: "Time & Sequence", filename: "Time & Sequence", icon: "clock.arrow.circlepath", category: "Reading Essentials"),
+        Topic(name: "Actions That Drive Stories", filename: "Actions That Drive Stories", icon: "figure.run", category: "Reading Essentials"),
+        Topic(name: "Degree, Frequency, Uncertainty", filename: "Degree, Frequency, Uncertainty", icon: "chart.bar.fill", category: "Reading Essentials"),
+        Topic(name: "Perspective & Reference", filename: "Perspective & Reference", icon: "eye.fill", category: "Reading Essentials"),
+
+         // Hungry? Order takeout
+        Topic(name: "Actions & Buttons", filename: "Actions & Buttons", icon: "hand.tap.fill", category: "Hungry? Order takeout"),
+        Topic(name: "Taste, Size & Customization", filename: "Taste, Size & Customization", icon: "slider.horizontal.3", category: "Hungry? Order takeout"),
+        Topic(name: "Restaurant & Delivery Info", filename: "Restaurant & Delivery Info", icon: "storefront.fill", category: "Hungry? Order takeout"),
+        Topic(name: "Status, Problems & Support", filename: "Status, Problems & Support", icon: "exclamationmark.bubble.fill", category: "Hungry? Order takeout"),
+
         // Things to do
         Topic(name: "Aquarium", filename: "Aquarium", icon: "fish", category: "Entertainment"),
         Topic(name: "Zoo", filename: "Zoo", icon: "pawprint.fill", category: "Entertainment"),
@@ -33,7 +52,7 @@ class DataService {
         Topic(name: "Corporate", filename: "Corporate", icon: "building.2.fill", category: "Living in China"),
         Topic(name: "Shopping", filename: "Shopping", icon: "bag.fill", category: "Living in China"),
 
-        
+
         
         // Travel
         Topic(name: "Air Travel", filename: "Plane", icon: "airplane", category: "Travel"),
@@ -49,6 +68,17 @@ class DataService {
         Topic(name: "Internet Lingo", filename: "Internet Lingo", icon: "network", category: "Speak like a Local"),
         Topic(name: "Office Lingo", filename: "Office Lingo", icon: "briefcase.fill", category: "Speak like a Local"),
 
+        
+        
+        
+        
+        // Read a Menu
+        Topic(name: "I'm Hungry", filename: "I'm Hungry", icon: "face.smiling", category: "Read a Menu"),
+        Topic(name: "Flavours", filename: "Flavours", icon: "flame.fill", category: "Read a Menu"),
+        Topic(name: "Ingredients", filename: "Ingredients", icon: "carrot.fill", category: "Read a Menu"),
+        Topic(name: "Rice Dishes", filename: "Rice Dishes", icon: "takeoutbag.and.cup.and.straw.fill", category: "Read a Menu"),
+        Topic(name: "Noodle Dishes", filename: "Noodle Dishes", icon: "fork.knife", category: "Read a Menu")
+        
         
     ]
     

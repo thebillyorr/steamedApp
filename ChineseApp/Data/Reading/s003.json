@@ -3,7 +3,7 @@
   "title": "总公司在哪里？",
   "subtitle": "Where is the head office?",
   "difficulty": 4,
-  "topic": "",
+  "topic": ["Story"],
   "tokens": [
     {
       "id": "w06770",

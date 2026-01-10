@@ -3,7 +3,7 @@
   "title": "买火车票",
   "subtitle": "Buying train tickets",
   "difficulty": 3,
-  "topic": "",
+  "topic": ["Informational"],
   "tokens": [
     {
       "id": "w06770",

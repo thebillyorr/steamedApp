@@ -64,16 +64,12 @@ struct ProfileView: View {
                                 .offset(x: 35, y: 35)
                             }
                             
-                            // Name & Join Date
+                            // Name
                             VStack(spacing: 4) {
                                 Text(profileManager.userProfile.fullName)
                                     .font(.title2)
                                     .fontWeight(.bold)
                                     .foregroundColor(.primary)
-                                
-                                Text("Member since 2025")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
                             }
                         }
                         .padding(.top, 20)

@@ -1,3 +1,4 @@
+
 //
 //  OnboardingView.swift
 //  ChineseApp
@@ -10,40 +11,84 @@ import SwiftUI
 struct OnboardingView: View {
     @Binding var isOnboardingCompleted: Bool
     @State private var currentPage = 0
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         ZStack {
-            Color(.systemBackground).ignoresSafeArea()
+            // Background Color Logic
+            // Light Mode -> White (.systemBackground)
+            // Dark Mode -> Dark Grey (.secondarySystemBackground)
+            Color(colorScheme == .dark ? .secondarySystemBackground : .systemBackground)
+                .ignoresSafeArea()
             
             VStack {
                 // Tab View for Slides
                 TabView(selection: $currentPage) {
+                    // Page 0: Welcome / Logo
                     OnboardingPage(
-                        image: "book.fill",
-                        title: "Stop Memorizing",
-                        description: "Ditch the flashcards. Learn Chinese naturally by reading interesting stories tailored to your level.",
+                        image: "Logo",
+                        imageType: .assetIcon,
+                        title: "Welcome to Steamed",
+                        description: "We're so glad you've decided to begin this journey! Let's get you fluent effortlessly.",
                         color: .steamedDarkBlue,
                         pageIndex: 0
                     )
                     .tag(0)
                     
+                    // Page 1: Practice
                     OnboardingPage(
-                        image: "character.book.closed.fill",
-                        title: "Instant Dictionary",
-                        description: "Tap any word you don't know for an instant definition, pinyin, and tone usage.",
+                        image: "1",
+                        imageType: .screenshot,
+                        title: "Practice Page",
+                        description: "This is the practice page where you can build mastery by quizzing yourself using various word decks.",
                         color: .steamedBlue,
                         pageIndex: 1
                     )
                     .tag(1)
                     
+                    // Page 2: Dictionary
                     OnboardingPage(
-                        image: "flame.fill",
-                        title: "Track Your Growth",
-                        description: "Watch your mastery grow as you encounter words in different contexts. Keep your streak alive!",
-                        color: Color(hex: "FF6B6B"), // Accent color for flame
+                        image: "2",
+                        imageType: .screenshot,
+                        title: "Dictionary Page",
+                        description: "Browse all your decks here. Most importantly, use the Bookmarks deck to save and review words you encounter during your reading sessions.",
+                        color: .steamedBlue,
                         pageIndex: 2
                     )
                     .tag(2)
+                    
+                    // Page 3: Library
+                    OnboardingPage(
+                        image: "3",
+                        imageType: .screenshot,
+                        title: "Library Page",
+                        description: "Access a vast library of stories and reading passages. Filter by topic or difficulty to find the perfect content for your level.",
+                        color: .steamedBlue,
+                        pageIndex: 3
+                    )
+                    .tag(3)
+                    
+                    // Page 4: Reading
+                    OnboardingPage(
+                        image: "4",
+                        imageType: .screenshot,
+                        title: "Interactive Reading",
+                        description: "In-app reading with the ability to tap on any word and reveal a tooltip with its definition, pinyin, and usage examples.",
+                        color: .steamedBlue,
+                        pageIndex: 4
+                    )
+                    .tag(4)
+
+                    // Page 5: Ready to Start
+                    OnboardingPage(
+                        image: "Logo",
+                        imageType: .assetIcon,
+                        title: "Are you ready?",
+                        description: "Your journey to fluency starts now. Let's get started!",
+                        color: .steamedDarkBlue,
+                        pageIndex: 5
+                    )
+                    .tag(5)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 .animation(.easeInOut, value: currentPage)
@@ -52,7 +97,7 @@ struct OnboardingView: View {
                 VStack(spacing: 20) {
                     // Custom Page Indicators
                     HStack(spacing: 8) {
-                        ForEach(0..<3) { index in
+                        ForEach(0..<6) { index in
                             Circle()
                                 .fill(currentPage == index ? Color.steamedDarkBlue : Color.gray.opacity(0.3))
                                 .frame(width: 8, height: 8)
@@ -64,18 +109,11 @@ struct OnboardingView: View {
                     
                     // Action Button
                     Button(action: {
-                        if currentPage < 2 {
-                            withAnimation {
-                                currentPage += 1
-                            }
-                        } else {
-                            // Finish Onboarding
-                            withAnimation {
-                                isOnboardingCompleted = true
-                            }
+                        withAnimation {
+                            isOnboardingCompleted = true
                         }
                     }) {
-                        Text(currentPage == 2 ? "Get Started" : "Next")
+                        Text("Get Started")
                             .font(.headline)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
@@ -85,64 +123,94 @@ struct OnboardingView: View {
                             .shadow(color: Color.steamedDarkBlue.opacity(0.3), radius: 5, x: 0, y: 3)
                     }
                     .padding(.horizontal, 40)
-                    
-                    if currentPage < 2 {
-                        Button("Skip") {
-                            withAnimation {
-                                isOnboardingCompleted = true
-                            }
-                        }
-                        .foregroundColor(.secondary)
-                        .font(.subheadline)
-                    } else {
-                        // Spacer to keep layout consistent when "Skip" is hidden
-                        Text(" ")
-                            .font(.subheadline)
-                    }
+                    .opacity(currentPage == 5 ? 1 : 0)
+                    .disabled(currentPage != 5)
                 }
-                .padding(.bottom, 50)
+                .padding(.bottom, 20) // Reduced padding to lower the "breadcrumb" area
             }
         }
     }
 }
 
+enum OnboardingImageType {
+    case systemIcon
+    case assetIcon
+    case screenshot
+}
+
 struct OnboardingPage: View {
     let image: String
+    let imageType: OnboardingImageType
     let title: String
     let description: String
     let color: Color
     let pageIndex: Int
     
+    @Environment(\.colorScheme) var colorScheme
     @State private var isAnimating = false
     
+    var resolvedImageName: String {
+        switch imageType {
+        case .screenshot:
+            let prefix = colorScheme == .dark ? "dark-" : "light-"
+            return prefix + image
+        default:
+            return image
+        }
+    }
+    
     var body: some View {
-        VStack(spacing: 40) {
+        VStack(spacing: 20) { // Reduced spacing between Image and Text block
             Spacer()
             
-            // Animated Icon
+            // Image / Icon
             ZStack {
-                Circle()
-                    .fill(color.opacity(0.1))
-                    .frame(width: 200, height: 200)
-                    .scaleEffect(isAnimating ? 1.1 : 1.0)
-                
-                Image(systemName: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .foregroundColor(color)
-                    .scaleEffect(isAnimating ? 1.2 : 1.0)
-                    .rotationEffect(pageIndex == 1 && isAnimating ? .degrees(10) : .degrees(0))
+                switch imageType {
+                case .systemIcon:
+                    // Animated Circle Background for Icons
+                    Circle()
+                        .fill(color.opacity(0.1))
+                        .frame(width: 200, height: 200)
+                        .scaleEffect(isAnimating ? 1.1 : 1.0)
+                    
+                    Image(systemName: resolvedImageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .foregroundColor(color)
+                        .scaleEffect(isAnimating ? 1.2 : 1.0)
+                        .rotationEffect(pageIndex == 1 && isAnimating ? .degrees(10) : .degrees(0))
+                        
+                case .assetIcon:
+                    // Just the logo asset
+                     Image(resolvedImageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 180, height: 180)
+                        .cornerRadius(40)
+                        .shadow(color: color.opacity(0.3), radius: 15, x: 0, y: 10)
+                        .scaleEffect(isAnimating ? 1.05 : 1.0)
+
+                case .screenshot:
+                    // Screenshot Mode - Larger, Cleaner, Minimal Styling
+                    Image(resolvedImageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxHeight: 650) 
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
+                        .scaleEffect(isAnimating ? 1.01 : 1.0)
+                }
             }
             .onAppear {
-                withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
+                withAnimation(.easeInOut(duration: 2.5).repeatForever(autoreverses: true)) {
                     isAnimating = true
                 }
             }
             
-            VStack(spacing: 16) {
+            VStack(spacing: 12) { // Reduced internal text spacing
                 Text(title)
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.system(size: 28, weight: .bold)) // Slightly smaller title to save space
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.center)
                 
@@ -150,8 +218,9 @@ struct OnboardingPage: View {
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
-                    .lineSpacing(4)
+                    .padding(.horizontal, 24) // Reduced padding to allow text to be wider -> fewer lines
+                    .lineSpacing(2) // Reduced line spacing
+                    .fixedSize(horizontal: false, vertical: true) // Allow text to expand vertically but not squish image
             }
             
             Spacer()

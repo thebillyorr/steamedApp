@@ -16,6 +16,22 @@ struct FlashcardQuestionView: View {
     @State private var showAnswer = false
     @State private var dragOffset: CGFloat = 0
     @State private var isDragging = false
+    @State private var showHint = false
+    @State private var isBouncing = false
+    @State private var hintTask: Task<Void, Never>?
+    
+    private func resetHintTimer() {
+        hintTask?.cancel()
+        showHint = false
+        hintTask = Task {
+            try? await Task.sleep(nanoseconds: 8 * 1_000_000_000) // 8 Seconds
+            if !Task.isCancelled {
+                withAnimation(.easeInOut) {
+                    showHint = true
+                }
+            }
+        }
+    }
     
     private var cardRotation: Double {
         // Rotate based on drag offset
@@ -66,6 +82,37 @@ struct FlashcardQuestionView: View {
             .frame(width: 320, height: 520)
             .zIndex(0)
             
+            // Hint Text (Underneath)
+            if showHint && dragOffset == 0 {
+                VStack(spacing: 8) {
+                    (Text("Swipe Left if you ")
+                        .foregroundColor(.primary.opacity(0.7))
+                    + Text("Need Review")
+                        .foregroundColor(.red))
+                    
+                    (Text("Swipe Right if you ")
+                        .foregroundColor(.primary.opacity(0.7))
+                    + Text("Got It")
+                        .foregroundColor(.green))
+                }
+                .font(.system(size: 14, weight: .semibold))
+                .padding(.vertical, 12)
+                .padding(.horizontal, 20)
+                .background(.ultraThinMaterial)
+                .cornerRadius(12)
+                .offset(y: 340) // Lower down
+                .opacity(isBouncing ? 1.0 : 0.8) // Subtle pulse opacity
+                .offset(y: isBouncing ? -5 : 5) // Gentle bounce
+                .transition(.opacity)
+                .zIndex(20)
+                .allowsHitTesting(false)
+                .onAppear {
+                    withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                        isBouncing = true
+                    }
+                }
+            }
+            
             // Card (on top, slides to reveal indicators behind)
             ZStack(alignment: .topTrailing) {
                 // Card background
@@ -99,6 +146,7 @@ struct FlashcardQuestionView: View {
                 .padding(24)
                 .contentShape(RoundedRectangle(cornerRadius: 16))
                 .onTapGesture {
+                    resetHintTimer() // Reset inactivity timer on tap
                     withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
                         showAnswer.toggle()
                     }
@@ -123,31 +171,38 @@ struct FlashcardQuestionView: View {
             .frame(width: 320, height: 520)
             .zIndex(10)
             .offset(x: dragOffset * 0.5)
-            .rotation3DEffect(
-                Angle(degrees: cardRotation),
-                axis: (x: 0, y: 0, z: 1)
-            )
+            .rotationEffect(Angle(degrees: cardRotation))
             .opacity(max(0.4, 1.0 - swipePercentage * 0.6))
             .scaleEffect(max(0.9, 1.0 - swipePercentage * 0.1))
+            // FIX: Use a continuous animation curve to prevent "Time 0.0" sample errors.
+            // Instead of disabling animation during drag (which resets the clock), 
+            // we use a very fast "interactive" spring that mimics direct tracking.
+            .animation(
+                isDragging ? .interactiveSpring(response: 0.1, dampingFraction: 0.8) : .spring(response: 0.4, dampingFraction: 0.7),
+                value: dragOffset
+            )
         }
         .frame(width: 320, height: 520)
         .frame(maxWidth: .infinity)
+        .onAppear {
+            resetHintTimer()
+        }
         .onChange(of: word.hanzi) { _ in
             // Reset all state when word changes
             dragOffset = 0
             isDragging = false
             showAnswer = false
+            resetHintTimer()
         }
         .gesture(
             DragGesture()
                 .onChanged { value in
-                    // Ensure drag updates are immediate and not animated
-                    var transaction = Transaction()
-                    transaction.animation = nil
-                    withTransaction(transaction) {
-                        isDragging = true
-                        dragOffset = value.translation.width
-                    }
+                    // User touched card - cancel hint immediately
+                    if showHint { withAnimation { showHint = false } }
+                    hintTask?.cancel() 
+                    
+                    isDragging = true
+                    dragOffset = value.translation.width
                 }
                 .onEnded { value in
                     isDragging = false
@@ -155,25 +210,20 @@ struct FlashcardQuestionView: View {
                     // Trigger action if swiped far enough (threshold: 100 points)
                     if dragOffset > 100 {
                         // Swiped right - "Got it"
-                        withAnimation(.easeOut(duration: 0.3)) {
-                            dragOffset = 400
-                        }
+                        dragOffset = 400
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                             onGotIt()
                         }
                     } else if dragOffset < -100 {
                         // Swiped left - "Need to review"
-                        withAnimation(.easeOut(duration: 0.3)) {
-                            dragOffset = -400
-                        }
+                        dragOffset = -400
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                             onNeedToReview()
                         }
                     } else {
                         // Didn't swipe far enough, snap back
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            dragOffset = 0
-                        }
+                        dragOffset = 0
+                        resetHintTimer() // Resume timer if released back to center
                     }
                 }
         )

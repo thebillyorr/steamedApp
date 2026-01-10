@@ -3,7 +3,7 @@
   "title": "怎么点外卖?",
   "subtitle": "How to order takeout",
   "difficulty": 3,
-  "topic": "",
+  "topic": ["Story"],
   "tokens": [
     {
       "id": "w06971",

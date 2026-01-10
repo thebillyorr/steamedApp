@@ -24,7 +24,7 @@ struct DictionaryView: View {
                     // Themed Decks Section (Modern Swimlanes)
                     if true {
                         let groupedDecks = Dictionary(grouping: decks) { $0.category }
-                        let categoryOrder = ["Entertainment", "Nature & Outdoors", "Living in China", "Travel", "Speak like a Local"]
+                        let categoryOrder = ["Start Here", "Reading Essentials", "Hungry? Order takeout", "Read a Menu", "Entertainment", "Nature & Outdoors", "Living in China", "Travel", "Speak like a Local"]
                         
                         VStack(spacing: 32) {
                             ForEach(categoryOrder, id: \.self) { category in

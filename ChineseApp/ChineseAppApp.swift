@@ -6,13 +6,35 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct ChineseAppApp: App {
+    let container: ModelContainer
+    
+    init() {
+        // Ensure Application Support directory exists to prevent CoreData "Failed to stat path" logs on fresh install
+        let fileManager = FileManager.default
+        if let supportDir = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+             // Try creating it; if it fails or exists, we proceed anyway.
+             // This silence the CoreData error about missing parent directory.
+             try? fileManager.createDirectory(at: supportDir, withIntermediateDirectories: true)
+        }
+        
+        do {
+            container = try ModelContainer(for: WordProgress.self)
+            ProgressManager.shared.setContainer(container)
+            BookmarkManager.shared.setContainer(container) // Wire up BookmarkManager
+        } catch {
+            fatalError("Failed to initialize ModelContainer: \(error)")
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             RootView()
         }
+        .modelContainer(container)
     }
 }
 

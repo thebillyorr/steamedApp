@@ -8,25 +8,33 @@
 import Foundation
 import Combine
 
+@MainActor
 final class ProgressStore: ObservableObject {
     static let shared = ProgressStore()
 
     @Published private(set) var progress: [String: Double] = [:]
 
     private init() {
-        progress = ProgressManager.loadProgress()
+        // Load data in background to prevent blocking main thread on launch
+        Task.detached {
+            let data = ProgressManager.loadProgress()
+            await MainActor.run {
+                self.progress = data
+            }
+        }
     }
 
     func addProgress(for hanzi: String, delta: Double, in deckFilename: String? = nil) {
         ProgressManager.addProgress(for: hanzi, delta: delta, in: deckFilename)
         // reload published value
-        progress = ProgressManager.loadProgress()
+        progress = ProgressManager.loadProgress() // This might need optimization later, but OK for single word updates
     }
 
     func getProgress(for hanzi: String) -> Double {
         progress[hanzi] ?? 0
     }
 
+    #if DEBUG
     func resetAll() {
         ProgressManager.resetAll()
         progress = [:]
@@ -62,4 +70,5 @@ final class ProgressStore: ObservableObject {
         self.progress = current
         print("✅ Deck mastered: \(filename)")
     }
+    #endif
 }

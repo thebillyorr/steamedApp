@@ -63,6 +63,7 @@ final class DeckMasteryManager: ObservableObject {
     
     // MARK: - Reset (for testing)
     
+    #if DEBUG
     func resetAll() {
         masteredDecks = [:]
         UserDefaults.standard.removeObject(forKey: deckMasteryKey)
@@ -76,6 +77,7 @@ final class DeckMasteryManager: ObservableObject {
         saveMasteredDecks(decks)
         print("✅ Reset deck: \(filename)")
     }
+    #endif
 }
 
 // MARK: - Data Structure

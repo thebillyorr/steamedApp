@@ -27,12 +27,4 @@ extension Color {
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
-    
-    static let steamedGold = Color.yellow
-    
-    static let steamedGoldGradient = LinearGradient(
-        gradient: Gradient(colors: [.yellow, .orange]),
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
-    )
 }

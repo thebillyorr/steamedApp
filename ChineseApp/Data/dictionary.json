@@ -12698,7 +12698,6 @@
         "english": [
             "Generous",
             "Poise",
-            "(-fang1: expert",
             "Scholar)"
         ],
         "difficulty": 5
@@ -13013,8 +13012,7 @@
         "pinyin": "dìdao",
         "english": [
             "Authentic",
-            "Genuine",
-            "(-dào: tunnel)"
+            "Genuine"
         ],
         "difficulty": 5
     },
@@ -23956,7 +23954,6 @@
             "Ability",
             "Skill",
             "Capability",
-            "(-shì: this matter",
             "Literary source)"
         ],
         "difficulty": 6
@@ -33910,8 +33907,7 @@
         "english": [
             "Serious",
             "Formidable",
-            "Devastating",
-            "(-hài: advantages and disadvantages)"
+            "Devastating"
         ],
         "difficulty": 6
     },
@@ -40778,8 +40774,7 @@
         "pinyin": "wēnhé",
         "english": [
             "Moderate",
-            "Warm",
-            "(-huo: lukewarm)"
+            "Warm"
         ],
         "difficulty": 6
     },
@@ -64275,5 +64270,2203 @@
             "Li Mingming (Character)"
         ],
         "difficulty": 1
+    },
+    "w07065": {
+        "hanzi": "而是",
+        "pinyin": "ér shì",
+        "english": [
+            "But rather",
+            "Instead"
+        ],
+        "difficulty": 3
+    },
+    "w07066": {
+        "hanzi": "刚刚",
+        "pinyin": "gānggāng",
+        "english": [
+            "Just now",
+            "A moment ago"
+        ],
+        "difficulty": 2
+    },
+    "w07067": {
+        "hanzi": "随后",
+        "pinyin": "suíhòu",
+        "english": [
+            "Afterwards",
+            "Subsequently",
+            "Soon after"
+        ],
+        "difficulty": 4
+    },
+    "w07068": {
+        "hanzi": "意识到",
+        "pinyin": "yìshí dào",
+        "english": [
+            "Realize",
+            "Become aware of"
+        ],
+        "difficulty": 4
+    },
+    "w07069": {
+        "hanzi": "变成",
+        "pinyin": "biànchéng",
+        "english": [
+            "Become",
+            "Turn into"
+        ],
+        "difficulty": 3
+    },
+    "w07070": {
+        "hanzi": "停止",
+        "pinyin": "tíngzhǐ",
+        "english": [
+            "Stop",
+            "Cease",
+            "Halt"
+        ],
+        "difficulty": 3
+    },
+    "w07071": {
+        "hanzi": "有点",
+        "pinyin": "yǒudiǎn",
+        "english": [
+            "A little",
+            "Somewhat"
+        ],
+        "difficulty": 2
+    },
+    "w07072": {
+        "hanzi": "大多",
+        "pinyin": "dàduō",
+        "english": [
+            "Most",
+            "The majority"
+        ],
+        "difficulty": 3
+    },
+    "w07073": {
+        "hanzi": "少数",
+        "pinyin": "shǎoshù",
+        "english": [
+            "A small number",
+            "Few",
+            "Minority"
+        ],
+        "difficulty": 3
+    },
+    "w07074": {
+        "hanzi": "几乎不",
+        "pinyin": "jīhū bù",
+        "english": [
+            "Hardly",
+            "Barely",
+            "Almost not"
+        ],
+        "difficulty": 4
+    },
+    "w07075": {
+        "hanzi": "那种",
+        "pinyin": "nà zhǒng",
+        "english": [
+            "That kind",
+            "That type"
+        ],
+        "difficulty": 2
+    },
+    "w07076": {
+        "hanzi": "那里",
+        "pinyin": "nàlǐ",
+        "english": [
+            "There",
+            "That place"
+        ],
+        "difficulty": 2
+    },
+    "w07077": {
+        "hanzi": "那样",
+        "pinyin": "nàyàng",
+        "english": [
+            "Like that",
+            "That way",
+            "Such"
+        ],
+        "difficulty": 2
+    },
+    "w07078": {
+        "hanzi": "以上",
+        "pinyin": "yǐshàng",
+        "english": [
+            "Above",
+            "More than",
+            "Over"
+        ],
+        "difficulty": 3
+    },
+    "w07079": {
+        "hanzi": "一点",
+        "pinyin": "yī diǎn",
+        "english": [
+            "A little",
+            "A bit"
+        ],
+        "difficulty": 2
+    },
+    "w07080": {
+        "hanzi": "常常",
+        "pinyin": "chángcháng",
+        "english": [
+            "Often",
+            "Frequently"
+        ],
+        "difficulty": 2
+    },
+    "w07081": {
+        "hanzi": "下单",
+        "pinyin": "xià dān",
+        "english": [
+            "Place an order"
+        ],
+        "difficulty": 2
+    },
+    "w07082": {
+        "hanzi": "选",
+        "pinyin": "xuǎn",
+        "english": [
+            "Choose",
+            "Select"
+        ],
+        "difficulty": 2
+    },
+    "w07083": {
+        "hanzi": "提交",
+        "pinyin": "tíjiāo",
+        "english": [
+            "Submit"
+        ],
+        "difficulty": 3
+    },
+    "w07084": {
+        "hanzi": "返回",
+        "pinyin": "fǎnhuí",
+        "english": [
+            "Go back",
+            "Return"
+        ],
+        "difficulty": 3
+    },
+    "w07085": {
+        "hanzi": "清空",
+        "pinyin": "qīngkōng",
+        "english": [
+            "Clear",
+            "Empty"
+        ],
+        "difficulty": 3
+    },
+    "w07086": {
+        "hanzi": "切换",
+        "pinyin": "qiēhuàn",
+        "english": [
+            "Switch",
+            "Toggle"
+        ],
+        "difficulty": 3
+    },
+    "w07087": {
+        "hanzi": "备注",
+        "pinyin": "bèizhù",
+        "english": [
+            "Note",
+            "Remark"
+        ],
+        "difficulty": 3
+    },
+    "w07088": {
+        "hanzi": "重选",
+        "pinyin": "chóngxuǎn",
+        "english": [
+            "Reselect",
+            "Choose again"
+        ],
+        "difficulty": 3
+    },
+    "w07089": {
+        "hanzi": "去凑单",
+        "pinyin": "qù còu dān",
+        "english": [
+            "Add items to meet minimum"
+        ],
+        "difficulty": 4
+    },
+    "w07090": {
+        "hanzi": "不辣",
+        "pinyin": "bù là",
+        "english": [
+            "Not spicy"
+        ],
+        "difficulty": 2
+    },
+    "w07091": {
+        "hanzi": "微辣",
+        "pinyin": "wēi là",
+        "english": [
+            "Mildly spicy"
+        ],
+        "difficulty": 3
+    },
+    "w07092": {
+        "hanzi": "去掉",
+        "pinyin": "qù diào",
+        "english": [
+            "Remove",
+            "Take out"
+        ],
+        "difficulty": 2
+    },
+    "w07093": {
+        "hanzi": "双份",
+        "pinyin": "shuāng fèn",
+        "english": [
+            "Double portion"
+        ],
+        "difficulty": 3
+    },
+    "w07094": {
+        "hanzi": "重口",
+        "pinyin": "zhòng kǒu",
+        "english": [
+            "Strong flavor",
+            "Heavy taste"
+        ],
+        "difficulty": 3
+    },
+    "w07095": {
+        "hanzi": "冰",
+        "pinyin": "bīng",
+        "english": [
+            "Ice",
+            "Iced"
+        ],
+        "difficulty": 1
+    },
+    "w07096": {
+        "hanzi": "大份",
+        "pinyin": "dà fèn",
+        "english": [
+            "Large portion"
+        ],
+        "difficulty": 2
+    },
+    "w07097": {
+        "hanzi": "小份",
+        "pinyin": "xiǎo fèn",
+        "english": [
+            "Small portion"
+        ],
+        "difficulty": 2
+    },
+    "w07098": {
+        "hanzi": "中份",
+        "pinyin": "zhōng fèn",
+        "english": [
+            "Medium portion"
+        ],
+        "difficulty": 2
+    },
+    "w07099": {
+        "hanzi": "整",
+        "pinyin": "zhěng",
+        "english": [
+            "Whole",
+            "Entire"
+        ],
+        "difficulty": 2
+    },
+    "w07100": {
+        "hanzi": "分开",
+        "pinyin": "fēnkāi",
+        "english": [
+            "Separate",
+            "Apart"
+        ],
+        "difficulty": 2
+    },
+    "w07101": {
+        "hanzi": "另放",
+        "pinyin": "lìng fàng",
+        "english": [
+            "Put separately",
+            "On the side"
+        ],
+        "difficulty": 3
+    },
+    "w07102": {
+        "hanzi": "自选",
+        "pinyin": "zì xuǎn",
+        "english": [
+            "Self-select",
+            "Choose yourself"
+        ],
+        "difficulty": 3
+    },
+    "w07103": {
+        "hanzi": "忌口",
+        "pinyin": "jì kǒu",
+        "english": [
+            "Dietary restriction",
+            "Food allergy"
+        ],
+        "difficulty": 4
+    },
+    "w07104": {
+        "hanzi": "餐具",
+        "pinyin": "cānjù",
+        "english": [
+            "Utensils",
+            "Tableware"
+        ],
+        "difficulty": 3
+    },
+    "w07105": {
+        "hanzi": "蒜",
+        "pinyin": "suàn",
+        "english": [
+            "Garlic"
+        ],
+        "difficulty": 2
+    },
+    "w07106": {
+        "hanzi": "香菜",
+        "pinyin": "xiāngcài",
+        "english": [
+            "Cilantro",
+            "Coriander"
+        ],
+        "difficulty": 2
+    },
+    "w07107": {
+        "hanzi": "起送",
+        "pinyin": "qǐ sòng",
+        "english": [
+            "Minimum delivery amount"
+        ],
+        "difficulty": 4
+    },
+    "w07108": {
+        "hanzi": "配送",
+        "pinyin": "pèisòng",
+        "english": [
+            "Delivery",
+            "Deliver"
+        ],
+        "difficulty": 3
+    },
+    "w07109": {
+        "hanzi": "配送费",
+        "pinyin": "pèisòng fèi",
+        "english": [
+            "Delivery fee"
+        ],
+        "difficulty": 3
+    },
+    "w07110": {
+        "hanzi": "满减",
+        "pinyin": "mǎn jiǎn",
+        "english": [
+            "Discount for minimum purchase"
+        ],
+        "difficulty": 4
+    },
+    "w07111": {
+        "hanzi": "折扣",
+        "pinyin": "zhékòu",
+        "english": [
+            "Discount"
+        ],
+        "difficulty": 3
+    },
+    "w07112": {
+        "hanzi": "预计",
+        "pinyin": "yùjì",
+        "english": [
+            "Estimated",
+            "Expect"
+        ],
+        "difficulty": 3
+    },
+    "w07113": {
+        "hanzi": "销量",
+        "pinyin": "xiāoliàng",
+        "english": [
+            "Sales volume",
+            "Number sold"
+        ],
+        "difficulty": 3
+    },
+    "w07114": {
+        "hanzi": "评分",
+        "pinyin": "píngfēn",
+        "english": [
+            "Rating",
+            "Score"
+        ],
+        "difficulty": 3
+    },
+    "w07115": {
+        "hanzi": "月售",
+        "pinyin": "yuè shòu",
+        "english": [
+            "Monthly sales"
+        ],
+        "difficulty": 4
+    },
+    "w07116": {
+        "hanzi": "商家",
+        "pinyin": "shāngjiā",
+        "english": [
+            "Merchant",
+            "Business"
+        ],
+        "difficulty": 3
+    },
+    "w07117": {
+        "hanzi": "营业中",
+        "pinyin": "yíngyè zhōng",
+        "english": [
+            "Open for business"
+        ],
+        "difficulty": 3
+    },
+    "w07118": {
+        "hanzi": "已打烊",
+        "pinyin": "yǐ dǎyàng",
+        "english": [
+            "Closed",
+            "Already closed"
+        ],
+        "difficulty": 4
+    },
+    "w07119": {
+        "hanzi": "自取",
+        "pinyin": "zì qǔ",
+        "english": [
+            "Self pick-up"
+        ],
+        "difficulty": 3
+    },
+    "w07120": {
+        "hanzi": "包装费",
+        "pinyin": "bāozhuāng fèi",
+        "english": [
+            "Packaging fee"
+        ],
+        "difficulty": 3
+    },
+    "w07121": {
+        "hanzi": "限时",
+        "pinyin": "xiànshí",
+        "english": [
+            "Limited time"
+        ],
+        "difficulty": 3
+    },
+    "w07122": {
+        "hanzi": "新店",
+        "pinyin": "xīn diàn",
+        "english": [
+            "New store"
+        ],
+        "difficulty": 2
+    },
+    "w07123": {
+        "hanzi": "免运费",
+        "pinyin": "miǎn yùnfèi",
+        "english": [
+            "Free shipping"
+        ],
+        "difficulty": 3
+    },
+    "w07124": {
+        "hanzi": "首单",
+        "pinyin": "shǒu dān",
+        "english": [
+            "First order"
+        ],
+        "difficulty": 3
+    },
+    "w07125": {
+        "hanzi": "已下单",
+        "pinyin": "yǐ xià dān",
+        "english": [
+            "Order placed"
+        ],
+        "difficulty": 3
+    },
+    "w07126": {
+        "hanzi": "已接单",
+        "pinyin": "yǐ jiē dān",
+        "english": [
+            "Order accepted"
+        ],
+        "difficulty": 3
+    },
+    "w07127": {
+        "hanzi": "制作中",
+        "pinyin": "zhìzuò zhōng",
+        "english": [
+            "Preparing",
+            "Being made"
+        ],
+        "difficulty": 3
+    },
+    "w07128": {
+        "hanzi": "配送中",
+        "pinyin": "pèisòng zhōng",
+        "english": [
+            "Out for delivery"
+        ],
+        "difficulty": 3
+    },
+    "w07129": {
+        "hanzi": "已送达",
+        "pinyin": "yǐ sòngdá",
+        "english": [
+            "Delivered"
+        ],
+        "difficulty": 3
+    },
+    "w07130": {
+        "hanzi": "已完成",
+        "pinyin": "yǐ wánchéng",
+        "english": [
+            "Completed"
+        ],
+        "difficulty": 2
+    },
+    "w07131": {
+        "hanzi": "已取消",
+        "pinyin": "yǐ qǔxiāo",
+        "english": [
+            "Canceled"
+        ],
+        "difficulty": 3
+    },
+    "w07132": {
+        "hanzi": "延迟",
+        "pinyin": "yánchí",
+        "english": [
+            "Delayed",
+            "Delay"
+        ],
+        "difficulty": 3
+    },
+    "w07133": {
+        "hanzi": "骑手",
+        "pinyin": "qíshǒu",
+        "english": [
+            "Delivery rider"
+        ],
+        "difficulty": 3
+    },
+    "w07134": {
+        "hanzi": "客服",
+        "pinyin": "kèfú",
+        "english": [
+            "Customer service"
+        ],
+        "difficulty": 2
+    },
+    "w07135": {
+        "hanzi": "退单",
+        "pinyin": "tuì dān",
+        "english": [
+            "Cancel order",
+            "Refund"
+        ],
+        "difficulty": 3
+    },
+    "w07136": {
+        "hanzi": "少人",
+        "pinyin": "shǎo rén",
+        "english": [
+            "Missing items",
+            "Short"
+        ],
+        "difficulty": 3
+    },
+    "w07137": {
+        "hanzi": "错了",
+        "pinyin": "cuò le",
+        "english": [
+            "Wrong",
+            "Incorrect"
+        ],
+        "difficulty": 2
+    },
+    "w07138": {
+        "hanzi": "催单",
+        "pinyin": "cuī dān",
+        "english": [
+            "Rush order",
+            "Urge delivery"
+        ],
+        "difficulty": 4
+    },
+    "w07139": {
+        "hanzi": "门禁卡",
+        "pinyin": "ménjìn kǎ",
+        "english": [
+            "Access card",
+            "Key card"
+        ],
+        "difficulty": 3
+    },
+    "w07140": {
+        "hanzi": "放门口",
+        "pinyin": "fàng ménkǒu",
+        "english": [
+            "Leave at door"
+        ],
+        "difficulty": 2
+    },
+    "w07141": {
+        "hanzi": "粉",
+        "pinyin": "fěn",
+        "english": [
+            "Noodles (rice noodles)"
+        ],
+        "difficulty": 2
+    },
+    "w07142": {
+        "hanzi": "饼",
+        "pinyin": "bǐng",
+        "english": [
+            "Pancake",
+            "Flatbread"
+        ],
+        "difficulty": 2
+    },
+    "w07143": {
+        "hanzi": "主食",
+        "pinyin": "zhǔshí",
+        "english": [
+            "Staple food",
+            "Main food"
+        ],
+        "difficulty": 2
+    },
+    "w07144": {
+        "hanzi": "套餐",
+        "pinyin": "tàocān",
+        "english": [
+            "Set meal",
+            "Combo"
+        ],
+        "difficulty": 2
+    },
+    "w07145": {
+        "hanzi": "单点",
+        "pinyin": "dān diǎn",
+        "english": [
+            "À la carte",
+            "Order individually"
+        ],
+        "difficulty": 3
+    },
+    "w07146": {
+        "hanzi": "盘",
+        "pinyin": "pán",
+        "english": [
+            "Plate",
+            "Dish (measure word)"
+        ],
+        "difficulty": 2
+    },
+    "w07147": {
+        "hanzi": "配菜",
+        "pinyin": "pèicài",
+        "english": [
+            "Side dish"
+        ],
+        "difficulty": 3
+    },
+    "w07148": {
+        "hanzi": "主菜",
+        "pinyin": "zhǔcài",
+        "english": [
+            "Main dish"
+        ],
+        "difficulty": 2
+    },
+    "w07149": {
+        "hanzi": "鸡",
+        "pinyin": "jī",
+        "english": [
+            "Chicken"
+        ],
+        "difficulty": 1
+    },
+    "w07150": {
+        "hanzi": "牛",
+        "pinyin": "niú",
+        "english": [
+            "Beef",
+            "Cow"
+        ],
+        "difficulty": 1
+    },
+    "w07151": {
+        "hanzi": "羊",
+        "pinyin": "yáng",
+        "english": [
+            "Lamb",
+            "Sheep"
+        ],
+        "difficulty": 2
+    },
+    "w07152": {
+        "hanzi": "蛋",
+        "pinyin": "dàn",
+        "english": [
+            "Egg"
+        ],
+        "difficulty": 1
+    },
+    "w07153": {
+        "hanzi": "牛肉",
+        "pinyin": "niúròu",
+        "english": [
+            "Beef"
+        ],
+        "difficulty": 1
+    },
+    "w07154": {
+        "hanzi": "猪肉",
+        "pinyin": "zhūròu",
+        "english": [
+            "Pork"
+        ],
+        "difficulty": 1
+    },
+    "w07155": {
+        "hanzi": "鸡肉",
+        "pinyin": "jīròu",
+        "english": [
+            "Chicken meat"
+        ],
+        "difficulty": 1
+    },
+    "w07156": {
+        "hanzi": "白菜",
+        "pinyin": "báicài",
+        "english": [
+            "Chinese cabbage",
+            "Napa cabbage"
+        ],
+        "difficulty": 2
+    },
+    "w07157": {
+        "hanzi": "青菜",
+        "pinyin": "qīngcài",
+        "english": [
+            "Green vegetables",
+            "Leafy greens"
+        ],
+        "difficulty": 2
+    },
+    "w07158": {
+        "hanzi": "蘑菇",
+        "pinyin": "mógū",
+        "english": [
+            "Mushroom"
+        ],
+        "difficulty": 2
+    },
+    "w07159": {
+        "hanzi": "肉末",
+        "pinyin": "ròumò",
+        "english": [
+            "Ground meat",
+            "Minced meat"
+        ],
+        "difficulty": 3
+    },
+    "w07160": {
+        "hanzi": "排骨",
+        "pinyin": "páigǔ",
+        "english": [
+            "Spare ribs",
+            "Pork ribs"
+        ],
+        "difficulty": 2
+    },
+    "w07161": {
+        "hanzi": "炖",
+        "pinyin": "dùn",
+        "english": [
+            "Stew",
+            "Braise"
+        ],
+        "difficulty": 2
+    },
+    "w07162": {
+        "hanzi": "烤",
+        "pinyin": "kǎo",
+        "english": [
+            "Roast",
+            "Bake",
+            "Grill"
+        ],
+        "difficulty": 2
+    },
+    "w07163": {
+        "hanzi": "蒸",
+        "pinyin": "zhēng",
+        "english": [
+            "Steam"
+        ],
+        "difficulty": 2
+    },
+    "w07164": {
+        "hanzi": "拌",
+        "pinyin": "bàn",
+        "english": [
+            "Mix",
+            "Toss"
+        ],
+        "difficulty": 2
+    },
+    "w07165": {
+        "hanzi": "卤",
+        "pinyin": "lǔ",
+        "english": [
+            "Braise in soy sauce"
+        ],
+        "difficulty": 3
+    },
+    "w07166": {
+        "hanzi": "凉拌",
+        "pinyin": "liángbàn",
+        "english": [
+            "Cold dressed",
+            "Cold tossed"
+        ],
+        "difficulty": 3
+    },
+    "w07167": {
+        "hanzi": "清炒",
+        "pinyin": "qīngchǎo",
+        "english": [
+            "Stir-fry lightly"
+        ],
+        "difficulty": 3
+    },
+    "w07168": {
+        "hanzi": "红烧",
+        "pinyin": "hóngshāo",
+        "english": [
+            "Red-braised",
+            "Braised in soy sauce"
+        ],
+        "difficulty": 3
+    },
+    "w07169": {
+        "hanzi": "干锅",
+        "pinyin": "gānguō",
+        "english": [
+            "Dry pot"
+        ],
+        "difficulty": 3
+    },
+    "w07170": {
+        "hanzi": "水煮",
+        "pinyin": "shuǐzhǔ",
+        "english": [
+            "Boiled in water"
+        ],
+        "difficulty": 3
+    },
+    "w07171": {
+        "hanzi": "酱",
+        "pinyin": "jiàng",
+        "english": [
+            "Sauce",
+            "Paste"
+        ],
+        "difficulty": 2
+    },
+    "w07172": {
+        "hanzi": "原味",
+        "pinyin": "yuánwèi",
+        "english": [
+            "Original flavor",
+            "Plain"
+        ],
+        "difficulty": 2
+    },
+    "w07173": {
+        "hanzi": "招牌",
+        "pinyin": "zhāopái",
+        "english": [
+            "Signature dish",
+            "Specialty"
+        ],
+        "difficulty": 3
+    },
+    "w07174": {
+        "hanzi": "麻辣",
+        "pinyin": "málà",
+        "english": [
+            "Spicy and numbing"
+        ],
+        "difficulty": 2
+    },
+    "w07175": {
+        "hanzi": "蒜泥",
+        "pinyin": "suànní",
+        "english": [
+            "Garlic paste"
+        ],
+        "difficulty": 3
+    },
+    "w07176": {
+        "hanzi": "外酥里嫩",
+        "pinyin": "wài sū lǐ nèn",
+        "english": [
+            "Crispy outside, tender inside"
+        ],
+        "difficulty": 4
+    },
+    "w07177": {
+        "hanzi": "牛肉面",
+        "pinyin": "niúròu miàn",
+        "english": [
+            "Beef noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07178": {
+        "hanzi": "炸酱面",
+        "pinyin": "zhájiàng miàn",
+        "english": [
+            "Noodles with fried soybean paste"
+        ],
+        "difficulty": 3
+    },
+    "w07179": {
+        "hanzi": "担担面",
+        "pinyin": "dàndàn miàn",
+        "english": [
+            "Dan dan noodles"
+        ],
+        "difficulty": 3
+    },
+    "w07180": {
+        "hanzi": "拉面",
+        "pinyin": "lāmiàn",
+        "english": [
+            "Hand-pulled noodles",
+            "Ramen"
+        ],
+        "difficulty": 2
+    },
+    "w07181": {
+        "hanzi": "刀削面",
+        "pinyin": "dāoxiāo miàn",
+        "english": [
+            "Knife-cut noodles"
+        ],
+        "difficulty": 3
+    },
+    "w07182": {
+        "hanzi": "拌面",
+        "pinyin": "bànmiàn",
+        "english": [
+            "Mixed noodles",
+            "Tossed noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07183": {
+        "hanzi": "汤面",
+        "pinyin": "tāngmiàn",
+        "english": [
+            "Noodle soup"
+        ],
+        "difficulty": 2
+    },
+    "w07184": {
+        "hanzi": "凉面",
+        "pinyin": "liángmiàn",
+        "english": [
+            "Cold noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07185": {
+        "hanzi": "热干面",
+        "pinyin": "règān miàn",
+        "english": [
+            "Hot dry noodles"
+        ],
+        "difficulty": 3
+    },
+    "w07186": {
+        "hanzi": "酸辣粉",
+        "pinyin": "suānlà fěn",
+        "english": [
+            "Hot and sour noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07187": {
+        "hanzi": "米线",
+        "pinyin": "mǐxiàn",
+        "english": [
+            "Rice noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07188": {
+        "hanzi": "过桥米线",
+        "pinyin": "guòqiáo mǐxiàn",
+        "english": [
+            "Crossing the bridge noodles"
+        ],
+        "difficulty": 3
+    },
+    "w07189": {
+        "hanzi": "红烧牛肉面",
+        "pinyin": "hóngshāo niúròu miàn",
+        "english": [
+            "Braised beef noodles"
+        ],
+        "difficulty": 3
+    },
+    "w07190": {
+        "hanzi": "清汤面",
+        "pinyin": "qīngtāng miàn",
+        "english": [
+            "Clear soup noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07191": {
+        "hanzi": "宽面",
+        "pinyin": "kuān miàn",
+        "english": [
+            "Wide noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07192": {
+        "hanzi": "细面",
+        "pinyin": "xì miàn",
+        "english": [
+            "Thin noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07193": {
+        "hanzi": "加面",
+        "pinyin": "jiā miàn",
+        "english": [
+            "Extra noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07194": {
+        "hanzi": "少面",
+        "pinyin": "shǎo miàn",
+        "english": [
+            "Less noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07195": {
+        "hanzi": "汤多",
+        "pinyin": "tāng duō",
+        "english": [
+            "More soup"
+        ],
+        "difficulty": 2
+    },
+    "w07196": {
+        "hanzi": "汤少",
+        "pinyin": "tāng shǎo",
+        "english": [
+            "Less soup"
+        ],
+        "difficulty": 2
+    },
+    "w07197": {
+        "hanzi": "清汤",
+        "pinyin": "qīngtāng",
+        "english": [
+            "Clear soup"
+        ],
+        "difficulty": 2
+    },
+    "w07198": {
+        "hanzi": "红汤",
+        "pinyin": "hóngtāng",
+        "english": [
+            "Spicy soup"
+        ],
+        "difficulty": 2
+    },
+    "w07199": {
+        "hanzi": "招牌面",
+        "pinyin": "zhāopái miàn",
+        "english": [
+            "Signature noodles"
+        ],
+        "difficulty": 2
+    },
+    "w07200": {
+        "hanzi": "炒面",
+        "pinyin": "chǎomiàn",
+        "english": [
+            "Fried noodles",
+            "Chow mein"
+        ],
+        "difficulty": 2
+    },
+    "w07201": {
+        "hanzi": "重庆小面",
+        "pinyin": "Chóngqìng xiǎomiàn",
+        "english": [
+            "Chongqing noodles"
+        ],
+        "difficulty": 3
+    },
+    "w07202": {
+        "hanzi": "炒饭",
+        "pinyin": "chǎofàn",
+        "english": [
+            "Fried rice"
+        ],
+        "difficulty": 2
+    },
+    "w07203": {
+        "hanzi": "蛋炒饭",
+        "pinyin": "dàn chǎofàn",
+        "english": [
+            "Egg fried rice"
+        ],
+        "difficulty": 2
+    },
+    "w07204": {
+        "hanzi": "盖饭",
+        "pinyin": "gàifàn",
+        "english": [
+            "Rice bowl with toppings"
+        ],
+        "difficulty": 2
+    },
+    "w07205": {
+        "hanzi": "拌饭",
+        "pinyin": "bànfàn",
+        "english": [
+            "Mixed rice"
+        ],
+        "difficulty": 2
+    },
+    "w07206": {
+        "hanzi": "煲仔饭",
+        "pinyin": "bāozǎi fàn",
+        "english": [
+            "Clay pot rice"
+        ],
+        "difficulty": 3
+    },
+    "w07207": {
+        "hanzi": "焗饭",
+        "pinyin": "jú fàn",
+        "english": [
+            "Baked rice"
+        ],
+        "difficulty": 3
+    },
+    "w07208": {
+        "hanzi": "卤肉饭",
+        "pinyin": "lǔròu fàn",
+        "english": [
+            "Braised pork rice"
+        ],
+        "difficulty": 2
+    },
+    "w07209": {
+        "hanzi": "叉烧饭",
+        "pinyin": "chāshāo fàn",
+        "english": [
+            "BBQ pork rice"
+        ],
+        "difficulty": 2
+    },
+    "w07210": {
+        "hanzi": "咖喱饭",
+        "pinyin": "gālí fàn",
+        "english": [
+            "Curry rice"
+        ],
+        "difficulty": 2
+    },
+    "w07211": {
+        "hanzi": "鸡饭",
+        "pinyin": "jī fàn",
+        "english": [
+            "Chicken rice"
+        ],
+        "difficulty": 2
+    },
+    "w07212": {
+        "hanzi": "牛肉饭",
+        "pinyin": "niúròu fàn",
+        "english": [
+            "Beef rice"
+        ],
+        "difficulty": 2
+    },
+    "w07213": {
+        "hanzi": "白饭",
+        "pinyin": "báifàn",
+        "english": [
+            "Plain white rice"
+        ],
+        "difficulty": 1
+    },
+    "w07214": {
+        "hanzi": "加饭",
+        "pinyin": "jiā fàn",
+        "english": [
+            "Extra rice"
+        ],
+        "difficulty": 2
+    },
+    "w07215": {
+        "hanzi": "少饭",
+        "pinyin": "shǎo fàn",
+        "english": [
+            "Less rice"
+        ],
+        "difficulty": 2
+    },
+    "w07216": {
+        "hanzi": "盒饭",
+        "pinyin": "héfàn",
+        "english": [
+            "Box lunch",
+            "Bento"
+        ],
+        "difficulty": 2
+    },
+    "w07217": {
+        "hanzi": "便当",
+        "pinyin": "biàndāng",
+        "english": [
+            "Bento",
+            "Lunch box"
+        ],
+        "difficulty": 2
+    },
+    "w07218": {
+        "hanzi": "酱汁",
+        "pinyin": "jiàngzhī",
+        "english": [
+            "Sauce",
+            "Gravy"
+        ],
+        "difficulty": 2
+    },
+    "w07219": {
+        "hanzi": "招牌饭",
+        "pinyin": "zhāopái fàn",
+        "english": [
+            "Signature rice dish"
+        ],
+        "difficulty": 2
+    },
+    "w07220": {
+        "hanzi": "黄焖鸡米饭",
+        "pinyin": "huángmèn jī mǐfàn",
+        "english": [
+            "Braised chicken with rice"
+        ],
+        "difficulty": 3
+    },
+    "w07221": {
+        "hanzi": "村民",
+        "pinyin": "cūnmín",
+        "english": [
+            "Villager"
+        ],
+        "difficulty": 3
+    },
+    "w07222": {
+        "hanzi": "家族企业",
+        "pinyin": "jiāzú qǐyè",
+        "english": [
+            "Family business"
+        ],
+        "difficulty": 4
+    },
+    "w07223": {
+        "hanzi": "合作社",
+        "pinyin": "hézuòshè",
+        "english": [
+            "Cooperative"
+        ],
+        "difficulty": 4
+    },
+    "w07224": {
+        "hanzi": "取得",
+        "pinyin": "qǔdé",
+        "english": [
+            "Obtain",
+            "Achieve"
+        ],
+        "difficulty": 3
+    },
+    "w07225": {
+        "hanzi": "难以",
+        "pinyin": "nányǐ",
+        "english": [
+            "Difficult to",
+            "Hard to"
+        ],
+        "difficulty": 3
+    },
+    "w07226": {
+        "hanzi": "无助",
+        "pinyin": "wúzhù",
+        "english": [
+            "Helpless"
+        ],
+        "difficulty": 3
+    },
+    "w07227": {
+        "hanzi": "无法",
+        "pinyin": "wúfǎ",
+        "english": [
+            "Unable to",
+            "Cannot"
+        ],
+        "difficulty": 3
+    },
+    "w07228": {
+        "hanzi": "这一",
+        "pinyin": "zhè yī",
+        "english": [
+            "This one",
+            "This"
+        ],
+        "difficulty": 2
+    },
+    "w07229": {
+        "hanzi": "提出",
+        "pinyin": "tíchū",
+        "english": [
+            "Put forward",
+            "Propose"
+        ],
+        "difficulty": 3
+    },
+    "w07230": {
+        "hanzi": "开办",
+        "pinyin": "kāibàn",
+        "english": [
+            "Set up",
+            "Establish"
+        ],
+        "difficulty": 3
+    },
+    "w07231": {
+        "hanzi": "共享资源",
+        "pinyin": "gòngxiǎng zīyuán",
+        "english": [
+            "Share resources"
+        ],
+        "difficulty": 4
+    },
+    "w07232": {
+        "hanzi": "欣然同意",
+        "pinyin": "xīnrán tóngyì",
+        "english": [
+            "Gladly agree",
+            "Readily agree"
+        ],
+        "difficulty": 4
+    },
+    "w07233": {
+        "hanzi": "提高质量",
+        "pinyin": "tígāo zhìliàng",
+        "english": [
+            "Improve quality"
+        ],
+        "difficulty": 3
+    },
+    "w07234": {
+        "hanzi": "最终",
+        "pinyin": "zuìzhōng",
+        "english": [
+            "Finally",
+            "Eventually"
+        ],
+        "difficulty": 3
+    },
+    "w07235": {
+        "hanzi": "战胜",
+        "pinyin": "zhànshèng",
+        "english": [
+            "Defeat",
+            "Overcome"
+        ],
+        "difficulty": 3
+    },
+    "w07236": {
+        "hanzi": "控制权",
+        "pinyin": "kòngzhì quán",
+        "english": [
+            "Control",
+            "Power of control"
+        ],
+        "difficulty": 4
+    },
+    "w07237": {
+        "hanzi": "故宫",
+        "pinyin": "Gùgōng",
+        "english": [
+            "Forbidden City",
+            "Palace Museum"
+        ],
+        "difficulty": 2
+    },
+    "w07238": {
+        "hanzi": "北京故宫",
+        "pinyin": "Běijīng Gùgōng",
+        "english": [
+            "Beijing Forbidden City"
+        ],
+        "difficulty": 2
+    },
+    "w07239": {
+        "hanzi": "紫禁城",
+        "pinyin": "Zǐjìnchéng",
+        "english": [
+            "Forbidden City",
+            "Purple Forbidden City"
+        ],
+        "difficulty": 3
+    },
+    "w07240": {
+        "hanzi": "万平方米",
+        "pinyin": "wàn píngfāngmǐ",
+        "english": [
+            "Ten thousand square meters"
+        ],
+        "difficulty": 3
+    },
+    "w07241": {
+        "hanzi": "明清两代",
+        "pinyin": "Míng Qīng liǎng dài",
+        "english": [
+            "Ming and Qing dynasties"
+        ],
+        "difficulty": 4
+    },
+    "w07242": {
+        "hanzi": "皇家",
+        "pinyin": "huángjiā",
+        "english": [
+            "Royal",
+            "Imperial"
+        ],
+        "difficulty": 3
+    },
+    "w07243": {
+        "hanzi": "称为",
+        "pinyin": "chēngwéi",
+        "english": [
+            "Called",
+            "Known as"
+        ],
+        "difficulty": 2
+    },
+    "w07244": {
+        "hanzi": "宫廷",
+        "pinyin": "gōngtíng",
+        "english": [
+            "Imperial court",
+            "Palace"
+        ],
+        "difficulty": 3
+    },
+    "w07245": {
+        "hanzi": "大殿",
+        "pinyin": "dàdiàn",
+        "english": [
+            "Main hall",
+            "Great hall"
+        ],
+        "difficulty": 3
+    },
+    "w07246": {
+        "hanzi": "占地面积",
+        "pinyin": "zhàndì miànjī",
+        "english": [
+            "Land area",
+            "Floor space"
+        ],
+        "difficulty": 4
+    },
+    "w07247": {
+        "hanzi": "建筑面积",
+        "pinyin": "jiànzhù miànjī",
+        "english": [
+            "Building area",
+            "Floor area"
+        ],
+        "difficulty": 4
+    },
+    "w07248": {
+        "hanzi": "约",
+        "pinyin": "yuē",
+        "english": [
+            "Approximately",
+            "About"
+        ],
+        "difficulty": 2
+    },
+    "w07249": {
+        "hanzi": "大小",
+        "pinyin": "dàxiǎo",
+        "english": [
+            "Size",
+            "Big and small"
+        ],
+        "difficulty": 2
+    },
+    "w07250": {
+        "hanzi": "七十",
+        "pinyin": "qīshí",
+        "english": [
+            "Seventy"
+        ],
+        "difficulty": 1
+    },
+    "w07251": {
+        "hanzi": "多座",
+        "pinyin": "duō zuò",
+        "english": [
+            "Many",
+            "Multiple (buildings)"
+        ],
+        "difficulty": 3
+    },
+    "w07252": {
+        "hanzi": "房屋",
+        "pinyin": "fángwū",
+        "english": [
+            "House",
+            "Building"
+        ],
+        "difficulty": 2
+    },
+    "w07253": {
+        "hanzi": "九千余",
+        "pinyin": "jiǔqiān yú",
+        "english": [
+            "More than nine thousand"
+        ],
+        "difficulty": 3
+    },
+    "w07254": {
+        "hanzi": "现存",
+        "pinyin": "xiàncún",
+        "english": [
+            "Still existing",
+            "Extant"
+        ],
+        "difficulty": 3
+    },
+    "w07255": {
+        "hanzi": "最大",
+        "pinyin": "zuìdà",
+        "english": [
+            "Largest",
+            "Biggest"
+        ],
+        "difficulty": 2
+    },
+    "w07256": {
+        "hanzi": "最为",
+        "pinyin": "zuìwéi",
+        "english": [
+            "Most",
+            "The most"
+        ],
+        "difficulty": 3
+    },
+    "w07257": {
+        "hanzi": "木质",
+        "pinyin": "mùzhì",
+        "english": [
+            "Wooden",
+            "Wood"
+        ],
+        "difficulty": 3
+    },
+    "w07258": {
+        "hanzi": "古建筑",
+        "pinyin": "gǔ jiànzhù",
+        "english": [
+            "Ancient architecture",
+            "Historic building"
+        ],
+        "difficulty": 3
+    },
+    "w07259": {
+        "hanzi": "之一",
+        "pinyin": "zhī yī",
+        "english": [
+            "One of"
+        ],
+        "difficulty": 2
+    },
+    "w07260": {
+        "hanzi": "故宫博物院",
+        "pinyin": "Gùgōng Bówùyuàn",
+        "english": [
+            "Palace Museum"
+        ],
+        "difficulty": 3
+    },
+    "w07261": {
+        "hanzi": "一座",
+        "pinyin": "yī zuò",
+        "english": [
+            "A (building/mountain)"
+        ],
+        "difficulty": 2
+    },
+    "w07262": {
+        "hanzi": "近几年",
+        "pinyin": "jìn jǐ nián",
+        "english": [
+            "Recent years"
+        ],
+        "difficulty": 2
+    },
+    "w07263": {
+        "hanzi": "头脑",
+        "pinyin": "tóunǎo",
+        "english": [
+            "Brain",
+            "Mind"
+        ],
+        "difficulty": 2
+    },
+    "w07264": {
+        "hanzi": "略微",
+        "pinyin": "lüèwēi",
+        "english": [
+            "Slightly",
+            "A little"
+        ],
+        "difficulty": 3
+    },
+    "w07265": {
+        "hanzi": "古板",
+        "pinyin": "gǔbǎn",
+        "english": [
+            "Old-fashioned",
+            "Stuffy"
+        ],
+        "difficulty": 3
+    },
+    "w07266": {
+        "hanzi": "一部",
+        "pinyin": "yī bù",
+        "english": [
+            "A (film/book)",
+            "Part"
+        ],
+        "difficulty": 2
+    },
+    "w07267": {
+        "hanzi": "修",
+        "pinyin": "xiū",
+        "english": [
+            "Repair",
+            "Fix"
+        ],
+        "difficulty": 2
+    },
+    "w07268": {
+        "hanzi": "普通人",
+        "pinyin": "pǔtōng rén",
+        "english": [
+            "Ordinary person",
+            "Common people"
+        ],
+        "difficulty": 2
+    },
+    "w07269": {
+        "hanzi": "背后",
+        "pinyin": "bèihòu",
+        "english": [
+            "Behind",
+            "Backstage"
+        ],
+        "difficulty": 2
+    },
+    "w07270": {
+        "hanzi": "工匠",
+        "pinyin": "gōngjiàng",
+        "english": [
+            "Craftsman",
+            "Artisan"
+        ],
+        "difficulty": 3
+    },
+    "w07271": {
+        "hanzi": "宝藏",
+        "pinyin": "bǎozàng",
+        "english": [
+            "Treasure",
+            "Hidden gem"
+        ],
+        "difficulty": 3
+    },
+    "w07272": {
+        "hanzi": "恢弘",
+        "pinyin": "huīhóng",
+        "english": [
+            "Magnificent",
+            "Grand"
+        ],
+        "difficulty": 4
+    },
+    "w07273": {
+        "hanzi": "现代科技",
+        "pinyin": "xiàndài kējì",
+        "english": [
+            "Modern technology"
+        ],
+        "difficulty": 3
+    },
+    "w07274": {
+        "hanzi": "见识",
+        "pinyin": "jiànshi",
+        "english": [
+            "Knowledge",
+            "Experience"
+        ],
+        "difficulty": 3
+    },
+    "w07275": {
+        "hanzi": "大国",
+        "pinyin": "dàguó",
+        "english": [
+            "Great power",
+            "Major country"
+        ],
+        "difficulty": 3
+    },
+    "w07276": {
+        "hanzi": "风范",
+        "pinyin": "fēngfàn",
+        "english": [
+            "Demeanor",
+            "Bearing"
+        ],
+        "difficulty": 4
+    },
+    "w07277": {
+        "hanzi": "文创",
+        "pinyin": "wénchuàng",
+        "english": [
+            "Cultural creativity",
+            "Cultural products"
+        ],
+        "difficulty": 4
+    },
+    "w07278": {
+        "hanzi": "发掘",
+        "pinyin": "fājué",
+        "english": [
+            "Excavate",
+            "Discover"
+        ],
+        "difficulty": 3
+    },
+    "w07279": {
+        "hanzi": "古老",
+        "pinyin": "gǔlǎo",
+        "english": [
+            "Ancient",
+            "Old"
+        ],
+        "difficulty": 2
+    },
+    "w07280": {
+        "hanzi": "叠加",
+        "pinyin": "diéjiā",
+        "english": [
+            "Overlay",
+            "Superimpose"
+        ],
+        "difficulty": 4
+    },
+    "w07281": {
+        "hanzi": "口红",
+        "pinyin": "kǒuhóng",
+        "english": [
+            "Lipstick"
+        ],
+        "difficulty": 2
+    },
+    "w07282": {
+        "hanzi": "台历",
+        "pinyin": "táilì",
+        "english": [
+            "Desk calendar"
+        ],
+        "difficulty": 3
+    },
+    "w07283": {
+        "hanzi": "广为",
+        "pinyin": "guǎngwéi",
+        "english": [
+            "Widely",
+            "Extensively"
+        ],
+        "difficulty": 3
+    },
+    "w07284": {
+        "hanzi": "和面",
+        "pinyin": "huómiàn",
+        "english": [
+            "Knead dough",
+            "Mix dough"
+        ],
+        "difficulty": 3
+    },
+    "w07285": {
+        "hanzi": "配饭",
+        "pinyin": "pèi fàn",
+        "english": [
+            "Goes with rice",
+            "Side dish for rice"
+        ],
+        "difficulty": 2
+    },
+    "w07286": {
+        "hanzi": "猜到",
+        "pinyin": "cāidào",
+        "english": [
+            "Guess correctly"
+        ],
+        "difficulty": 2
+    },
+    "w07287": {
+        "hanzi": "道菜",
+        "pinyin": "dào cài",
+        "english": [
+            "Dish (measure word)"
+        ],
+        "difficulty": 2
+    },
+    "w07288": {
+        "hanzi": "做菜",
+        "pinyin": "zuò cài",
+        "english": [
+            "Cook",
+            "Prepare food"
+        ],
+        "difficulty": 2
+    },
+    "w07289": {
+        "hanzi": "炸鸡",
+        "pinyin": "zhájī",
+        "english": [
+            "Fried chicken"
+        ],
+        "difficulty": 2
+    },
+    "w07290": {
+        "hanzi": "煮汤",
+        "pinyin": "zhǔ tāng",
+        "english": [
+            "Make soup",
+            "Boil soup"
+        ],
+        "difficulty": 2
+    },
+    "w07291": {
+        "hanzi": "有时候",
+        "pinyin": "yǒushíhou",
+        "english": [
+            "Sometimes"
+        ],
+        "difficulty": 2
+    },
+    "w07292": {
+        "hanzi": "选菜",
+        "pinyin": "xuǎn cài",
+        "english": [
+            "Choose dishes",
+            "Select food"
+        ],
+        "difficulty": 2
+    },
+    "w07293": {
+        "hanzi": "或",
+        "pinyin": "huò",
+        "english": [
+            "Or"
+        ],
+        "difficulty": 2
+    },
+    "w07294": {
+        "hanzi": "我点",
+        "pinyin": "wǒ diǎn",
+        "english": [
+            "I order"
+        ],
+        "difficulty": 1
+    },
+    "w07295": {
+        "hanzi": "当天",
+        "pinyin": "dāngtiān",
+        "english": [
+            "That day",
+            "The same day"
+        ],
+        "difficulty": 2
+    },
+    "w07296": {
+        "hanzi": "我常点",
+        "pinyin": "wǒ cháng diǎn",
+        "english": [
+            "I often order"
+        ],
+        "difficulty": 2
+    },
+    "w07297": {
+        "hanzi": "就会点",
+        "pinyin": "jiù huì diǎn",
+        "english": [
+            "Will order"
+        ],
+        "difficulty": 2
+    },
+    "w07298": {
+        "hanzi": "份量",
+        "pinyin": "fènliàng",
+        "english": [
+            "Portion size",
+            "Quantity"
+        ],
+        "difficulty": 2
+    },
+    "w07299": {
+        "hanzi": "不太饿",
+        "pinyin": "bú tài è",
+        "english": [
+            "Not very hungry"
+        ],
+        "difficulty": 2
+    },
+    "w07300": {
+        "hanzi": "还会",
+        "pinyin": "hái huì",
+        "english": [
+            "Also will",
+            "Still will"
+        ],
+        "difficulty": 2
+    },
+    "w07301": {
+        "hanzi": "之间",
+        "pinyin": "zhījiān",
+        "english": [
+            "Between",
+            "Among"
+        ],
+        "difficulty": 2
+    },
+    "w07302": {
+        "hanzi": "做法",
+        "pinyin": "zuòfǎ",
+        "english": [
+            "Method",
+            "Way of doing"
+        ],
+        "difficulty": 2
+    },
+    "w07303": {
+        "hanzi": "做成",
+        "pinyin": "zuòchéng",
+        "english": [
+            "Make into",
+            "Accomplish"
+        ],
+        "difficulty": 2
+    },
+    "w07304": {
+        "hanzi": "会配",
+        "pinyin": "huì pèi",
+        "english": [
+            "Will pair with",
+            "Goes well with"
+        ],
+        "difficulty": 2
+    },
+    "w07305": {
+        "hanzi": "订单",
+        "pinyin": "dìngdān",
+        "english": [
+            "Order"
+        ],
+        "difficulty": 2
+    },
+    "w07306": {
+        "hanzi": "我会",
+        "pinyin": "wǒ huì",
+        "english": [
+            "I will",
+            "I can"
+        ],
+        "difficulty": 1
+    },
+    "w07307": {
+        "hanzi": "先是",
+        "pinyin": "xiān shì",
+        "english": [
+            "First is",
+            "At first"
+        ],
+        "difficulty": 2
+    },
+    "w07308": {
+        "hanzi": "太久",
+        "pinyin": "tài jiǔ",
+        "english": [
+            "Too long"
+        ],
+        "difficulty": 2
+    },
+    "w07309": {
+        "hanzi": "一般来说",
+        "pinyin": "yībān lái shuō",
+        "english": [
+            "Generally speaking"
+        ],
+        "difficulty": 3
+    },
+    "w07310": {
+        "hanzi": "不吃",
+        "pinyin": "bù chī",
+        "english": [
+            "Don't eat",
+            "Not eat"
+        ],
+        "difficulty": 1
+    },
+    "w07311": {
+        "hanzi": "少盐",
+        "pinyin": "shǎo yán",
+        "english": [
+            "Less salt"
+        ],
+        "difficulty": 2
+    },
+    "w07312": {
+        "hanzi": "某样",
+        "pinyin": "mǒu yàng",
+        "english": [
+            "A certain item",
+            "Something"
+        ],
+        "difficulty": 2
+    },
+    "w07313": {
+        "hanzi": "配料",
+        "pinyin": "pèiliào",
+        "english": [
+            "Ingredients",
+            "Condiments"
+        ],
+        "difficulty": 2
+    },
+    "w07314": {
+        "hanzi": "多写",
+        "pinyin": "duō xiě",
+        "english": [
+            "Write more"
+        ],
+        "difficulty": 2
+    },
+    "w07315": {
+        "hanzi": "一句",
+        "pinyin": "yī jù",
+        "english": [
+            "A sentence",
+            "One phrase"
+        ],
+        "difficulty": 2
+    },
+    "w07316": {
+        "hanzi": "一次",
+        "pinyin": "yī cì",
+        "english": [
+            "Once",
+            "One time"
+        ],
+        "difficulty": 2
+    },
+    "w07317": {
+        "hanzi": "打开",
+        "pinyin": "dǎkāi",
+        "english": [
+            "Open"
+        ],
+        "difficulty": 2
+    },
+    "w07318": {
+        "hanzi": "会先",
+        "pinyin": "huì xiān",
+        "english": [
+            "Will first"
+        ],
+        "difficulty": 2
+    },
+    "w07319": {
+        "hanzi": "购物车",
+        "pinyin": "gòuwù chē",
+        "english": [
+            "Shopping cart"
+        ],
+        "difficulty": 2
+    },
+    "w07320": {
+        "hanzi": "点错",
+        "pinyin": "diǎn cuò",
+        "english": [
+            "Order wrong",
+            "Click wrong"
+        ],
+        "difficulty": 2
+    },
+    "w07321": {
+        "hanzi": "一步",
+        "pinyin": "yī bù",
+        "english": [
+            "One step"
+        ],
+        "difficulty": 2
     }
 }

@@ -3,7 +3,7 @@
   "title": "预定酒店",
   "subtitle": "How to book a hotel",
   "difficulty": 4,
-  "topic": "",
+  "topic": ["New Arrivals"],
   "tokens": [
     {
       "id": "w00119",

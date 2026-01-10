@@ -10,6 +10,8 @@ struct ReadingView: View {
     @State private var searchText = ""
     @State private var selectedFilters: Set<String> = []
     
+    @State private var showReportOverlay = false
+    
     @ObservedObject private var storyProgress = StoryProgressManager.shared
     
     var body: some View {
@@ -42,8 +44,16 @@ struct ReadingView: View {
                         isCompleted: storyProgress.isCompleted(storyId: selectedStory.storyId),
                         onToggleCompleted: {
                             storyProgress.toggleCompletion(storyId: selectedStory.storyId)
+                        },
+                        onReport: {
+                            showReportOverlay = true
                         }
                     )
+                }
+                .overlay {
+                    if showReportOverlay {
+                        ReportIssueOverlay(onClose: { showReportOverlay = false })
+                    }
                 }
                 .toolbar(.hidden, for: .tabBar)
             } else {
@@ -81,8 +91,8 @@ struct StoryListView: View {
     @State private var storyIdToUncomplete: String?
     
     // Static allowed topics and HSK levels
-    static let hskFilters = ["HSK 1-2", "HSK 3", "HSK 4", "HSK 5", "HSK 6"]
-    static let topicFilters = ["New Arrivals", "Fable", "Recipe", "News", "Story"]
+    static let hskFilters = ["HSK 3", "HSK 4", "HSK 5", "HSK 6"]
+    static let topicFilters = ["New Arrivals", "Fable", "Informational", "Story"]
     static let filters: [String] = ["Completed"] + hskFilters + topicFilters
     
     var body: some View {
@@ -277,7 +287,6 @@ struct StoryListView: View {
                 if !levelFilters.isEmpty {
                     let matchesLevel = levelFilters.contains { filter in
                         switch filter {
-                        case "HSK 1-2": return story.difficulty <= 2
                         case "HSK 3": return story.difficulty == 3
                         case "HSK 4": return story.difficulty == 4
                         case "HSK 5": return story.difficulty == 5
@@ -595,6 +604,7 @@ struct ReadingNavigationBar: View {
     @Binding var selectedWord: Word?
     let isCompleted: Bool
     let onToggleCompleted: () -> Void
+    let onReport: () -> Void
     
     var body: some View {
         VStack(spacing: 0) {
@@ -678,6 +688,20 @@ struct ReadingNavigationBar: View {
                 
                 Spacer()
                 
+                // Report Issue Button
+                Button(action: onReport) {
+                    Image(systemName: "flag")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(.primary)
+                        .frame(width: 36, height: 36)
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .clipShape(Circle())
+                        .overlay(
+                             Circle()
+                                 .stroke(Color(.separator), lineWidth: 0.5)
+                         )
+                }
+                
                 // Mark Complete Button
                 Button(action: {
                     // Disable animation for this state change
@@ -699,7 +723,7 @@ struct ReadingNavigationBar: View {
                     .background(
                         ZStack {
                             Capsule()
-                                .fill(Color.white)
+                                .fill(Color.clear) // Transparent background when not completed (adapts to theme)
                             Capsule()
                                 .fill(Color.steamedGoldGradient)
                                 .opacity(isCompleted ? 1 : 0)

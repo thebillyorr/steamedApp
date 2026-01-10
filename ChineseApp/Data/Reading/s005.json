@@ -3,7 +3,7 @@
   "title": "一杯咖啡的故事",
   "subtitle": "A Story About a Cup of Coffee",
   "difficulty": 4,
-  "topic": "",
+  "topic": ["Story"],
   "tokens": [
     {
       "id": "w01365",

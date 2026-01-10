@@ -5,8 +5,7 @@
       "masteryMin": 0.0,
       "masteryMax": 0.1,
       "questionTypes": [
-        { "type": "flashcard", "weight": 0.8 },
-        { "type": "chineseToEnglish", "weight": 0.2 }
+        { "type": "flashcard", "weight": 1 }
       ]
     },
     {
@@ -14,8 +13,8 @@
       "masteryMin": 0.1,
       "masteryMax": 0.2,
       "questionTypes": [
-        { "type": "flashcard", "weight": 0.6 },
-        { "type": "chineseToEnglish", "weight": 0.4 }
+        { "type": "flashcard", "weight": 0.8 },
+        { "type": "chineseToEnglish", "weight": 0.2 }
       ]
     },
     {
@@ -49,8 +48,8 @@
       "masteryMin": 0.5,
       "masteryMax": 0.6,
       "questionTypes": [
-        { "type": "chineseToEnglish", "weight": 0.7 },
-        { "type": "chineseToPinyin", "weight": 0.3 }
+        { "type": "chineseToEnglish", "weight": 0.4 },
+        { "type": "chineseToPinyin", "weight": 0.6 }
       ]
     },
     {
