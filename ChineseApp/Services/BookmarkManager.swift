@@ -13,7 +13,7 @@ final class BookmarkManager: ObservableObject {
     func setContainer(_ container: ModelContainer) {
         self.container = container
         Task { @MainActor in
-            await loadBookmarks()
+            loadBookmarks()
         }
     }
     

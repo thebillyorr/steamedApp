@@ -19,18 +19,14 @@ public final class ProgressManager {
         self.container = container
     }
     
-    private static let progressKey = "wordProgress"
     private static let sessionCountKey = "sessionCounts"
 
     // MARK: - Word Progress
     
     // load all progress as [hanzi : 0.0-1.0]
-    static func loadProgress() -> [String: Double] {
-        guard let container = shared.container else {
-            print("⚠️ SwiftData container not set.")
-            return [:]
-        }
-        
+    // Marked nonisolated so it can be called from background threads cleanly
+    // Must pass container explicitly to avoid MainActor isolation issues with 'shared.container'
+    nonisolated static func loadProgress(from container: ModelContainer) -> [String: Double] {
         let context = ModelContext(container)
         var results: [String: Double] = [:]
         
@@ -204,7 +200,6 @@ public final class ProgressManager {
             }
         }
         
-        UserDefaults.standard.removeObject(forKey: progressKey)
         UserDefaults.standard.removeObject(forKey: sessionCountKey)
         resetStreak()
     }

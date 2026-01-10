@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PracticeRootView: View {
-    @State private var activeDeck: Topic = DataService.allTopics.first ?? Topic(name: "Aquarium", filename: "Aquarium", icon: "fish")
+    @State private var activeDeck: Topic = Self.loadLastDeck()
     @State private var startPractice = false
     @State private var showDeckSelection = false
     
@@ -52,7 +52,19 @@ struct PracticeRootView: View {
                     }
                 }
             }
+            .onChange(of: activeDeck) { _, newDeck in
+                UserDefaults.standard.set(newDeck.filename, forKey: "lastPracticeDeckFilename")
+            }
         }
+    }
+    
+    private static func loadLastDeck() -> Topic {
+        if let savedName = UserDefaults.standard.string(forKey: "lastPracticeDeckFilename"),
+           let found = DataService.allTopics.first(where: { $0.filename == savedName }) {
+            return found
+        }
+        // Default to the first one (usually Bookmarks or Core 1) if nothing saved
+        return DataService.allTopics.first ?? Topic(name: "Aquarium", filename: "Aquarium", icon: "fish")
     }
 }
 

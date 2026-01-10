@@ -17,6 +17,10 @@ struct ActiveDeckView: View {
     @State private var isHovered = false
     
     var body: some View {
+        // PERF: Load words once per render instead of 6 times
+        let words = DataService.loadWords(for: topic)
+        let masteryValue = calculateDeckMastery(words: words)
+        
         ZStack {
             Color(.systemGroupedBackground)
                 .ignoresSafeArea()
@@ -74,9 +78,8 @@ struct ActiveDeckView: View {
                         }
                         
                         // Progress Circle
-                        let masteryValue = calculateDeckMastery()
                         // For My Basket (dynamic deck), only rely on current word status, not historical mastery
-                        let isDeckMastered = (topic.filename == "bookmarks_deck" ? false : deckMasteryManager.isDeckMastered(filename: topic.filename)) || isAllWordsMastered()
+                        let isDeckMastered = (topic.filename == "bookmarks_deck" ? false : deckMasteryManager.isDeckMastered(filename: topic.filename)) || isAllWordsMastered(words: words)
                         
                         ZStack {
                             // Background circle
@@ -124,19 +127,19 @@ struct ActiveDeckView: View {
                         HStack(spacing: 16) {
                             DeckStatCard(
                                 label: "Mastered",
-                                value: "\(getMasteredWordCount())",
+                                value: "\(getMasteredWordCount(words: words))",
                                 icon: "star.fill"
                             )
                             
                             DeckStatCard(
                                 label: "Learning",
-                                value: "\(getInProgressWordCount())",
+                                value: "\(getInProgressWordCount(words: words))",
                                 icon: "book.fill"
                             )
                             
                             DeckStatCard(
                                 label: "New",
-                                value: "\(getNotStartedWordCount())",
+                                value: "\(getNotStartedWordCount(words: words))",
                                 icon: "sparkles"
                             )
                         }
@@ -168,8 +171,7 @@ struct ActiveDeckView: View {
         }
     }
     
-    private func calculateDeckMastery() -> Double {
-        let words = DataService.loadWords(for: topic)
+    private func calculateDeckMastery(words: [Word]) -> Double {
         guard !words.isEmpty else { return 0 }
         
         let totalProgress = words.reduce(0) { total, word in
@@ -180,31 +182,28 @@ struct ActiveDeckView: View {
         return min(percentage, 100)
     }
     
-    private func getWordCount() -> Int {
-        DataService.loadWords(for: topic).count
-    }
+    // (getWordCount removed, unused)
     
-    private func getMasteredWordCount() -> Int {
-        DataService.loadWords(for: topic).filter { 
+    private func getMasteredWordCount(words: [Word]) -> Int {
+        words.filter { 
             progressStore.getProgress(for: $0.hanzi) >= 1.0 
         }.count
     }
     
-    private func getInProgressWordCount() -> Int {
-        DataService.loadWords(for: topic).filter { 
+    private func getInProgressWordCount(words: [Word]) -> Int {
+        words.filter { 
             let progress = progressStore.getProgress(for: $0.hanzi)
             return progress > 0 && progress < 1.0
         }.count
     }
     
-    private func getNotStartedWordCount() -> Int {
-        DataService.loadWords(for: topic).filter { 
+    private func getNotStartedWordCount(words: [Word]) -> Int {
+        words.filter { 
             progressStore.getProgress(for: $0.hanzi) == 0
         }.count
     }
     
-    private func isAllWordsMastered() -> Bool {
-        let words = DataService.loadWords(for: topic)
+    private func isAllWordsMastered(words: [Word]) -> Bool {
         guard !words.isEmpty else { return false }
         return words.allSatisfy { progressStore.getProgress(for: $0.hanzi) >= 1.0 }
     }

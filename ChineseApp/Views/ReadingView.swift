@@ -725,7 +725,13 @@ struct ReadingNavigationBar: View {
                             Capsule()
                                 .fill(Color.clear) // Transparent background when not completed (adapts to theme)
                             Capsule()
-                                .fill(Color.steamedGoldGradient)
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [.yellow, .orange]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
                                 .opacity(isCompleted ? 1 : 0)
                         }
                     )

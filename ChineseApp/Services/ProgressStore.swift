@@ -15,19 +15,38 @@ final class ProgressStore: ObservableObject {
     @Published private(set) var progress: [String: Double] = [:]
 
     private init() {
-        // Load data in background to prevent blocking main thread on launch
-        Task.detached {
-            let data = ProgressManager.loadProgress()
-            await MainActor.run {
-                self.progress = data
-            }
+        // Capture container safely from MainActor before detaching
+        guard let container = ProgressManager.shared.container else {
+             print("⚠️ ProgressStore init: No container available yet.")
+             return
+        }
+
+        Task {
+            // Because init is synchronous, we launch a Task
+            // Since ProgressStore is @MainActor, this Task inherits MainActor context by default
+            
+            // However, ProgressManager.loadProgress is synchronous and non-actor-isolated.
+            // But to avoid blocking the main thread, we prefer doing the fetch off-main.
+            
+            // We use Task.detached for background work
+            await Task.detached(priority: .userInitiated) {
+                // Fetch on background thread
+                let data = ProgressManager.loadProgress(from: container)
+                
+                // Update on Main thread
+                await MainActor.run {
+                    self.progress = data
+                }
+            }.value
         }
     }
 
     func addProgress(for hanzi: String, delta: Double, in deckFilename: String? = nil) {
         ProgressManager.addProgress(for: hanzi, delta: delta, in: deckFilename)
         // reload published value
-        progress = ProgressManager.loadProgress() // This might need optimization later, but OK for single word updates
+        if let container = ProgressManager.shared.container {
+            progress = ProgressManager.loadProgress(from: container)
+        }
     }
 
     func getProgress(for hanzi: String) -> Double {
@@ -43,7 +62,8 @@ final class ProgressStore: ObservableObject {
     // MARK: - Testing Helpers
     
     func setWordMastered(_ hanzi: String) {
-        var current = ProgressManager.loadProgress()
+        guard let container = ProgressManager.shared.container else { return }
+        var current = ProgressManager.loadProgress(from: container)
         current[hanzi] = 1.0
         ProgressManager.saveProgress(current)
         self.progress = current
@@ -57,7 +77,8 @@ final class ProgressStore: ObservableObject {
         
         // 1. Master all words in this deck
         let words = DataService.loadWords(for: topic)
-        var current = ProgressManager.loadProgress()
+        guard let container = ProgressManager.shared.container else { return }
+        var current = ProgressManager.loadProgress(from: container)
         for word in words {
             current[word.hanzi] = 1.0
         }

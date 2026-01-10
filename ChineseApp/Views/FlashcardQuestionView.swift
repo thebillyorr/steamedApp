@@ -187,7 +187,7 @@ struct FlashcardQuestionView: View {
         .onAppear {
             resetHintTimer()
         }
-        .onChange(of: word.hanzi) { _ in
+        .onChange(of: word.hanzi) { _, _ in
             // Reset all state when word changes
             dragOffset = 0
             isDragging = false

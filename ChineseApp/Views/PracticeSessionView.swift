@@ -346,9 +346,6 @@ struct PracticeSessionView: View {
                                     },
                                     onReport: { showReportOverlay = true }
                                 )
-                                
-                            default:
-                                Text("Question type not implemented")
                             }
                             }
                                 

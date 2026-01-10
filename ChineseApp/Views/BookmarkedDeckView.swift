@@ -16,7 +16,7 @@ struct BookmarkedDeckView: View {
     var body: some View {
         let bookmarkedWords = DataService.loadWords(for: bookmarkTopic)
         let mastery = calculateMastery(words: bookmarkedWords)
-        let wordCount = bookmarkedWords.count
+        let _ = bookmarkedWords.count // silence warning for unused value if we want to keep logic, or just remove
         let masteredCount = bookmarkedWords.filter { progressStore.getProgress(for: $0.hanzi) >= 1.0 }.count
         
         NavigationLink(value: bookmarkTopic) {

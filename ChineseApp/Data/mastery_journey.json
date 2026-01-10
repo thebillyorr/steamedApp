@@ -5,7 +5,10 @@
       "masteryMin": 0.0,
       "masteryMax": 0.1,
       "questionTypes": [
-        { "type": "flashcard", "weight": 1 }
+        { "type": "flashcard", "weight": 1 },
+        { "type": "chineseToEnglish", "weight": 0 },
+        { "type": "chineseToPinyin", "weight": 0 },
+        { "type": "englishConstructChinese", "weight": 0 }
       ]
     },
     {
@@ -14,7 +17,9 @@
       "masteryMax": 0.2,
       "questionTypes": [
         { "type": "flashcard", "weight": 0.8 },
-        { "type": "chineseToEnglish", "weight": 0.2 }
+        { "type": "chineseToEnglish", "weight": 0.2 },
+        { "type": "chineseToPinyin", "weight": 0 },
+        { "type": "englishConstructChinese", "weight": 0 }
       ]
     },
     {
@@ -22,8 +27,10 @@
       "masteryMin": 0.2,
       "masteryMax": 0.3,
       "questionTypes": [
-        { "type": "flashcard", "weight": 0.4 },
-        { "type": "chineseToEnglish", "weight": 0.6 }
+        { "type": "flashcard", "weight": 0.5 },
+        { "type": "chineseToEnglish", "weight": 0.5 },
+        { "type": "chineseToPinyin", "weight": 0 },
+        { "type": "englishConstructChinese", "weight": 0 }
       ]
     },
     {
@@ -31,8 +38,10 @@
       "masteryMin": 0.3,
       "masteryMax": 0.4,
       "questionTypes": [
-        { "type": "flashcard", "weight": 0.2 },
-        { "type": "chineseToEnglish", "weight": 0.8 }
+        { "type": "flashcard", "weight": 0.3 },
+        { "type": "chineseToEnglish", "weight": 0.5 },
+        { "type": "chineseToPinyin", "weight": 0.2 },
+        { "type": "englishConstructChinese", "weight": 0 }
       ]
     },
     {
@@ -40,7 +49,10 @@
       "masteryMin": 0.4,
       "masteryMax": 0.5,
       "questionTypes": [
-        { "type": "chineseToEnglish", "weight": 1.0 }
+        { "type": "flashcard", "weight": 0.2 },
+        { "type": "chineseToEnglish", "weight": 0.3 },
+        { "type": "chineseToPinyin", "weight": 0.3 },
+        { "type": "englishConstructChinese", "weight": 0.2 }
       ]
     },
     {
@@ -48,8 +60,10 @@
       "masteryMin": 0.5,
       "masteryMax": 0.6,
       "questionTypes": [
-        { "type": "chineseToEnglish", "weight": 0.4 },
-        { "type": "chineseToPinyin", "weight": 0.6 }
+        { "type": "flashcard", "weight": 0.1 },
+        { "type": "chineseToEnglish", "weight": 0.2 },
+        { "type": "chineseToPinyin", "weight": 0.3 },
+        { "type": "englishConstructChinese", "weight": 0.4 }
       ]
     },
     {
@@ -57,9 +71,10 @@
       "masteryMin": 0.6,
       "masteryMax": 0.7,
       "questionTypes": [
-        { "type": "chineseToEnglish", "weight": 0.4 },
-        { "type": "chineseToPinyin", "weight": 0.4 },
-        { "type": "englishConstructChinese", "weight": 0.2 }
+        { "type": "flashcard", "weight": 0.1 },
+        { "type": "chineseToEnglish", "weight": 0.2 },
+        { "type": "chineseToPinyin", "weight": 0.2 },
+        { "type": "englishConstructChinese", "weight": 0.5 }
       ]
     },
     {
@@ -67,7 +82,9 @@
       "masteryMin": 0.7,
       "masteryMax": 0.8,
       "questionTypes": [
-        { "type": "chineseToPinyin", "weight": 0.5 },
+        { "type": "flashcard", "weight": 0.1 },
+        { "type": "chineseToEnglish", "weight": 0.1 },
+        { "type": "chineseToPinyin", "weight": 0.3 },
         { "type": "englishConstructChinese", "weight": 0.5 }
       ]
     },
@@ -76,8 +93,10 @@
       "masteryMin": 0.8,
       "masteryMax": 0.9,
       "questionTypes": [
+        { "type": "flashcard", "weight": 0 },
+        { "type": "chineseToEnglish", "weight": 0.1 },
         { "type": "chineseToPinyin", "weight": 0.3 },
-        { "type": "englishConstructChinese", "weight": 0.7 }
+        { "type": "englishConstructChinese", "weight": 0.6 }
       ]
     },
     {
@@ -85,7 +104,10 @@
       "masteryMin": 0.9,
       "masteryMax": 1.0,
       "questionTypes": [
-        { "type": "englishConstructChinese", "weight": 1.0 }
+        { "type": "flashcard", "weight": 0 },
+        { "type": "chineseToEnglish", "weight": 0 },
+        { "type": "chineseToPinyin", "weight": 0.1 },
+        { "type": "englishConstructChinese", "weight": 0.9 }
       ]
     }
   ]
